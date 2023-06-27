@@ -1,0 +1,282 @@
+---
+title: "CRISPR screen analysis"
+author: "Jordan Taylor"
+editor:
+  markdown:
+    wrap: 72
+format:
+  html:
+    code-fold: true
+---
+
+1. Load the required libraries and read the data into a data frame.
+
+```{r}
+box::use(
+  readxl[rxl = read_excel],
+  glue[g = glue],
+  dplyr[...],
+  tidyr[...],
+  edgeR[...],
+  ggplot2[...]
+)
+
+downloads <- g("{here::here()}/radchemoscreens/downloads")
+article <- "awahRibosomalProteinS112020_32528131"
+file <- "NIHMS1599130-supplement-1599130_SuppList_Data_6.xlsx"
+full_path <- g("{downloads}/{article}_{file}")
+
+df <- rxl(full_path, range = "A1:D77442") %>%
+  rename(
+    eto_r1 = `Eto R1`,
+    eto_r2 = `Eto R2`
+  )
+
+head(df)
+```
+
+2. Perform read count normalization using the median ratio method. This method adjusts the read counts by dividing by the size factor for each sample, which is computed as the median of the ratios of read counts to geometric means:
+
+$$
+s_j = \mathrm{median}_i \left\{ \frac{x_{ij}}{\hat{x}_i} \right\}
+$$
+
+where $x_{ij}$ is the read count of sgRNA $i$ in sample $j$, and $\hat{x}_i$ is the geometric mean of the read counts of sgRNA $i$ across all samples:
+
+$$
+\hat{x}_i = \left( \prod_{k=1}^N x_{ik} \right)^{\frac{1}{N}}
+$$
+
+or equivalently:
+
+$$
+\hat{x}_i = e^\left( \frac{1}{N} \sum_{k=1}^N \ln(x_{ik}) \right)
+$$
+
+```{r}
+sample_cols <- colnames(df)[-1]
+
+geo_mean <- function(x) exp(mean(log(x + 1))) # add 1 to avoid log(0)
+
+# Calculate the geometric mean of each sgRNA across all samples
+df$geomean <- apply(df[, sample_cols], 1, geo_mean)
+
+# Calculate the size factor for each sample as the median of the ratios of read
+# counts to geometric means
+size_factors <- apply(df[, sample_cols], 2, \(x) median(x / df$geomean))
+
+# Normalize the read counts by dividing by the size factors and round to
+# integers
+df[, sample_cols] <- purrr::map2_df(
+  df[, sample_cols],
+  size_factors,
+  \(x, y) round(x / y)
+)
+
+# Check the normalized read counts
+head(df)
+```
+
+
+Plot DMSO vs Etoposide and model the relationship
+
+```{r}
+# add eto geomean to df
+df$eto_geomean <- apply(df[, c("eto_r1", "eto_r2")], 1, geo_mean)
+
+# model eto R1 vs DMSO
+model <- lm(log2(eto_r1 + 1) ~ log2(DMSO + 1), data = df)
+summary(model)
+
+# add the residuals to the df and sort by them in descending order
+df <- df %>%
+  mutate(residuals = resid(model)) %>%
+  arrange(desc(residuals))
+head(df, 100)
+
+# Define the number of top residuals to highlight
+n_top_residuals <- 100
+
+# Create a binary column to indicate whether the row is in the top residuals
+df <- df %>%
+  mutate(top_residuals = ifelse(row_number() <= n_top_residuals, 1, 0))
+
+hitlist <- c("CARS", "RPL17", "RPP21", "ELF3H", "ELF2B3", "TRMT5", "RPS16", "AARS", "NAE1", "PSMB3", "TM9SF3", "TUBA1B", "PMPCB", "POLR2L")
+
+plot <- ggplot(df, aes(x = eto_geomean, y = DMSO)) +
+  geom_point() +
+  # xlim(0,15) +
+  # ylim(0,15) +
+  # scale_x_continuous(trans = scales::pseudo_log_trans(5, 2)) +
+  # scale_y_continuous(trans = scales::pseudo_log_trans(5, 2)) +
+  geom_point(data = df[df$genes %in% hitlist, ], color = "green") +
+  geom_point(data = df[df$genes == "Control", ], color = "blue")
+
+ggsave("plot.pdf", plot, width = 8, height = 8, device = cairo_pdf)
+```
+
+3. Perform mean-variance modeling using the empirical equation:
+
+$$\log(\hat{\sigma}^2 - \hat{\mu}) = \log(k) + b \log(\hat{\mu}), k \geq 0, b \geq 0$$
+
+where $\hat{\mu}$ and $\hat{\sigma}^2$ are the sample mean and variance of each sgRNA, and $k$ and $b$ are coefficients to be estimated from linear regression. This equation captures the relationship between the mean and variance of the read counts, and accounts for over-dispersion.
+
+```{r}
+# Calculate the sample mean and variance for each sgRNA using only the control samples (DMSO)
+df$mean <- rowMeans(df)
+df$var <- rowVars(df)
+
+# Remove sgRNAs with zero mean or variance
+df <- df %>% filter(mean > 0 & var > 0)
+
+# Perform linear regression on log-transformed mean and variance
+fit <- lm(log(var - mean) ~ log(mean), data = df)
+
+# Extract the coefficients k and b from the fit
+k <- exp(coef(fit)[1])
+b <- coef(fit)[2]
+
+# Check the fit and the coefficients
+summary(fit)
+ggplot(df, aes(x = log(mean), y = log(var - mean))) +
+  geom_point() +
+  geom_abline(intercept = coef(fit)[1], slope = coef(fit)[2], color = "red") +
+  labs(x = "log(mean)", y = "log(variance - mean)")
+k
+b
+```
+
+4. Perform sgRNA test and ranking using negative binomial distribution. We assume that the read count $x_{iA}$ of sgRNA $i$ in condition A follows a NB distribution:
+
+$$x_{iA} \sim NB(\mu_{iA}, \sigma^2_{iA})$$
+
+where $\mu_{iA}$ and $\sigma^2_{iA}$ are the mean and variance of the NB distribution, respectively. $\sigma^2_{iA}$ is adjusted using the mean-variance model learned from the previous step. The parameters of the NB distribution NB($r$, $p$) are calculated as:
+
+$$
+\begin{aligned}
+p &= 1 - \frac{\hat{\mu}}{\hat{\sigma}^2}\\
+r &= \frac{\hat{\mu}^2}{\hat{\sigma}^2 - \hat{\mu}}
+\end{aligned}
+$$
+
+For each sgRNA, we calculate the tail probability that the null NB distribution generates a read count that is more extreme than the mean of read counts in condition B:
+
+$$
+p = \begin{cases}
+\sum_{x > \mu_{iB}} NB(x|\mu_{iA}, \sigma^2_{iA}), & \mu_{iB} > \mu_{iA}\\
+\sum_{x < \mu_{iB}} NB(x|\mu_{iA}, \sigma^2_{iA}), & \mu_{iB} < \mu_{iA}
+\end{cases}
+$$
+
+This is the statistical significance of sgRNA $i$ in two conditions. We provide two one-sided P-values to test whether sgRNA is positively selected ($\mu_{iB} > \mu_{iA}$) or negatively selected ($\mu_{iB} < \mu_{iA}$).
+
+```{r}
+# Define a function to calculate the tail probability of a NB distribution
+nb_tail_prob <- function(x, mu, var) {
+  # Calculate the parameters r and p of the NB distribution from mu and var
+  p <- 1 - mu / var
+  r <- mu^2 / (var - mu)
+
+  # Calculate the tail probability based on whether x is larger or smaller than mu
+  if (x > mu) {
+    prob <- sum(dnbinom((x + 1):max(var, x + r), size = r, prob = p))
+  } else {
+    prob <- sum(dnbinom(0:x, size = r, prob = p))
+  }
+
+  return(prob)
+}
+
+# Apply the function to each sgRNA using the normalized read counts in Eto R1 and Eto R2 as x,
+# and the normalized read counts in DMSO as mu and var
+df$nb_pval <- mapply(nb_tail_prob, x = rowMeans(df[, 2:3]), mu = df$mean, var = df$var)
+
+# Rank the sgRNAs by their NB P-values in ascending order
+df <- df %>% arrange(nb_pval)
+
+# Check the ranked sgRNAs and their NB P-values
+head(df)
+```
+
+5. Perform gene test and ranking using modified robust rank aggregation (α-RRA). This method computes a significance score ($\rho$ value) for each gene based on the ranks of its sgRNAs in the NB P-value list. The $\rho$ value is defined as the minimum of the P-values of the top ranked $\alpha\%$ sgRNAs targeting this gene, where the P-values are calculated based on the beta distribution:
+
+$$\rho = \min(p_1,p_2, ..., p_j)$$
+
+where $p_k$ is the P-value for the $k$th smallest percentile among $u_1, u_2, ..., u_n$, which are the normalized ranks of $n$ sgRNAs targeting this gene:
+
+$$p_k = B(u_k|k, n + 1 - k)$$
+
+where $B(x|a, b)$ is the cumulative distribution function (CDF) of a beta distribution with parameters $a$ and $b$. The modified RRA method can efficiently remove the effect of insignificant sgRNAs in the assessment of gene significance.
+
+To compute a P-value based on the $\rho$ values, we perform a permutation test where the sgRNAs are randomly assigned to genes (the numbers of sgRNAs targeting each gene remain unchanged). We then compute the FDR from the empirical permutation P-values using the Benjamini-Hochberg procedure.
+
+```{r}
+# Define a function to perform α-RRA for a given gene
+alpha_rra <- function(gene, alpha = 0.05) {
+  # Subset the data frame to only include sgRNAs targeting this gene
+  sub_df <- df %>% filter(genes == gene)
+
+  # Calculate the number of sgRNAs for this gene (n) and the total number of sgRNAs (M)
+  n <- nrow(sub_df)
+  M <- nrow(df)
+
+  # Normalize the ranks of sgRNAs into percentiles
+  sub_df$percentile <- sub_df$nb_pval / M
+
+  # Select the top ranked α% sgRNAs if their NB P-values are smaller than a threshold (for example, 0.05)
+  sub_df <- sub_df %>% filter(nb_pval < alpha)
+  j <- nrow(sub_df)
+
+  # If there are no sgRNAs selected, return NA as the rho value
+  if (j == 0) {
+    return(NA)
+  }
+
+  # Otherwise, calculate the P-values for the j smallest percentiles based on the beta distribution
+  sub_df$pval <- pbeta(sub_df$percentile, j, n + 1 - j)
+
+  # Define the rho value as the minimum of the P-values
+  rho <- min(sub_df$pval)
+
+  return(rho)
+}
+
+# Apply the function to each gene and store the results in a new data frame
+gene_df <- data.frame(genes = unique(df$genes))
+gene_df$rho <- sapply(gene_df$genes, alpha_rra)
+
+# Remove genes with NA rho values
+gene_df <- gene_df %>% filter(!is.na(rho))
+
+# Perform a permutation test to calculate the empirical P-values for the rho values
+# Set the number of permutations as 100 times the number of genes
+n_perm <- 100 * nrow(gene_df)
+
+# Initialize a vector to store the permutation P-values
+perm_pval <- numeric(n_perm)
+
+# For each permutation, randomly shuffle the gene labels and apply alpha_rra to each gene
+set.seed(123) # for reproducibility
+for (i in 1:n_perm) {
+  # Shuffle the gene labels
+  perm_genes <- sample(df$genes)
+
+  # Replace the original gene labels with the permuted ones
+  df$genes <- perm_genes
+
+  # Apply alpha_rra to each gene using the shuffled labels
+  perm_rho <- sapply(unique(perm_genes), alpha_rra, alpha = 0.05)
+
+  # Calculate the permutation P-value as the proportion of permuted rho values that are smaller than or equal to the observed rho values
+  perm_pval[i] <- mean(perm_rho <= gene_df$rho)
+}
+
+# Adjust the permutation P-values for multiple testing using Benjamini-Hochberg procedure
+gene_df$fdr <- p.adjust(perm_pval, method = "BH")
+
+# Rank the genes by their FDR values in ascending order
+gene_df <- gene_df %>% arrange(fdr)
+
+# Check the ranked genes and their FDR values
+head(gene_df)
+```
