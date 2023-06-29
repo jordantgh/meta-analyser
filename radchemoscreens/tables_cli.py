@@ -71,12 +71,7 @@ def parse_tables(df):
 
     for region in regionprops(labeled):
         minr, minc, maxr, maxc = region.bbox
-        r = region # debug
         region = df.iloc[minr:maxr, minc:maxc]
-        
-        print("Region:", r.label)  # print the label of the region
-        print(region.head(2))  # print the first two rows of the region dataframe
-
 
         # Binarise the region and invert (so empty cells are `1` and cells with values are `0`)
         binary_region = np.array(region.isnull().astype("int"))
