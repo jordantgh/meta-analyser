@@ -16,7 +16,7 @@ def load_data(file_path):
         raise ValueError("File format not supported.")
     return df
 
-def find_blocks(mask):
+def find_empty_blocks(mask):
     # Copy the matrix to not modify the original
     matrix = np.copy(mask)
 
@@ -76,8 +76,8 @@ def parse_tables(df):
         # Binarise the region and invert (so empty cells are `1` and cells with values are `0`)
         binary_region = np.array(region.isnull().astype("int"))
 
-        # Apply the find_blocks function to get the list of blocks
-        blocks = find_blocks(binary_region)
+        # Apply the find_empty_blocks function to get the list of blocks
+        blocks = find_empty_blocks(binary_region)
         
         top_blocks = []
         bottom_blocks = []
