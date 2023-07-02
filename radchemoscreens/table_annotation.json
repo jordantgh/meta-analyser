@@ -1,0 +1,82 @@
+[
+  {
+      "name": "analyze_article",
+      "description": "Analyzes a collection of datasets within a scientific article and provides structured data interpretation.",
+      "parameters": {
+          "type": "object",
+          "properties": {
+              "article_title": {
+                  "type": "string",
+                  "description": "The title of the article (camelCase)."
+              },
+              "article_datasets_summary": {
+                  "type": "string",
+                  "description": "Summary of what the various datasets collectively contain, taken together."
+              },
+              "datasets": {
+                  "type": "array",
+                  "items": {
+                      "type": "object",
+                      "properties": {
+                          "dataset_title": {
+                              "type": "string",
+                              "description": "Suggested camelCase title of the dataset."
+                          },
+                          "dataset_summary": {
+                              "type": "string",
+                              "description": "The summary of the dataset."
+                          },
+                          "tables": {
+                              "type": "array",
+                              "items": {
+                                  "type": "object",
+                                  "properties": {
+                                      "table_title": {
+                                          "type": "string",
+                                          "description": "Suggested camelCase title of the table."
+                                      },
+                                      "table_summary": {
+                                          "type": "string",
+                                          "description": "The summary of the table."
+                                      },
+                                      "geneid_type": {
+                                          "type": "string",
+                                          "description": "The type of gene identification used in the table."
+                                      },
+                                      "n_rows": {
+                                          "type": "integer",
+                                          "description": "The number of rows in the table."
+                                      },
+                                      "n_cols": {
+                                          "type": "integer",
+                                          "description": "The number of columns in the table."
+                                      }
+                                  },
+                                  "required": [
+                                      "table_title",
+                                      "table_summary",
+                                      "geneid_type",
+                                      "n_rows",
+                                      "n_cols"
+                                  ]
+                              },
+                              "description": "An array of tables included in the dataset."
+                          }
+                      },
+                      "required": [
+                          "dataset_title",
+                          "dataset_summary",
+                          "tables"
+                      ]
+                  },
+                  "description": "An array of datasets included in the article."
+              }
+          },
+          "required": [
+              "article_title",
+              "article_datasets_summary",
+              "datasets"
+          ]
+      }
+  }
+]
