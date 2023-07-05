@@ -16,19 +16,35 @@ def load_data(file_path):
         raise ValueError("File format not supported.")
     return df
 
+from skimage.measure import label, regionprops
+import numpy as np
+
 def parse_tables(df):
+    if df.empty:
+        return []
+        
     binary_rep = np.array(df.notnull().astype("int"))
     labeled = label(binary_rep)
 
+    region_bboxes = [region.bbox for region in regionprops(labeled)]
+    
+    # Check if bbox1 is contained within bbox2 - this is to eliminate "nested"
+    # tables
+    def is_contained(bbox1, bbox2):
+        return bbox2[0] <= bbox1[0] and bbox2[1] <= bbox1[1] and bbox2[2] >= bbox1[2] and bbox2[3] >= bbox1[3]
+
     list_of_dataframes = []
-    for region in regionprops(labeled):
-        minr, minc, maxr, maxc = region.bbox
-        if maxr - minr <= 1 or maxc - minc <= 1:
+    for i, bbox1 in enumerate(region_bboxes):
+        minr1, minc1, maxr1, maxc1 = bbox1
+        if maxr1 - minr1 <= 1 or maxc1 - minc1 <= 1:
             continue
-        region = df.iloc[minr:maxr, minc:maxc]
+        if any(is_contained(bbox1, bbox2) for j, bbox2 in enumerate(region_bboxes) if i != j):
+            continue
+        region = df.iloc[minr1:maxr1, minc1:maxc1]
         list_of_dataframes.append(region)
 
     return list_of_dataframes
+
 
 def main():
     parser = argparse.ArgumentParser(description="Parse and save tables from Excel files.")
