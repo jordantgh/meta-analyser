@@ -1,0 +1,103 @@
+[
+  {
+  "name": "analyze_dataset",
+  "description": "Analyzes a CRISPR screen dataset and provides structured data interpretation.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "article_title": {
+        "type": "string",
+        "description": "The title of the paper"
+      },
+      "dataset_filename": {
+        "type": "string",
+        "description": "The filename of the dataset."
+      },
+      "header_row": {
+        "type": "string",
+        "description": "Which row the header is in (if any). The first row is '0'. If there is no header, then this should be 'None'."
+      },
+      "sgRNA_sequence": {
+        "type": "string",
+        "enum": [
+          "Own-column",
+          "Concatenated",
+          "None"
+        ],
+        "description": "Whether the sgRNA sequence is included in the table, and if so, whether on its own or concatenated with the gene name e.g. A1BG_CATCTTCTTTCACCTGAACG."
+      },
+      "gene_identifier": {
+        "type": "string",
+        "enum": [
+          "HGNC gene symbol",
+          "HGNC ID",
+          "Ensembl Gene ID",
+          "EntrezGene ID",
+          "RefSeq ID",
+          "UniProt ID",
+          "HGNC gene symbol [MOD]",
+          "HGNC ID [MOD]",
+          "Ensembl Gene ID [MOD]",
+          "EntrezGene ID [MOD]",
+          "RefSeq ID [MOD]",
+          "UniProt ID [MOD]",
+          "Other/Unclear [MOD]",
+          "None"
+        ],
+        "description": "The type of gene identifier used in the table. Add [MOD] if you recognize the gene identifier but it is modified in some way e.g. appended with a uuid (but not if it is simply appended with sgRNA sequence e.g. A1BG_CATCTTCTTTCACCTGAACG. In this case do not add [MOD])."
+      },
+      "dataset_type": {
+        "type": "string",
+        "enum": [
+          "Data",
+          "Lookup/Reference/Metadata"
+        ],
+        "description": "Whether the dataset contains experimentally measured data or is merely a lookup/reference/metadata table."
+      },
+      "statistic_aggregation": {
+        "type": "string",
+        "enum": [
+          "Per gene",
+          "Per sgRNA",
+          "NA"
+        ],
+        "description": "Whether the statistics are aggregated per gene or per sgRNA. If there is more than one row for any gene, then this should be 'per sgRNA', even if sgRNA sequence is not explicitly present. NA if the dataset is of type 'Lookup/Reference/Metadata'."
+      },
+      "metrics": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "MAGeCK statistics",
+            "Z-score/Z-ratios",
+            "fold-change/log fold-change",
+            "STARS (negative binomial)",
+            "Raw count",
+            "Other/ambiguous",
+            "NA"
+          ]
+        },
+        "description": "The metrics of gene/sgRNA abundance in the dataset (all that apply, but don't mention fold change if it's part of MAGeCK). NA if the dataset is of type 'Lookup/Reference/Metadata'."
+      },
+      "conditions": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "The conditions explicitly mentioned in the dataset (or inferred from the file name if high confidence), e.g., DMSO, library, cisplatin, etc, if any. None if there are no explicitly mentioned conditions. NA if the dataset is of type 'Lookup/Reference/Metadata'."
+      }
+    }
+  },
+  "required": [
+    "article_title",
+    "dataset_filename",
+    "header_row",
+    "sgRNA_sequence",
+    "gene_identifier",
+    "dataset_type",
+    "statistic_aggregation",
+    "metrics",
+    "conditions"
+  ]
+}
+]
