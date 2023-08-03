@@ -4,19 +4,16 @@ import pandas as pd
 import openai
 import bibtexparser
 import json
+from dotenv import load_dotenv
 
-openai.api_key = "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"
+load_dotenv()
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 def analyze_dataset(dataset_filepath, paper_title):
     # Load the dataset
     file_ext = os.path.splitext(dataset_filepath)[-1]
     if file_ext == '.csv':
         df = pd.read_csv(dataset_filepath)
-    elif file_ext == '.txt':
-        df = pd.read_csv(dataset_filepath, delimiter='\t')
-    elif file_ext == '.xlsx':
-        # Read all sheets
-        dfs = pd.read_excel(dataset_filepath, sheet_name=None)
     else:
         print(f"Unsupported file format: {file_ext}")
         return
@@ -34,6 +31,8 @@ def convert_to_markdown(json_obj):
         else:
             markdown_str += f"{key}: {value}\n\n"
     return markdown_str
+  
+sys_prompt = "You are an app that understands and analyzes CRISPR screen datasets and outputs structured JSON data specifying key parameters of the dataset in human readable form. All of the datasets you will see pertain to screens looking for genes which promote resistance (or sensitivity) to DNA damaging insults (drugs or radiation)."
 
 with open('dependencies/prompt_examples.json', 'r') as file:
     prompt_examples = json.load(file)
@@ -43,16 +42,24 @@ with open('dependencies/functioncall.json', 'r') as file:
 
 def process_dataset(df, filename, paper_title, max_retries=5, output_file='gpt_output/output_4.md'):
     time.sleep(1)
-    # Generate the first 10 lines of the dataset as string
-    dataset_sample = df.head(10).to_string()
 
     # Generate API call
-    user_input = [
-          {"role": "system", "content": "You are an app that understands and analyzes CRISPR screen datasets and outputs structured JSON data specifying key parameters of the dataset in human readable form. All of the datasets you will see pertain to screens looking for genes which promote resistance (or sensitivity) to DNA damaging insults (drugs or radiation)."},
-          {"role": "user", "content": f"I need to analyze a dataset from this paper: '{paper_title}'.\n\nThe filename of this dataset is '{filename}'. Here are the first 10 lines of the dataset:\n\n{dataset_sample}\n\nI need an interpretation of the dataset in structured JSON format. (A few examples of correcly labeled datasets are shown below.)\n\n"}
+    dataset_sample = df.head(10).to_string()
+    user_prompt = f"""
+    I need to analyze a dataset from this paper: '{paper_title}'. The filename of this dataset is '{filename}'. Here are the first 10 lines of the dataset:
+    
+    {dataset_sample}
+    
+    I need an interpretation of the dataset in structured JSON format. (A few examples of correcly labeled datasets are shown below.)
+    
+    """
+
+    prompt = [
+          {"role": "system", "content": sys_prompt},
+          {"role": "user", "content": user_prompt}
       ]
     
-    message_input = user_input + prompt_examples
+    message_input = prompt + prompt_examples
     
     retries = 0
     while retries < max_retries:
