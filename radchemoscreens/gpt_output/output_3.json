@@ -1,0 +1,1321 @@
+[
+    {
+        "article_title": "The Genomic Landscape of Sensitivity to Arsenic Trioxide Uncovered by Genome-Wide CRISPR-Cas9 Screening",
+        "dataset_filename": "chenGenomicLandscapeSensitivity2023_37251921_Table_1_ATO_normalized-total.gene_summa_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "ATO"
+        ],
+        "preview": "|    | id       |   pos|score |   pos|p-value |   pos|fdr |   pos|rank |   pos|goodsgrna |   pos|lfc |\n|---:|:---------|------------:|--------------:|----------:|-----------:|----------------:|----------:|\n|  0 | KEAP1    |    2.87e-10 |      2.59e-07 |  0.002475 |          1 |               3 |   10.566  |\n|  1 | C19orf43 |    9.42e-07 |      2.85e-06 |  0.018152 |          2 |               3 |    8.7163 |\n|  2 | PIGA     |    2.12e-05 |      7.56e-05 |  0.294554 |          3 |               2 |    4.5552 |\n|  3 | BBC3     |    2.24e-05 |      8e-05    |  0.294554 |          4 |               4 |    7.5085 |\n|  4 | PRKCSH   |    2.64e-05 |      9.25e-05 |  0.294554 |          5 |               2 |    1.8063 |"
+    },
+    {
+        "article_title": "Genome Scale CRISPR Cas9a Knockout Screen Reveals Genes That Control Glioblastoma Susceptibility to the Alkylating Agent Temozolomide",
+        "dataset_filename": "awahGenomeScaleCRISPR2022_35990011_5953_DMSO_Day14_R2_sheet_t1",
+        "header_row": "None",
+        "sgRNA_sequence": "Concatenated",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "DMSO"
+        ],
+        "preview": "|    | A1BG_CATCTTCTTTCACCTGAACG   |   677 |\n|---:|:----------------------------|------:|\n|  0 | A1BG_CTCCGGGGAGAACTCCGGCG   |  1248 |\n|  1 | A1BG_TCTCCATGGTGCATCAGCAC   |    88 |\n|  2 | A1BG_TGGAAGTCCACTCCACTCAG   |   842 |\n|  3 | A1CF_ACAGGAAGAATTCAGTTATG   |   972 |\n|  4 | A1CF_AGTTATGTTAGGTATACCCG   |   749 |"
+    },
+    {
+        "article_title": "Ribosomal Protein S11 Influences Glioma Response to TOP2 Poisons",
+        "dataset_filename": "awahRibosomalProteinS112020_32528131_NIHMS1599130-supplement-1599130_SuppList_Data_6_CRISPR Read count Awah CU et.al_t2",
+        "header_row": "0",
+        "sgRNA_sequence": "Concatenated",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "Puromycin"
+        ],
+        "preview": "|    | sgRNA                     |   Puromycin R1 |   Puromycin R2 |\n|---:|:--------------------------|---------------:|---------------:|\n|  0 | A1BG_CATCTTCTTTCACCTGAACG |           1391 |            472 |\n|  1 | A1BG_CTCCGGGGAGAACTCCGGCG |            959 |            864 |\n|  2 | A1BG_TCTCCATGGTGCATCAGCAC |             13 |              0 |\n|  3 | A1BG_TGGAAGTCCACTCCACTCAG |           1937 |            874 |\n|  4 | A1CF_ACAGGAAGAATTCAGTTATG |            961 |            740 |"
+    },
+    {
+        "article_title": "{{MND1}} and {{PSMC3IP}} Control {{PARP}} Inhibitor Sensitivity in Mitotic Cells",
+        "dataset_filename": "zelceskiMND1PSMC3IPControl2023_37163373_1-s2.0-S2211124723004953-mmc2_ST1A_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "Z-score/Z-ratios"
+        ],
+        "conditions": [
+            "olaparib",
+            "talazoparib"
+        ],
+        "preview": "|    | GeneID   |   CRISPRn Viability Z score (olap and talaz screen) |   CRISPRn Drug Effect Z score (olap screen) |   CRISPRn Olaparib sgRNA Drug Effect Zcount |   CRISPRn Olaparib Gene Rank |   CRISPRn Drug Effect Z score (talaz screen) |   CRISPRn Talazoparib sgRNA Drug Effect Zcount |   CRISPRn Talazoparib Gene Rank |   CRISPRi Viability Z score (olap screen) |   CRISPRi Drug Effect Z score (olap screen) |   CRISPRi Olaparib sgRNA Drug Effect Zcount |   CRISPRi Olaparib Gene Rank |   CRISPRi Viability Z score (talaz screen) |   CRISPRi Drug Effect Z score (talaz screen) |   CRISPRi Talazoparib sgRNA Drug Effect Zcount |   CRISPRi Talazoparib Gene Rank |\n|---:|:---------|----------------------------------------------------:|--------------------------------------------:|--------------------------------------------:|-----------------------------:|---------------------------------------------:|-----------------------------------------------:|--------------------------------:|------------------------------------------:|--------------------------------------------:|--------------------------------------------:|-----------------------------:|-------------------------------------------:|---------------------------------------------:|-----------------------------------------------:|--------------------------------:|\n|  0 | EME1     |                                           -1.18067  |                                    -5.79777 |                                           2 |                    145.028   |                                     -6.88297 |                                              4 |                         92.1895 |                                 -1.04162  |                                    -5.67188 |                                           4 |                     69.243   |                                  -1.55784  |                                     -28.459  |                                              0 |                         1.25992 |\n|  1 | PSMC3IP  |                                           -0.978569 |                                   -11.6888  |                                           4 |                      7.86222 |                                    -13.1932  |                                              4 |                          4.4814 |                                 -5.7805   |                                    -9.8747  |                                           5 |                      7.73061 |                                  -7.7763   |                                     -28.3144 |                                              3 |                         1.81712 |\n|  2 | MUS81    |                                           -1.56819  |                                    -8.39835 |                                           3 |                     27.4471  |                                     -9.1705  |                                              3 |                         20.8562 |                                 -4.31827  |                                    -9.81233 |                                           5 |                     12.2539  |                                  -5.06826  |                                     -24.466  |                                              1 |                         3.30193 |\n|  3 | XRCC1    |                                           -0.475995 |                                    -6.8399  |                                           4 |                     57.1174  |                                    -10.7341  |                                              5 |                          6.8399 |                                  0.124871 |                                    -3.95381 |                                           1 |                    270.776   |                                  -0.166749 |                                     -22.5125 |                                              0 |                         6       |\n|  4 | LIG1     |                                           -1.67118  |                                   -13.2487  |                                           5 |                      7.48887 |                                    -11.0494  |                                              5 |                          9.3561 |                                 -1.6233   |                                   -12.5744  |                                           4 |                      3.30193 |                                  -1.19348  |                                     -18.7401 |                                              0 |                         6.8399  |"
+    },
+    {
+        "article_title": "Targeted CRISPR Screening Identifies PRMT5 as Synthetic Lethality Combinatorial Target with Gemcitabine in Pancreatic Cancer Cells",
+        "dataset_filename": "weiTargetedCRISPRScreening2020_33097661_pnas.2009899117.sd01_sheet_t1",
+        "header_row": "None",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "Unknown"
+        ],
+        "preview": "|    | PARG-sg13   | PARG   |   235.7915784 |   303.8902537 |   329.4849847 |   104.4864264 |   5.44893606 |   208.2897483 |\n|---:|:------------|:-------|--------------:|--------------:|--------------:|--------------:|-------------:|--------------:|\n|  0 | sgCTRL_73   | CTRL   |      743.215  |     562.27    |      240.576  |    3658.77    |      239.753 |        83.62  |\n|  1 | RNF168-sg11 | RNF168 |        0      |       0       |      244.499  |     148.022   |      234.304 |       817.955 |\n|  2 | MEAF6-sg5   | MEAF6  |      224.474  |     754.587   |       89.5624 |     151.505   |        0     |       203.729 |\n|  3 | PHF10-sg4   | PHF10  |       47.1583 |       0       |       17.651  |       0.87072 |        0     |         0     |\n|  4 | sgCTRL_134  | CTRL   |      269.746  |       1.46807 |      349.751  |     300.398   |        0     |      1707.37  |"
+    },
+    {
+        "article_title": "A Fifteen-Gene Classifier to Predict Neoadjuvant Chemotherapy Responses in Patients with Stage IB to IIB Squamous Cervical Cancer",
+        "dataset_filename": "tianFifteenGeneClassifier2021_34026427_ADVS-8-2001978-s005_all_286_genes_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "Unknown"
+        ],
+        "preview": "|    | Gene   |   baseMean |   log2FoldChange |    lfcSE |    stat |      pvalue |       padj |\n|---:|:-------|-----------:|-----------------:|---------:|--------:|------------:|-----------:|\n|  0 | POM121 |    1005.14 |          2.5335  | 0.913134 | 2.77451 | 0.0055285   | 0.0260775  |\n|  1 | GJA3   |    7306.56 |          1.36163 | 0.57657  | 2.36161 | 0.0181956   | 0.0692939  |\n|  2 | LY6D   |   15688.9  |          1.01022 | 0.295257 | 3.4215  | 0.00062277  | 0.0045983  |\n|  3 | ELTD1  |    4165.26 |          2.91279 | 0.882381 | 3.30105 | 0.000963222 | 0.00647059 |\n|  4 | SAMD9L |    3807.47 |          1.54406 | 0.803094 | 1.92264 | 0.0545253   | 0.148458   |"
+    },
+    {
+        "article_title": "Revealing Temozolomide Resistance Mechanisms via Genome-Wide CRISPR Libraries",
+        "dataset_filename": "ribeiroreilyrochaRevealingTemozolomideResistance2020_33271924_cells-09-02573-s001_Table S1_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Temozolomide"
+        ],
+        "preview": "|    | Gene Name   |   pos|p-value |   pos|FDR |   pos|rank |   pos|goodsgrna |\n|---:|:------------|--------------:|----------:|-----------:|----------------:|\n|  0 | PMS2        |      2.27e-07 | 0.000496  |          1 |               5 |\n|  1 | MSH6        |      6.8e-07  | 0.0007429 |          2 |               4 |\n|  2 | MSH2        |      2.95e-06 | 0.0021487 |          3 |               3 |\n|  3 | CLCA2       |      1.74e-05 | 0.0095052 |          4 |               3 |\n|  4 | CA7         |      2.29e-05 | 0.0100078 |          5 |               3 |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR-Cas9 Screening Identifies NF-$\\kappa$B/E2F6 Responsible for EGFRvIII-Associated Temozolomide Resistance in Glioblastoma",
+        "dataset_filename": "huangGenomeWideCRISPR2019_31508283_ADVS-6-1900782-s005_A-1_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "fold-change/log fold-change",
+            "Other/ambiguous"
+        ],
+        "conditions": [
+            "DMSO",
+            "TMZ"
+        ],
+        "preview": "|    | The original data for Figure 1b: The differential sgRNAs between day 7 and day 0 (U87 EGFRvIII cells treated with DMSO or temozolomide)   | Unnamed: 1   | Unnamed: 2         | Unnamed: 3        | Unnamed: 4          | Unnamed: 5       | Unnamed: 6     |\n|---:|:------------------------------------------------------------------------------------------------------------------------------------------|:-------------|:-------------------|:------------------|:--------------------|:-----------------|:---------------|\n|  0 | ID                                                                                                                                        | Entry        | DMSO Log FC        | DMSO significance | TMZ Log FC          | TMZ significance | Druggable like |\n|  1 | 18                                                                                                                                        | ABAT         | 2.00504027121423   | +                 | -0.0871767548098087 | nan              | +              |\n|  2 | 22                                                                                                                                        | ABCB7        | 0.0171081881458409 | nan               | -2.18168765294996   | +                | nan            |\n|  3 | 29                                                                                                                                        | ABR          | -4.59110604911746  | +                 | -2.17863971209772   | +                | nan            |\n|  4 | 93                                                                                                                                        | ACVR2B       | 0.569002829562414  | nan               | -1.72977174588209   | +                | +              |"
+    },
+    {
+        "article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+        "dataset_filename": "caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-2_CP0041_20170705_compat_chip_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Own-column",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "None"
+        ],
+        "preview": "|    | Barcode Sequence     | Annotated Gene Symbol   |   Annotated Gene ID |\n|---:|:---------------------|:------------------------|--------------------:|\n|  0 | AAAAAAAATCCGGACAATGG | SLC25A24                |               29957 |\n|  1 | AAAAAAAGGATGGTGATCAA | FASTKD3                 |               79072 |\n|  2 | AAAAAAATGACATTACTGCA | BCAS2                   |               10286 |\n|  3 | AAAAAAATGTCAGTCGAGTG | GPR18                   |                2841 |\n|  4 | AAAAAACACAAGCAAGACCG | ZNF470                  |              388566 |"
+    },
+    {
+        "article_title": "ATM Orchestrates the DNA-damage Response to Counter Toxic Non-Homologous End-Joining at Broken Replication Forks",
+        "dataset_filename": "balmusATMOrchestratesDNAdamage2019_30622252_41467_2018_7729_MOESM3_ESM_test_BA4_purple_400nM.pos.gene__t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "BA4_purple_400nM"
+        ],
+        "preview": "|    | id     |   num |   neg|score |   (-)Log10 neg|p-value |   neg|p-value |   neg|fdr |   neg|rank |   neg|goodsgrna |   pos|score |   (-)Log10 pos|p-value |   pos|p-value |   pos|fdr |   pos|rank |   pos|goodsgrna |\n|---:|:-------|------:|------------:|-----------------------:|--------------:|----------:|-----------:|----------------:|------------:|-----------------------:|--------------:|----------:|-----------:|----------------:|\n|  0 | Top1   |     5 |     1       |            0           |       1       |         1 |      18418 |               0 |  2.7173e-14 |                6.57073 |     2.687e-07 |  0.000198 |          1 |               5 |\n|  1 | Zfp217 |     5 |     1       |            0           |       1       |         1 |      18424 |               0 |  2.0446e-13 |                6.57073 |     2.687e-07 |  0.000198 |          2 |               5 |\n|  2 | Nsfl1c |     5 |     1       |            0           |       1       |         1 |      18423 |               0 |  4.6722e-13 |                6.57073 |     2.687e-07 |  0.000198 |          3 |               5 |\n|  3 | Tceb3  |     5 |     0.99998 |            4.34297e-06 |       0.99999 |         1 |      18397 |               0 |  2.5818e-12 |                6.57073 |     2.687e-07 |  0.000198 |          4 |               5 |\n|  4 | Ino80d |     5 |     1       |            0           |       1       |         1 |      18422 |               0 |  1.0016e-11 |                6.57073 |     2.687e-07 |  0.000198 |          5 |               5 |"
+    },
+    {
+        "article_title": "{{MND1}} and {{PSMC3IP}} Control {{PARP}} Inhibitor Sensitivity in Mitotic Cells",
+        "dataset_filename": "zelceskiMND1PSMC3IPControl2023_37163373_1-s2.0-S2211124723004953-mmc2_ST1I_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "Z-score/Z-ratios"
+        ],
+        "conditions": [
+            "Olaparib",
+            "Talazoparib"
+        ],
+        "preview": "|    | GeneID   |   LORD_MCF10ATP53/RB1mut_Olaparib_CRISPRn |   LORD_MCF10ATP53mut_Olaparib_CRISPRn |   LORD_MCF10A TP53mut_Talazoparib_CRISPRn |   LORD_MCF10ATP53mut_Olaparib_CRISPRi |   LORD_MCF10ATP53mut_Talazoparib_CRISPRi |   Olivieri_RPE1_Olaparib_CRISRPn |   Zimmerman_HELA_Olaparib_CRISPRn |   DeWeirdt_A375_Talazoparib_CRISPRn |\n|---:|:---------|------------------------------------------:|--------------------------------------:|------------------------------------------:|--------------------------------------:|-----------------------------------------:|---------------------------------:|----------------------------------:|------------------------------------:|\n|  0 | A1BG     |                                 0.0072091 |                              0.371757 |                                 0.46239   |                             -0.569414 |                                 0.154473 |                         1.27788  |                         -1.10109  |                          -0.502976  |\n|  1 | A1CF     |                                -2.73356   |                             -0.943633 |                                 2.04818   |                              0.153352 |                                 0.641899 |                        -1.09362  |                          0.655841 |                          -0.35881   |\n|  2 | A2M      |                                 0.0738308 |                              0.554141 |                                 0.0683911 |                             -0.225061 |                                 1.36354  |                        -0.816649 |                          0.86281  |                           0.688467  |\n|  3 | A2ML1    |                                 1.50334   |                              1.19125  |                                 0.94766   |                              0.107293 |                                 1.79826  |                        -1.01525  |                          0.894327 |                          -0.0798228 |\n|  4 | A3GALT2  |                                 0.688789  |                              0.135159 |                                -0.101625  |                              0.166886 |                                 0.756286 |                         0.243656 |                        nan        |                           1.2574    |"
+    },
+    {
+        "article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+        "dataset_filename": "oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_6MP_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "6MP"
+        ],
+        "preview": "|    | id      |   num |   neg|score |   neg|p-value |   neg|fdr |   neg|rank |   neg|goodsgrna |   neg|lfc |   pos|score |   pos|p-value |   pos|fdr |   pos|rank |   pos|goodsgrna |   pos|lfc |\n|---:|:--------|------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|\n|  0 | HPRT1   |     6 |     0.99989 |       0.99991 |         1 |      20371 |               0 |   2.5776  |  3.2452e-21 |    2.4189e-07 |   0.00019 |          1 |               6 |   2.5776  |\n|  1 | SLC43A3 |     6 |     0.99996 |       0.99997 |         1 |      20395 |               0 |   1.6773  |  2.0736e-17 |    2.4189e-07 |   0.00019 |          2 |               6 |   1.6773  |\n|  2 | NUDT5   |     6 |     1       |       1       |         1 |      20466 |               0 |   1.7439  |  3.4419e-17 |    2.4189e-07 |   0.00019 |          3 |               6 |   1.7439  |\n|  3 | CSTF3   |     6 |     1       |       1       |         1 |      20465 |               0 |   0.99532 |  1.1683e-12 |    2.4189e-07 |   0.00019 |          4 |               6 |   0.99532 |\n|  4 | EIF2B3  |     6 |     1       |       1       |         1 |      20464 |               0 |   1.0834  |  1.3033e-12 |    2.4189e-07 |   0.00019 |          5 |               6 |   1.0834  |"
+    },
+    {
+        "article_title": "CRISPR-Cas9 Screen Identifies DYRK1A as a Target for Radiotherapy Sensitization in Pancreatic Cancer",
+        "dataset_filename": "lanCRISPRCas9ScreenIdentifies2022_35053488_cancers-14-00326-s001_RT-3D_t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Radiotherapy"
+        ],
+        "preview": "|    | CRISPR-Cas9 Radiotherapy Screening Results-3D   | Unnamed: 1   | Unnamed: 2   | Unnamed: 3   | Unnamed: 4   | Unnamed: 5   | Unnamed: 6    | Unnamed: 7   | Unnamed: 8   | Unnamed: 9   | Unnamed: 10   | Unnamed: 11   | Unnamed: 12   | Unnamed: 13   |\n|---:|:------------------------------------------------|:-------------|:-------------|:-------------|:-------------|:-------------|:--------------|:-------------|:-------------|:-------------|:--------------|:--------------|:--------------|:--------------|\n|  0 | id                                              | num          | neg|score    | neg|p-value  | neg|fdr      | neg|rank     | neg|goodsgrna | neg|lfc      | pos|score    | pos|p-value  | pos|fdr       | pos|rank      | pos|goodsgrna | pos|lfc       |\n|  1 | Exosc10                                         | 4            | 4.6641e-05   | 0.00013311   | 0.122727     | 1            | 2             | -3.9656      | 0.96231      | 0.96213      | 0.999427      | 881           | 0             | -3.9656       |\n|  2 | Guk1                                            | 4            | 8.0654e-05   | 0.00028101   | 0.129545     | 2            | 3             | -5.001       | 0.42661      | 0.50775      | 0.992138      | 444           | 1             | -5.001        |\n|  3 | Prkdc                                           | 4            | 0.00012484   | 0.00050779   | 0.153788     | 3            | 4             | -1.0225      | 0.99988      | 0.99989      | 0.999887      | 922           | 0             | -1.0225       |\n|  4 | Stk36                                           | 4            | 0.00020483   | 0.00089233   | 0.153788     | 4            | 3             | -1.0506      | 0.42816      | 0.50864      | 0.992138      | 447           | 1             | -1.0506       |"
+    },
+    {
+        "article_title": "A Whole-genome CRISPR Screen Identifies a Role of MSH2 in Cisplatin-mediated Cell Death in Muscle-invasive Bladder Cancer",
+        "dataset_filename": "goodspeedWholegenomeCRISPRScreen2019_30414698_NIHMS1510205-supplement-1_Supplementary Table 5_t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol [MOD]",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "Cisplatin",
+            "DMSO"
+        ],
+        "preview": "|    | Supplementary Table 5. Raw counts from the cisplatin resistance screen.    | Unnamed: 1   | Unnamed: 2   | Unnamed: 3   | Unnamed: 4   | Unnamed: 5   | Unnamed: 6   | Unnamed: 7   | Unnamed: 8   |\n|---:|:---------------------------------------------------------------------------|:-------------|:-------------|:-------------|:-------------|:-------------|:-------------|:-------------|:-------------|\n|  0 | sgRNA                                                                      | Cisplatin1   | Cisplatin2   | Cisplatin3   | Cisplatin4   | DMSO1        | DMSO2        | DMSO3        | DMSO4        |\n|  1 | EHMT1-HGLibA_14685                                                         | 123          | 228          | 147          | 16           | 224          | 234          | 208          | 89           |\n|  2 | RALGPS2-HGLibA_40172                                                       | 5            | 2            | 7            | 167          | 15           | 155          | 36           | 90           |\n|  3 | HIST2H2BE-HGLibA_21534                                                     | 9            | 492          | 1            | 49           | 28           | 0            | 72           | 91           |\n|  4 | SGCA-HGLibA_43795                                                          | 173          | 87           | 273          | 82           | 142          | 111          | 174          | 156          |"
+    },
+    {
+        "article_title": "Spindle Assembly Checkpoint Inhibition Can Resensitize P53-Null Stem Cells to Cancer Chemotherapy",
+        "dataset_filename": "liuSpindleAssemblyCheckpoint2019_30862715_NIHMS1524158-supplement-5_Cisplatin_DMF_gene_summary.txt_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Cisplatin"
+        ],
+        "preview": "|    | id     |   negative selection score |   negative selection p-value |   negative selection rank |\n|---:|:-------|---------------------------:|-----------------------------:|--------------------------:|\n|  0 | GLIS1  |                 2.6779e-05 |                   0.00014369 |                         1 |\n|  1 | CNTRL  |                 2.9913e-05 |                   0.00015625 |                         2 |\n|  2 | EFNB2  |                 4.0944e-05 |                   0.0002065  |                         3 |\n|  3 | CCDC54 |                 6.045e-05  |                   0.00027821 |                         4 |\n|  4 | RGAG4  |                 8.0334e-05 |                   0.00036929 |                         5 |"
+    },
+    {
+        "article_title": "{{MND1}} and {{PSMC3IP}} Control {{PARP}} Inhibitor Sensitivity in Mitotic Cells",
+        "dataset_filename": "zelceskiMND1PSMC3IPControl2023_37163373_1-s2.0-S2211124723004953-mmc2_ST1J_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "Z-score/Z-ratios"
+        ],
+        "conditions": [
+            "Olaparib"
+        ],
+        "preview": "|    | GeneID   |   CRISPRn Viability Z-score |   CRISPRn Olaparib Effect Z-score |   CRISPRn Olaparib sgRNA Z-count |\n|---:|:---------|----------------------------:|----------------------------------:|---------------------------------:|\n|  0 | A1BG     |                   -0.67095  |                         0.0944228 |                                0 |\n|  1 | A1CF     |                    0.758922 |                        -4.03972   |                                1 |\n|  2 | A2M      |                   -0.213711 |                         0.169044  |                                0 |\n|  3 | A2ML1    |                    0.529894 |                         1.83532   |                                0 |\n|  4 | A3GALT2  |                   -1.09668  |                         0.895692  |                                0 |"
+    },
+    {
+        "article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+        "dataset_filename": "oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_Vincristine_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Vincristine"
+        ],
+        "preview": "|    | id      |   num |   neg|score |   neg|p-value |   neg|fdr |   neg|rank |   neg|goodsgrna |   neg|lfc |   pos|score |   pos|p-value |   pos|fdr |   pos|rank |   pos|goodsgrna |   pos|lfc |\n|---:|:--------|------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|\n|  0 | TP53    |     6 |     0.97305 |       0.97497 |         1 |      19574 |               1 |   0.93454 |    2.44e-12 |      2.42e-07 |   0.00045 |          1 |               5 |   0.93454 |\n|  1 | TRMT112 |     6 |     1       |       1       |         1 |      20458 |               0 |   0.9559  |    3.77e-11 |      2.42e-07 |   0.00045 |          2 |               5 |   0.9559  |\n|  2 | RRP9    |     6 |     1       |       1       |         1 |      20466 |               0 |   0.67563 |    4.62e-11 |      2.42e-07 |   0.00045 |          3 |               6 |   0.67563 |\n|  3 | CRCP    |     6 |     0.99904 |       0.99904 |         1 |      20295 |               0 |   0.91053 |    1.72e-10 |      2.42e-07 |   0.00045 |          4 |               5 |   0.91053 |\n|  4 | NOP16   |     6 |     1       |       1       |         1 |      20463 |               0 |   0.99505 |    1.82e-10 |      2.42e-07 |   0.00045 |          5 |               6 |   0.99505 |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR Screen Identifies ELP5 as a Determinant of Gemcitabine Sensitivity in Gallbladder Cancer",
+        "dataset_filename": "xuGenomewideCRISPRScreen2019_31792210_41467_2019_13420_MOESM4_ESM_210 gene hits_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Gemcitabine"
+        ],
+        "preview": "|    | id     |   num |   pos|score |   pos|p-value |   pos|fdr |   pos|rank |   pos|goodsgrna |   pos|lfc |\n|---:|:-------|------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|\n|  0 | DCK    |     4 |  2.6801e-17 |    2.5898e-07 |  0.000146 |          1 |               4 |    7.1436 |\n|  1 | TP53   |     4 |  1.6905e-15 |    2.5898e-07 |  0.000146 |          2 |               4 |    5.5191 |\n|  2 | ELP5   |     4 |  2.225e-13  |    2.5898e-07 |  0.000146 |          3 |               4 |    4.7159 |\n|  3 | IKBKAP |     4 |  7.6545e-13 |    2.5898e-07 |  0.000146 |          4 |               4 |    2.9027 |\n|  4 | OGN    |     4 |  1.4932e-12 |    2.5898e-07 |  0.000146 |          5 |               4 |    3.707  |"
+    },
+    {
+        "article_title": "Activation of the Integrated Stress Response Is a Vulnerability for Multidrug-resistant {{FBXW7}}-deficient Cells",
+        "dataset_filename": "sanchez-burgosActivationIntegratedStress2022_35861150_EMMM-14-e15855-s001_KMB7 TIGECYCLINE SCREEN_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Concatenated",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "STARS (negative binomial)",
+            "Raw count"
+        ],
+        "conditions": [
+            "Tigecycline"
+        ],
+        "preview": "|    | Gene Symbol   |   Number of perturbations |   Ranks of perturbations |   Perturbations |   Most enriched perturbation |   Unnamed: 5 | Unnamed: 6                   | Unnamed: 7                   | Unnamed: 8                   | Unnamed: 9                   |   Unnamed: 10 | STARS Score   | Average Score   | p-value     | FDR         | q-value     |\n|---:|:--------------|--------------------------:|-------------------------:|----------------:|-----------------------------:|-------------:|:-----------------------------|:-----------------------------|:-----------------------------|:-----------------------------|--------------:|:--------------|:----------------|:------------|:------------|:------------|\n|  0 | EIF2AK4       |                         4 |                        5 |              16 |                           22 |        46763 | EIF2AK4_AGGATGACCGAGCTGCACGC | EIF2AK4_GTAGGCCTTCCCATCCACGT | EIF2AK4_GCAAGACGACTCCATCGTGG | EIF2AK4_ACTGGCCAAGAAACACTGTG |             3 | 10,02075901   | 6,72785563      | 0           | 0           | 0           |\n|  1 | GCN1L1        |                         4 |                       11 |              12 |                         2731 |         7098 | GCN1L1_CTCACCAACAGGTACTTCGG  | GCN1L1_TGACGACGTGATCTATCATG  | GCN1L1_GGAACCCGGAGATCCTGGGT  | GCN1L1_AAACCTCCACATCTGCGGTG  |             2 | 6,830263981   | 4,488448831     | 1,00E-05    | 0,0061736   | 0,0061736   |\n|  2 | TFAP2A        |                         4 |                      327 |             690 |                         1552 |         4256 | TFAP2A_ATCCTCGCAGGGACTACAGG  | TFAP2A_CTTACCTCACGCCATCGAGG  | TFAP2A_GAGTAAGGATCTTGCGACTG  | TFAP2A_GACGCGTTGAGACACTCGGG  |             4 | 5,017276236   | 3,648094508     | 0,000535746 | 0,220191727 | 0,220191727 |\n|  3 | GPAA1         |                         4 |                      426 |             962 |                         1228 |        64376 | GPAA1_CCGCAGGATGCCGTACACGT   | GPAA1_CCTGGCTTGAACGGACGATG   | GPAA1_GAAGCTATTGATGCCACGCA   | GPAA1_TACATGTCGGAGAACGCCAT   |             3 | 4,787340484   | 3,159871133     | 0,000917278 | 0,282750872 | 0,282750872 |\n|  4 | RIMBP3        |                         4 |                      477 |            1497 |                         1499 |        35804 | RIMBP3_TACACCTGCAGCAAGTCCCG  | RIMBP3_GAAGGCCCAAGTTCCACGCA  | RIMBP3_AAGCGGAGAACAAGCAGCTG  | RIMBP3_GGACTACATATATATCTTCG  |             3 | 4,52909834    | 2,931740691     | 0,001657309 | 0,408692308 | 0,323419461 |"
+    },
+    {
+        "article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+        "dataset_filename": "oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_Daunorubicin_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Daunorubicin"
+        ],
+        "preview": "|    | id    |   num |   neg|score |   neg|p-value |   neg|fdr |   neg|rank |   neg|goodsgrna |   neg|lfc |   pos|score |   pos|p-value |   pos|fdr |   pos|rank |   pos|goodsgrna |   pos|lfc |\n|---:|:------|------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|\n|  0 | HINFP |     6 |     1       |       1       |         1 |      20466 |               0 |    1.8969 |  5.9965e-16 |    2.4189e-07 |  0.000248 |          1 |               6 |    1.8969 |\n|  1 | TOP2B |     6 |     0.95021 |       0.95021 |         1 |      18965 |               0 |    2.4823 |  4.504e-13  |    2.4189e-07 |  0.000248 |          2 |               5 |    2.4823 |\n|  2 | CSTF3 |     6 |     1       |       1       |         1 |      20465 |               0 |    1.1544 |  3.9642e-12 |    2.4189e-07 |  0.000248 |          3 |               6 |    1.1544 |\n|  3 | CRCP  |     6 |     1       |       1       |         1 |      20463 |               0 |    1.6789 |  2.6661e-11 |    2.4189e-07 |  0.000248 |          4 |               6 |    1.6789 |\n|  4 | IARS2 |     6 |     1       |       1       |         1 |      20464 |               0 |    1.5182 |  4.2423e-11 |    2.4189e-07 |  0.000248 |          5 |               6 |    1.5182 |"
+    },
+    {
+        "article_title": "Activation of the Integrated Stress Response Is a Vulnerability for Multidrug-resistant {{FBXW7}}-deficient Cells",
+        "dataset_filename": "sanchez-burgosActivationIntegratedStress2022_35861150_EMMM-14-e15855-s001_UV SCREEN (POOL) _t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Own-column",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "UV-C 25 J/m2"
+        ],
+        "preview": "|    | UV-C 25 J/m2   |   Unnamed: 1 | Unnamed: 2           |\n|---:|:---------------|-------------:|:---------------------|\n|  0 | Library 1      |          nan | nan                  |\n|  1 | Ptgs1          |       149217 | CGAGAAGTACTCATGCGCCG |\n|  2 | Fam115c        |       140210 | TTTGCTCAATGCTATACGCG |\n|  3 | Glod4          |       104891 | CTGCAAAGCTGCATGCAATG |\n|  4 | Reps1          |        54861 | GATTGCCTACGGATCTCATG |"
+    },
+    {
+        "article_title": "Ribosomal Protein {{S11}} Influences Glioma Response to {{TOP2}} Poisons",
+        "dataset_filename": "awahRibosomalProteinS112020_32528131_NIHMS1599130-supplement-1599130_SuppList_Data_1B_Sheet1_t2",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Et > puro sgRSEA p < 0.01"
+        ],
+        "preview": "|    | Et > puro sgRSEA p < 0.01   | Unnamed: 1   | Unnamed: 2       | Unnamed: 3           | Unnamed: 4         | Unnamed: 5   |\n|---:|:----------------------------|:-------------|:-----------------|:---------------------|:-------------------|:-------------|\n|  0 | 543                         | nan          | nan              | nan                  | nan                | nan          |\n|  1 | row.names                   | m            | NScore           | p.value.pos          | FDR.pos            | rank.pos     |\n|  2 | NAE1                        | 4            | 3.9308623288377  | 4.18519049417683e-06 | 0.0199999790740475 | 1            |\n|  3 | OCLM                        | 4            | 3.89120495086734 | 4.18519049417683e-06 | 0.0199999790740475 | 2            |\n|  4 | TRMT5                       | 4            | 3.88057929499064 | 4.18519049417683e-06 | 0.0199999790740475 | 3            |"
+    },
+    {
+        "article_title": "Loss of the Abasic Site Sensor {{HMCES}} Is Synthetic Lethal with the Activity of the {{APOBEC3A}} Cytosine Deaminase in Cancer Cells",
+        "dataset_filename": "biaynaLossAbasicSite2021_33788831_pbio.3001176.s014_lfc_all_time_points_t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "A549 TP53-/-",
+            "A549 TP53 WT",
+            "LXF289 DOX-IC25",
+            "LXF289 DOX-IC50"
+        ],
+        "preview": "|    | Unnamed: 0   | A549 TP53-/-   | Unnamed: 2   | Unnamed: 3   | A549 TP53 WT   | Unnamed: 5   | Unnamed: 6   | LXF289 DOX-IC25   | Unnamed: 8   | Unnamed: 9   | LXF289 DOX-IC50   | Unnamed: 11   | Unnamed: 12   |\n|---:|:-------------|:---------------|:-------------|:-------------|:---------------|:-------------|:-------------|:------------------|:-------------|:-------------|:------------------|:--------------|:--------------|\n|  0 | Gene         | time 9         | time 12      | time 15      | time 9         | time 12      | time 15      | time 5            | time 10      | time 15      | time 5            | time 10       | time 15       |\n|  1 | A1BG         | 0.24838        | -0.26098     | 0.099242     | 0.35132        | -0.025552    | -0.01677     | -0.07502          | -0.073809    | -0.22727     | 0.051521          | 0.041967      | -0.069046     |\n|  2 | A1CF         | -0.006276      | 0.0038166    | -0.002651    | -0.25883       | 0.07213      | 0.060406     | -0.0064161        | -0.084975    | 0.057137     | -0.1384           | -0.14075      | 0.1142        |\n|  3 | A2M          | 0.12738        | -0.1451      | -0.12855     | 0.19655        | 0.072992     | -0.012698    | 0.084314          | 0.28355      | -0.013266    | -0.15669          | 0.0010223     | -0.51692      |\n|  4 | A2ML1        | -0.0030069     | -0.039999    | -0.064889    | 0.13849        | 0.11629      | 0.07048      | -0.1096           | -0.022392    | 0.2551       | -0.19769          | 0.051254      | 0.24108       |"
+    },
+    {
+        "article_title": "Targeted {{CRISPR}} Screening Identifies {{PRMT5}} as Synthetic Lethality Combinatorial Target with Gemcitabine in Pancreatic Cancer Cells",
+        "dataset_filename": "weiTargetedCRISPRScreening2020_33097661_pnas.2009899117.sd02_sheet_t1",
+        "header_row": "None",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "Ensembl Gene ID [MOD]",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "Unknown"
+        ],
+        "preview": "|    | ENSG00000242268.2   |   0 |   0.1 |   0.2 |   0.3 |   0.4 |   0.5 |   0.6 |   0.7 |   0.8 |   0.9 |   0.10 |   0.11 |   0.12 |   0.13 |   0.14 |   0.15 |\n|---:|:--------------------|----:|------:|------:|------:|------:|------:|------:|------:|------:|------:|-------:|-------:|-------:|-------:|-------:|-------:|\n|  0 | ENSG00000188026.12  | 211 |   242 |   327 |   238 |   331 |   346 |   309 |   323 |   310 |   400 |    391 |    383 |    194 |    176 |    133 |    174 |\n|  1 | ENSG00000270112.3   |   0 |     0 |     0 |     0 |     2 |     2 |     0 |     0 |     2 |     0 |      0 |      0 |      0 |      0 |      0 |      0 |\n|  2 | ENSG00000280143.1   | 313 |   296 |   265 |   333 |   296 |   333 |   252 |   312 |   207 |   195 |    266 |    266 |    327 |    357 |    362 |    145 |\n|  3 | ENSG00000269416.5   |   6 |     4 |    18 |    21 |    29 |    23 |    82 |    87 |   164 |   192 |    196 |    155 |     59 |     88 |    132 |    139 |\n|  4 | ENSG00000263642.1   |   0 |     0 |     0 |     0 |     0 |     0 |     0 |     0 |     0 |     0 |      0 |      0 |      0 |      0 |      0 |      0 |"
+    },
+    {
+        "article_title": "Genome Scale CRISPR Cas9a Knockout Screen Reveals Genes That Control Glioblastoma Susceptibility to the Alkylating Agent Temozolomide",
+        "dataset_filename": "awahGenomeScaleCRISPR2022_35990011_6398_DMSO_Day14_sheet_t1",
+        "header_row": "None",
+        "sgRNA_sequence": "Concatenated",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "DMSO"
+        ],
+        "preview": "|    | A1BG_CATCTTCTTTCACCTGAACG   |   474 |\n|---:|:----------------------------|------:|\n|  0 | A1BG_CTCCGGGGAGAACTCCGGCG   |  1175 |\n|  1 | A1BG_TCTCCATGGTGCATCAGCAC   |    82 |\n|  2 | A1BG_TGGAAGTCCACTCCACTCAG   |   573 |\n|  3 | A1CF_ACAGGAAGAATTCAGTTATG   |  1212 |\n|  4 | A1CF_AGTTATGTTAGGTATACCCG   |  1374 |"
+    },
+    {
+        "article_title": "Genome Scale CRISPR Cas9a Knockout Screen Reveals Genes That Control Glioblastoma Susceptibility to the Alkylating Agent Temozolomide",
+        "dataset_filename": "awahGenomeScaleCRISPR2022_35990011_6377_Library_sheet_t1",
+        "header_row": "None",
+        "sgRNA_sequence": "Concatenated",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "None"
+        ],
+        "preview": "|    | A1BG_CATCTTCTTTCACCTGAACG   |   1021 |\n|---:|:----------------------------|-------:|\n|  0 | A1BG_CTCCGGGGAGAACTCCGGCG   |   1485 |\n|  1 | A1BG_TCTCCATGGTGCATCAGCAC   |     26 |\n|  2 | A1BG_TGGAAGTCCACTCCACTCAG   |   1665 |\n|  3 | A1CF_ACAGGAAGAATTCAGTTATG   |   1068 |\n|  4 | A1CF_AGTTATGTTAGGTATACCCG   |    802 |"
+    },
+    {
+        "article_title": "Activation of the Integrated Stress Response Is a Vulnerability for Multidrug-resistant {{FBXW7}}-deficient Cells",
+        "dataset_filename": "sanchez-burgosActivationIntegratedStress2022_35861150_EMMM-14-e15855-s001_CISPLATIN SCREEN (POOL) _t2",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "CISPLATIN"
+        ],
+        "preview": "|    | Library 2   | Unnamed: 1   |\n|---:|:------------|:-------------|\n|  0 | Hit         | N reads      |\n|  1 | Gpr176      | 354821       |\n|  2 | Pdcl        | 192115       |\n|  3 | Tsc2        | 170171       |\n|  4 | Tshz1       | 111844       |"
+    },
+    {
+        "article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+        "dataset_filename": "caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-3_H460 STARS Positive_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "STARS"
+        ],
+        "preview": "|    | Gene Symbol   |   Number of perturbations | Ranks of perturbations   | Perturbations                                                                       |   Most enriched perturbation |   STARS Score |   Average Score |   p-value |        FDR |    q-value |\n|---:|:--------------|--------------------------:|:-------------------------|:------------------------------------------------------------------------------------|-----------------------------:|--------------:|----------------:|----------:|-----------:|-----------:|\n|  0 | ABRAXAS1      |                         4 | 7;10;12;15468            | CCTCAACACGGACTCGGACA;GCCGAGCAGTACAAACACAC;GTGTTAATAGCAGAAAAACA;AATGTATGCTTCATTACAAG |                            3 |      10.8274  |         7.08975 |  0        | 0          | 0          |\n|  1 | BRCC3         |                         4 | 1;80;264;64660           | GAGCGTGGTTGAGACAAACG;GCTCTGGAGAAATTTCTACT;AGTAATGGGGCTGTGCATAG;TTTCCTTTGATAGACTGGCC |                            3 |       6.80154 |         5.42766 |  1.1e-05  | 0.0064791  | 0.0064791  |\n|  2 | UIMC1         |                         4 | 61;206;295;5344          | AGACCCTAACCAGTATACCA;TGACTGGCACTCAAAAACCA;AAAGGCTCACATATCAGTCA;TTTGCAACAGGAACCAAAGG |                            3 |       6.65706 |         4.54462 |  1.7e-05  | 0.00667544 | 0.00667544 |\n|  3 | ERCC6L2       |                         4 | 232;268;348;42779        | GTAGTGTCCATAAAGAAACC;AAGCATAAAATCTATCACAG;ACAAAGAGAGAACTAGCCAC;AATTAATTCGTGTAAAGCAG |                            3 |       6.44209 |         4.17132 |  2.3e-05  | 0.00677361 | 0.00677361 |\n|  4 | BABAM2        |                         4 | 11;180;593;2318          | TGAATACCAGACATTACTGG;AAACTGCACATACCATATGC;TCCTGAATGTCTCTTACTTG;CTCCCCTTTCATATCTAGCG |                            4 |       6.09545 |         4.89537 |  4.81e-05 | 0.011309   | 0.0107705  |"
+    },
+    {
+        "article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+        "dataset_filename": "caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-3_A549 STARS Positive_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "A549 STARS Positive"
+        ],
+        "preview": "|    | Gene Symbol   |   Number of perturbations | Ranks of perturbations   | Perturbations                                                                       |   Most enriched perturbation |   STARS Score |   Average Score |     p-value |        FDR |    q-value |\n|---:|:--------------|--------------------------:|:-------------------------|:------------------------------------------------------------------------------------|-----------------------------:|--------------:|----------------:|------------:|-----------:|-----------:|\n|  0 | KRT34         |                         4 | 133;146;149;13775        | TCTGGTGGAAATTAACCGCA;CGGACATCAACAGCATACGC;GGTGGACACTGCCCCCACTG;CTTGCTTCTGAAGTCGTCAG |                            3 |       7.54615 |         4.79473 | 3.00515e-06 | 0.00364825 | 0.00162145 |\n|  1 | BABAM2        |                         4 | 118;142;182;19526        | AAACTGCACATACCATATGC;TGAATACCAGACATTACTGG;TCCTGAATGTCTCTTACTTG;CTCCCCTTTCATATCTAGCG |                            3 |       7.28568 |         4.73317 | 4.00687e-06 | 0.00243217 | 0.00162145 |\n|  2 | DHRS13        |                         4 | 7;43;191;30570           | TGCATAGCAGGTGACGCCAG;GGCATGTGCCCCTAGCCGCG;CACCCGTGACCACGGCCGTG;TGGATGAGGATGTCCAACCG |                            3 |       7.22284 |         5.46604 | 4.00687e-06 | 0.00162145 | 0.00162145 |\n|  3 | ABRAXAS1      |                         4 | 40;100;223;48287         | GCCGAGCAGTACAAACACAC;CCTCAACACGGACTCGGACA;GTGTTAATAGCAGAAAAACA;AATGTATGCTTCATTACAAG |                            3 |       7.02121 |         4.90255 | 9.01545e-06 | 0.00273619 | 0.00273619 |\n|  4 | UIMC1         |                         4 | 15;650;1332;2014         | AGACCCTAACCAGTATACCA;AAAGGCTCACATATCAGTCA;TTTGCAACAGGAACCAAAGG;TGACTGGCACTCAAAAACCA |                            4 |       6.33967 |         4.38273 | 3.20549e-05 | 0.00778294 | 0.00778294 |"
+    },
+    {
+        "article_title": "Pooled CRISPR Screening in Pancreatic Cancer Cells Implicates Co-Repressor Complexes as a Cause of Multiple Drug Resistance via Regulation of Epithelial-to-Mesenchymal Transition",
+        "dataset_filename": "ramakerPooledCRISPRScreening2021_34049503_12885_2021_8388_MOESM1_ESM_TableS3A_t1",
+        "header_row": "2",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "RefSeq ID",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "Gemcitabine",
+            "Irinotecan",
+            "Oxaliplatin",
+            "5FU"
+        ],
+        "preview": "|    | Supplemental Table S3A. Activation (SAM) Screen results. L2FC Sum for individual drug-cell line combinations and combined   | Unnamed: 1   | Unnamed: 2        | Unnamed: 3   | Unnamed: 4   | Unnamed: 5              | Unnamed: 6       | Unnamed: 7         | Unnamed: 8             | Unnamed: 9      | Unnamed: 10       | Unnamed: 11             | Unnamed: 12      | Unnamed: 13        | Unnamed: 14     | Unnamed: 15   | Unnamed: 16   | Unnamed: 17             | Unnamed: 18      | Unnamed: 19        | Unnamed: 20            | Unnamed: 21     | Unnamed: 22       | Unnamed: 23             | Unnamed: 24      | Unnamed: 25        | Unnamed: 26     | Unnamed: 27   | Unnamed: 28   |\n|---:|:----------------------------------------------------------------------------------------------------------------------------|:-------------|:------------------|:-------------|:-------------|:------------------------|:-----------------|:-------------------|:-----------------------|:----------------|:------------------|:------------------------|:-----------------|:-------------------|:----------------|:--------------|:--------------|:------------------------|:-----------------|:-------------------|:-----------------------|:----------------|:------------------|:------------------------|:-----------------|:-------------------|:----------------|:--------------|:--------------|\n|  0 | P1= Panc1,B3=BxPC3                                                                                                          | nan          | nan               | nan          | nan          | nan                     | nan              | nan                | nan                    | nan             | nan               | nan                     | nan              | nan                | nan             | nan           | nan           | nan                     | nan              | nan                | nan                    | nan             | nan               | nan                     | nan              | nan                | nan             | nan           | nan           |\n|  1 | For each gene in each screen we calculated a L2FC sum, a p-value and FDR                                                    | nan          | nan               | nan          | nan          | nan                     | nan              | nan                | nan                    | nan             | nan               | nan                     | nan              | nan                | nan             | nan           | nan           | nan                     | nan              | nan                | nan                    | nan             | nan               | nan                     | nan              | nan                | nan             | nan           | nan           |\n|  2 | Gene_ID                                                                                                                     | nan          | Combined_L2FC_Sum | Combined_P   | Combined_FDR | P1_Gemcitabine_L2FC_Sum | P1_Gemcitabine_P | P1_Gemcitabine_FDR | P1_Irinotecan_L2FC_Sum | P1_Irinotecan_P | P1_Irinotecan_FDR | P1_Oxaliplatin_L2FC_Sum | P1_Oxaliplatin_P | P1_Oxaliplatin_FDR | P1_5FU_L2FC_Sum | P1_5FU_P      | P1_5FU_FDR    | B3_Gemcitabine_L2FC_Sum | B3_Gemcitabine_P | B3_Gemcitabine_FDR | B3_Irinotecan_L2FC_Sum | B3_Irinotecan_P | B3_Irinotecan_FDR | B3_Oxaliplatin_L2FC_Sum | B3_Oxaliplatin_P | B3_Oxaliplatin_FDR | B3_5FU_L2FC_Sum | B3_5FU_P      | B3_5FU_FDR    |\n|  3 | NM_000014                                                                                                                   | A2M          | -0.18554717       | 0.130953394  | 0.350599116  | 1.30817191              | 0.02168621       | 0.129813642        | -0.093118004           | 0.050648391     | 0.16322417        | 1.565240464             | 0.004759342      | 0.048339743        | 0.31002847      | 0.171653606   | 0.394650874   | -0.087805172            | 0.594800367      | 0.890740617        | -0.170216254           | 0.62710939      | 0.916172815       | -0.147466101            | 0.669739761      | 0.911610932        | -0.336701153    | 0.744820208   | 0.948290624   |\n|  4 | NM_000015                                                                                                                   | NAT2         | -0.615084931      | 0.226631071  | 0.380142049  | 0.404445504             | 0.218215912      | 0.461666725        | -2.04439538            | 0.231691291     | 0.428193874       | -1.161697916            | 0.827891999      | 0.944957403        | 0.341308066     | 0.160581291   | 0.379965492   | 0.163152039             | 0.252576833      | 0.693515925        | 0.306888492            | 0.131873646     | 0.603273276       | 0.520695716             | 0.021178454      | 0.285921004        | -0.246447184    | 0.665934009   | 0.921367956   |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR/Cas9 Screening Identifies CARHSP1 Responsible for Radiation Resistance in Glioblastoma",
+        "dataset_filename": "zhuGenomewideCRISPRCas92021_34290231_41419_2021_4000_MOESM4_ESM_U251_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Own-column",
+        "gene_identifier": "RefSeq ID",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "U251"
+        ],
+        "preview": "|    | sgRNA       |   num |   U251_tpm | seq                  | gene_id      | target_id   |\n|---:|:------------|------:|-----------:|:---------------------|:-------------|:------------|\n|  0 | uid_0041856 | 31103 |    8125.94 | CGCCGCGCTGCGCGCTCCCG | NM_012291    | ESPL1       |\n|  1 | uid_0017691 | 13158 |    3438.22 | AGAAGCGCGCTTTGGAGAGA | NM_001190467 | PRR36       |\n|  2 | uid_0017158 | 11547 |    3017.39 | CCTCGGCCCGGGATCGCGGG | NM_001178020 | BEAN1       |\n|  3 | uid_0039057 | 11138 |    2910.54 | GACCCCACCTCAGGCTGGCC | NM_006231    | POLE        |\n|  4 | uid_0022048 | 11034 |    2883.38 | GCGGCGGCGGCGGGCAGGGC | NM_001256071 | RNF213      |"
+    },
+    {
+        "article_title": "{{CCNE1}} Amplification Is Synthetic Lethal with {{PKMYT1}} Kinase Inhibition",
+        "dataset_filename": "galloCCNE1AmplificationSynthetic2022_35444283_41586_2022_4638_MOESM3_ESM_ReadCounts RP-6306 resistance_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Own-column",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "RP-6306 resistance"
+        ],
+        "preview": "|    | Read counts for FT282-hTERT p53-R175H CCNE1-high RP-6306 Resistance Screen for Clones 3 and 4   | Unnamed: 1   | Unnamed: 2                    | Unnamed: 3                    | Unnamed: 4                    | Unnamed: 5                    | Unnamed: 6                         | Unnamed: 7                         | Unnamed: 8                         | Unnamed: 9                         |\n|---:|:------------------------------------------------------------------------------------------------|:-------------|:------------------------------|:------------------------------|:------------------------------|:------------------------------|:-----------------------------------|:-----------------------------------|:-----------------------------------|:-----------------------------------|\n|  0 | sgRNA                                                                                           | Gene         | TKOv3_FT282.CCNE1oe_C3_NT_T6A | TKOv3_FT282.CCNE1oe_C3_NT_T6B | TKOv3_FT282.CCNE1oe_C4_NT_T6A | TKOv3_FT282.CCNE1oe_C4_NT_T6B | TKOv3_FT282.CCNE1oe_C3_RP6306_T21A | TKOv3_FT282.CCNE1oe_C3_RP6306_T21B | TKOv3_FT282.CCNE1oe_C4_RP6306_T21A | TKOv3_FT282.CCNE1oe_C4_RP6306_T21B |\n|  1 | chr11:134201957-134201976_GLB1L2_+                                                              | GLB1L2       | 1737                          | 1521                          | 1549                          | 1406                          | 708                                | 1100                               | 1178                               | 843                                |\n|  2 | chr6:26022026-26022045_HIST1H4A_-                                                               | HIST1H4A     | 2052                          | 1379                          | 2108                          | 1631                          | 1735                               | 975                                | 1723                               | 853                                |\n|  3 | chr12:120436384-120436403_CCDC64_+                                                              | CCDC64       | 425                           | 391                           | 496                           | 476                           | 146                                | 506                                | 337                                | 92                                 |\n|  4 | chr8:73979678-73979697_SBSPON_-                                                                 | SBSPON       | 894                           | 800                           | 1048                          | 780                           | 956                                | 1193                               | 1100                               | 1100                               |"
+    },
+    {
+        "article_title": "Genome Scale CRISPR Cas9a Knockout Screen Reveals Genes That Control Glioblastoma Susceptibility to the Alkylating Agent Temozolomide",
+        "dataset_filename": "awahGenomeScaleCRISPR2022_35990011_6397_Puromycin_Day14_sheet_t1",
+        "header_row": "None",
+        "sgRNA_sequence": "Concatenated",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "Puromycin"
+        ],
+        "preview": "|    | A1BG_CATCTTCTTTCACCTGAACG   |   373 |\n|---:|:----------------------------|------:|\n|  0 | A1BG_CTCCGGGGAGAACTCCGGCG   |   814 |\n|  1 | A1BG_TCTCCATGGTGCATCAGCAC   |    10 |\n|  2 | A1BG_TGGAAGTCCACTCCACTCAG   |   344 |\n|  3 | A1CF_ACAGGAAGAATTCAGTTATG   |   880 |\n|  4 | A1CF_AGTTATGTTAGGTATACCCG   |  1049 |"
+    },
+    {
+        "article_title": "Identifying CDC7 as a Synergistic Target of Chemotherapy in Resistant Small-Cell Lung Cancer via CRISPR/Cas9 Screening",
+        "dataset_filename": "dengIdentifyingCDC7Synergistic2023_36725843_41420_2023_1315_MOESM8_ESM_Sheet1_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "d7_chemo",
+            "d7_control"
+        ],
+        "preview": "|    | id       |   d7_chemo__d7_control||num |   d7_chemo__d7_control||neg|p-value |   d7_chemo__d7_control||neg|fdr |   d7_chemo__d7_control||neg|rank |   d7_chemo__d7_control||neg|goodsgrna |   d7_chemo__d7_control||pos|p-value |   d7_chemo__d7_control||pos|fdr |   d7_chemo__d7_control||pos|rank |   d7_chemo__d7_control||pos|goodsgrna |   d7_chemo__d7_control||log2FoldChange |\n|---:|:---------|----------------------------:|------------------------------------:|--------------------------------:|---------------------------------:|--------------------------------------:|------------------------------------:|--------------------------------:|---------------------------------:|--------------------------------------:|---------------------------------------:|\n|  0 | TRMT12   |                           3 |                             0.29732 |                        0.996322 |                             6050 |                                     1 |                          5.3276e-06 |                        0.113861 |                                1 |                                     2 |                                 9.1497 |\n|  1 | C11orf16 |                           1 |                             0.99868 |                        0.999829 |                            21344 |                                     0 |                          0.0013627  |                        0.956958 |                               68 |                                     1 |                                 9.0236 |\n|  2 | FAM208B  |                           1 |                             0.99693 |                        0.999632 |                            21312 |                                     0 |                          0.0030884  |                        0.956958 |                              152 |                                     1 |                                 8.8196 |\n|  3 | APOBR    |                           1 |                             0.996   |                        0.999471 |                            21297 |                                     0 |                          0.0039862  |                        0.956958 |                              196 |                                     1 |                                 8.7494 |\n|  4 | WFDC13   |                           1 |                             0.99597 |                        0.999471 |                            21296 |                                     0 |                          0.004027   |                        0.956958 |                              197 |                                     1 |                                 8.7472 |"
+    },
+    {
+        "article_title": "{{MND1}} and {{PSMC3IP}} Control {{PARP}} Inhibitor Sensitivity in Mitotic Cells",
+        "dataset_filename": "zelceskiMND1PSMC3IPControl2023_37163373_1-s2.0-S2211124723004953-mmc2_ST1C_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Own-column",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Z-score/Z-ratios"
+        ],
+        "conditions": [
+            "olap screen",
+            "talaz screen"
+        ],
+        "preview": "|    | GeneID   | Ensembl gene ID   | sgRNA                 |   CRISPRi Viability Z score (olap screen) |   CRISPRi Drug Effect Z score (olap screen) |   CRISPRi Viability Z score (talaz screen) |   CRISPRi Drug Effect Z score (talaz screen) | Essentiality   |\n|---:|:---------|:------------------|:----------------------|------------------------------------------:|--------------------------------------------:|-------------------------------------------:|---------------------------------------------:|:---------------|\n|  0 | A1BG     | ENSG00000121410   | A1BG_+_58864367.23-P2 |                                  0.12549  |                                   0.470385  |                                   0.317818 |                                   -0.551194  | non-essential  |\n|  1 | A1BG     | ENSG00000121410   | A1BG_-_58864840.23-P2 |                                  0.956319 |                                  -0.0779968 |                                   1.3407   |                                   -0.413111  | non-essential  |\n|  2 | A1BG     | ENSG00000121410   | A1BG_-_58864822.23-P2 |                                 -0.451518 |                                   0.449761  |                                  -0.524998 |                                    0.637648  | non-essential  |\n|  3 | A1BG     | ENSG00000121410   | A1BG_+_58858549.23-P1 |                                  0.805702 |                                  -0.589471  |                                   0.717305 |                                    0.0119589 | non-essential  |\n|  4 | A1BG     | ENSG00000121410   | A1BG_-_58864360.23-P2 |                                 -1.05614  |                                   0.0701778 |                                  -1.2004   |                                   -0.628214  | non-essential  |"
+    },
+    {
+        "article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+        "dataset_filename": "oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_L-asparaginase_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "L-asparaginase"
+        ],
+        "preview": "|    | id     |   num |   neg|score |   neg|p-value |   neg|fdr |   neg|rank |   neg|goodsgrna |   neg|lfc |   pos|score |   pos|p-value |   pos|fdr |   pos|rank |   pos|goodsgrna |   pos|lfc |\n|---:|:-------|------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|\n|  0 | DHODH  |     6 |     0.98227 |       0.98211 |         1 |      19328 |               0 |    2.9941 |    1.09e-11 |      2.42e-07 |   0.00016 |          1 |               5 |    2.9941 |\n|  1 | G6PD   |     6 |     1       |       1       |         1 |      20466 |               0 |    1.7795 |    1.37e-11 |      2.42e-07 |   0.00016 |          2 |               6 |    1.7795 |\n|  2 | CAD    |     6 |     1       |       1       |         1 |      20465 |               0 |    1.8716 |    1.42e-11 |      2.42e-07 |   0.00016 |          3 |               6 |    1.8716 |\n|  3 | PMPCA  |     6 |     1       |       1       |         1 |      20464 |               0 |    1.4795 |    2.08e-11 |      2.42e-07 |   0.00016 |          4 |               6 |    1.4795 |\n|  4 | IMPDH2 |     6 |     1       |       1       |         1 |      20463 |               0 |    1.6361 |    6.2e-11  |      2.42e-07 |   0.00016 |          5 |               6 |    1.6361 |"
+    },
+    {
+        "article_title": "A Genome-Scale CRISPR/Cas9 Knockout Screening Reveals SH3D21 as a Sensitizer for Gemcitabine",
+        "dataset_filename": "masoudiGenomescaleCRISPRCas92019_31844142_41598_2019_55893_MOESM2_ESM_Sheet1_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Gemcitabine"
+        ],
+        "preview": "|    | Gene         |   # Hairpins |      NES |   Gene rank |   p-value |   p-value rank |\n|---:|:-------------|-------------:|---------:|------------:|----------:|---------------:|\n|  0 | SH3D21       |            6 | 0.003022 |           1 |    0.0001 |              2 |\n|  1 | DNAJB12      |            6 | 0.003166 |           2 |    0.0001 |              3 |\n|  2 | hsa-mir-4443 |            4 | 0.003691 |           3 |    0.0001 |              1 |\n|  3 | COA3         |            6 | 0.005052 |           4 |    0.0003 |              5 |\n|  4 | ATAD2        |            6 | 0.007434 |           5 |    0.0004 |              6 |"
+    },
+    {
+        "article_title": "Ribosomal Protein S11 Influences Glioma Response to TOP2 Poisons",
+        "dataset_filename": "awahRibosomalProteinS112020_32528131_NIHMS1599130-supplement-1599130_SuppList_Data_6_CRISPR Read count Awah CU et.al_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "Eto R1",
+            "Eto R2",
+            "DMSO"
+        ],
+        "preview": "|    | genes   |   Eto R1 |   Eto R2 |   DMSO |\n|---:|:--------|---------:|---------:|-------:|\n|  0 | A1BG    |     2032 |      286 |    677 |\n|  1 | A1BG    |      934 |      497 |   1248 |\n|  2 | A1BG    |        0 |        8 |     88 |\n|  3 | A1BG    |     2544 |      726 |    842 |\n|  4 | A1CF    |     1191 |      236 |    972 |"
+    },
+    {
+        "article_title": "Genome Scale CRISPR Cas9a Knockout Screen Reveals Genes That Control Glioblastoma Susceptibility to the Alkylating Agent Temozolomide",
+        "dataset_filename": "awahGenomeScaleCRISPR2022_35990011_6396_Puromycin_Day0_sheet_t1",
+        "header_row": "None",
+        "sgRNA_sequence": "Concatenated",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "Puromycin"
+        ],
+        "preview": "|    | A1BG_CATCTTCTTTCACCTGAACG   |   608 |\n|---:|:----------------------------|------:|\n|  0 | A1BG_CTCCGGGGAGAACTCCGGCG   |  1154 |\n|  1 | A1BG_TCTCCATGGTGCATCAGCAC   |    31 |\n|  2 | A1BG_TGGAAGTCCACTCCACTCAG   |  1008 |\n|  3 | A1CF_ACAGGAAGAATTCAGTTATG   |   852 |\n|  4 | A1CF_AGTTATGTTAGGTATACCCG   |  1040 |"
+    },
+    {
+        "article_title": "Ribosomal Protein S11 Influences Glioma Response to TOP2 Poisons",
+        "dataset_filename": "awahRibosomalProteinS112020_32528131_NIHMS1599130-supplement-1599130_SuppList_Data_6_CRISPR Read count Awah CU et.al_t3",
+        "header_row": "0",
+        "sgRNA_sequence": "Concatenated",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "Library R1",
+            "Library R2"
+        ],
+        "preview": "|    | sgRNA                     |   Library R1 |   Library R2 |\n|---:|:--------------------------|-------------:|-------------:|\n|  0 | A1BG_CATCTTCTTTCACCTGAACG |         1373 |         1004 |\n|  1 | A1BG_CTCCGGGGAGAACTCCGGCG |         1188 |         1496 |\n|  2 | A1BG_TCTCCATGGTGCATCAGCAC |           21 |           14 |\n|  3 | A1BG_TGGAAGTCCACTCCACTCAG |         2090 |         1652 |\n|  4 | A1CF_ACAGGAAGAATTCAGTTATG |         1101 |         1053 |"
+    },
+    {
+        "article_title": "{{CCNE1}} Amplification Is Synthetic Lethal with {{PKMYT1}} Kinase Inhibition",
+        "dataset_filename": "galloCCNE1AmplificationSynthetic2022_35444283_41586_2022_4638_MOESM3_ESM_ReadCounts TKOv2 CCNE1 SL_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Concatenated",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "TKOv2",
+            "RPE1.hTERT.Cas9.dTP53",
+            "CCNE1oe"
+        ],
+        "preview": "|    | Read Counts for screens using TKOv2   | Unnamed: 1   | Unnamed: 2                                     | Unnamed: 3                                           | Unnamed: 4                                           | Unnamed: 5                                           | Unnamed: 6                                           | Unnamed: 7                                      | Unnamed: 8                                            | Unnamed: 9                                            | Unnamed: 10                                           | Unnamed: 11                                           | Unnamed: 12                    | Unnamed: 13                             | Unnamed: 14                          |\n|---:|:--------------------------------------|:-------------|:-----------------------------------------------|:-----------------------------------------------------|:-----------------------------------------------------|:-----------------------------------------------------|:-----------------------------------------------------|:------------------------------------------------|:------------------------------------------------------|:------------------------------------------------------|:------------------------------------------------------|:------------------------------------------------------|:-------------------------------|:----------------------------------------|:-------------------------------------|\n|  0 | sgRNA                                 | Gene         | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T0 | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T15_repA | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T15_repB | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18_repA | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18_repB | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#21_T0 | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#21_T15_repA | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#21_T15_repB | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#21_T18_repA | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#21_T18_repB | TKOv2_RPE1.hTERT.Cas9.dTP53_T0 | TKOv2_RPE1.hTERT.Cas9.dTP53_WT_T18_repA | TKOv2_RPE1.hTERT.Cas9.dTP53_T18_repB |\n|  1 | chr1:100111914-100111933_PALMD_-      | PALMD        | 516                                            | 242                                                  | 166                                                  | 325                                                  | 283                                                  | 1106                                            | 220                                                   | 521                                                   | 305                                                   | 117                                                   | 1340                           | 690                                     | 676                                  |\n|  2 | chr1:100133222-100133241_PALMD_+      | PALMD        | 101                                            | 35                                                   | 31                                                   | 52                                                   | 37                                                   | 129                                             | 72                                                    | 99                                                    | 50                                                    | 35                                                    | 167                            | 117                                     | 62                                   |\n|  3 | chr1:100152265-100152284_PALMD_+      | PALMD        | 808                                            | 290                                                  | 134                                                  | 370                                                  | 255                                                  | 703                                             | 194                                                   | 902                                                   | 218                                                   | 179                                                   | 1316                           | 705                                     | 586                                  |\n|  4 | chr1:100154717-100154736_PALMD_+      | PALMD        | 425                                            | 239                                                  | 133                                                  | 170                                                  | 201                                                  | 476                                             | 122                                                   | 453                                                   | 145                                                   | 153                                                   | 439                            | 421                                     | 277                                  |"
+    },
+    {
+        "article_title": "Genome-Scale CRISPR Screen Reveals Neddylation to Contribute to Cisplatin Resistance of Testicular Germ Cell Tumours",
+        "dataset_filename": "funkeGenomescaleCRISPRScreen2023_37024667_41416_2023_2247_MOESM3_ESM_7_NGS_Cand_list_t2",
+        "header_row": "0",
+        "sgRNA_sequence": "Own-column",
+        "gene_identifier": "RefSeq ID",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "None"
+        ],
+        "preview": "|    |   Unnamed: 0 | Gene Name   | Refseq ID    | Target sequence sgRNA   |   Read counts |\n|---:|-------------:|:------------|:-------------|:------------------------|--------------:|\n|  0 |          nan | CYP2R1      | NM_024514    | AGAAGGTAGTTGTCCCGAAG    |       4248699 |\n|  1 |          nan | LEKR1       | NM_001193283 | GGAGCGTTGACGACAGACGT    |       4084952 |\n|  2 |          nan | CCL1        | NM_002981    | GAGTTTACCACATGGTCGCT    |       2230750 |\n|  3 |          nan | LHB         | NM_000894    | CATGTGCACCTCTCGCCCCC    |       1223512 |\n|  4 |          nan | WBP2NL      | NM_152613    | AGCGCGAAGGGGTGAGTGAT    |       1066313 |"
+    },
+    {
+        "article_title": "DYNLL1 Binds MRE11 to Limit DNA End Resection in BRCA1-deficient Cells",
+        "dataset_filename": "heDYNLL1BindsMRE112018_30464262_NIHMS1567675-supplement-Table_1_Cov362 Olaparib_t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "STARS (negative binomial)",
+            "Other/ambiguous"
+        ],
+        "conditions": [
+            "Olaparib"
+        ],
+        "preview": "|    | p-value=0 means <6.79874359222e-06, FDR=0 means <0.00162036722281   | Unnamed: 1              | Unnamed: 2             | Unnamed: 3                                                                          | Unnamed: 4                 | Unnamed: 5       | Unnamed: 6       | Unnamed: 7           | Unnamed: 8          | Unnamed: 9          |\n|---:|:--------------------------------------------------------------------|:------------------------|:-----------------------|:------------------------------------------------------------------------------------|:---------------------------|:-----------------|:-----------------|:---------------------|:--------------------|:--------------------|\n|  0 | Gene Symbol                                                         | Number of perturbations | Ranks of perturbations | Perturbations                                                                       | Most enriched perturbation | STARS Score      | Average Score    | p-value              | FDR                 | q-value             |\n|  1 | DYNLL1                                                              | 4                       | 1;29;43;923            | CATTGCGGCTCATATCAAGA;GGTAACCATGTGCGACCGAA;GGAGAAATACAACATAGAGA;AAAGGCCGTGATCAAAAATG | 3                          | 9.11751979856142 | 4.85815059469328 | 0                    | 0                   | 0                   |\n|  2 | C20orf196                                                           | 4                       | 6;7;49;8235            | TTATGTCACACGCTGATGGC;CATTTCATAGAATCTATCCA;GTCAAGCCAGAAGTTCTCAG;AGGCCAGTCAGAGAAGGAAG | 3                          | 8.94737183587893 | 4.92968359823305 | 0                    | 0                   | 0                   |\n|  3 | TP53BP1                                                             | 4                       | 10;25;51;47972         | ATACTCACATGAGAAAACTG;CCAAGTTAGAAGAATCCACA;GGAAAGACTGTCCTGAACAA;GCTGGAGAAGAACGAGGAGA | 3                          | 8.8952611851824  | 4.58484255523399 | 0                    | 0                   | 0                   |\n|  4 | ATMIN                                                               | 4                       | 97;152;194;46193       | CTAGGTGCATGTTGAGCGCG;GCACAGGATGTTGGTCCGCA;GGCACCCGCCGCCAGAGCCG;AAGCCTCTGAATCTAGGCCG | 3                          | 7.15539941507415 | 3.51198176295262 | 6.79874359221788e-06 | 0.00121527541710894 | 0.00121527541710894 |"
+    },
+    {
+        "article_title": "ATM Orchestrates the DNA-damage Response to Counter Toxic Non-Homologous End-Joining at Broken Replication Forks",
+        "dataset_filename": "balmusATMOrchestratesDNAdamage2019_30622252_41467_2018_7729_MOESM4_ESM_test_BA6_yellow_50nm.pos.gene_s_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "BA6_yellow_50nm"
+        ],
+        "preview": "|    | id      |   num |   neg|score |   (-)Log10 neg|p-value |   neg|p-value |   neg|fdr |   neg|rank |   neg|goodsgrna |   pos|score |   pos|p-value |   (-)Log10 pos|p-value2 |   pos|fdr |   pos|rank |   pos|goodsgrna |\n|---:|:--------|------:|------------:|-----------------------:|--------------:|----------:|-----------:|----------------:|------------:|--------------:|------------------------:|----------:|-----------:|----------------:|\n|  0 | Lig4    |     5 |     1       |             0          |       1       |         1 |      18424 |               0 |  5.1026e-20 |    2.687e-07  |                 6.57073 |  0.00165  |          1 |               5 |\n|  1 | Xrcc4   |     5 |     1       |             0          |       1       |         1 |      18422 |               0 |  1.3192e-15 |    2.687e-07  |                 6.57073 |  0.00165  |          2 |               4 |\n|  2 | Bre     |     5 |     1       |             0          |       1       |         1 |      18423 |               0 |  1.9962e-08 |    2.687e-07  |                 6.57073 |  0.00165  |          3 |               5 |\n|  3 | Babam1  |     5 |     0.97497 |             0.0109731  |       0.97505 |         1 |      17264 |               0 |  3.666e-08  |    8.0609e-07 |                 6.09362 |  0.003713 |          4 |               4 |\n|  4 | Fam175a |     5 |     0.98909 |             0.00472467 |       0.98918 |         1 |      17729 |               0 |  4.6479e-06 |    1.5316e-05 |                 4.81485 |  0.056436 |          5 |               4 |"
+    },
+    {
+        "article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+        "dataset_filename": "oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_Methotrexate_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Methotrexate"
+        ],
+        "preview": "|    | id      |   num |   neg|score |   neg|p-value |   neg|fdr |   neg|rank |   neg|goodsgrna |   neg|lfc |   pos|score |   pos|p-value |   pos|fdr |   pos|rank |   pos|goodsgrna |   pos|lfc |\n|---:|:--------|------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|\n|  0 | SLC19A1 |     6 |     0.97481 |       0.97475 |         1 |      19354 |               0 |    4.8868 |  6.637e-21  |    2.4189e-07 |     8e-05 |          1 |               5 |    4.8868 |\n|  1 | NAA60   |     6 |     0.99972 |       0.99973 |         1 |      20257 |               0 |    4.4439 |  1.0139e-17 |    2.4189e-07 |     8e-05 |          2 |               6 |    4.4439 |\n|  2 | PPP2CA  |     5 |     0.99927 |       0.99929 |         1 |      20200 |               0 |    3.2935 |  3.6789e-09 |    2.4189e-07 |     8e-05 |         45 |               5 |    3.2935 |\n|  3 | CNOT4   |     6 |     1       |       1       |         1 |      20405 |               0 |    3.0542 |  3.6357e-16 |    2.4189e-07 |     8e-05 |          3 |               6 |    3.0542 |\n|  4 | HNRNPM  |     6 |     0.98809 |       0.98801 |         1 |      19724 |               0 |    2.9752 |  8.8629e-13 |    2.4189e-07 |     8e-05 |          8 |               5 |    2.9752 |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR/Cas9 Screen Identifies Etoposide Response Modulators Associated with Clinical Outcomes in Pediatric AML",
+        "dataset_filename": "nguyenGenomewideCRISPRCas92022_36111891_BLOODA_ADV-2022-007934-mmc1_Supplemental Table S2_t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Etoposide"
+        ],
+        "preview": "|    | Unnamed: 0   | Unnamed: 1                                 | Unnamed: 2   | Unnamed: 3    | Day 4 (Early)      | Unnamed: 5   | Unnamed: 6   | Unnamed: 7   | Day 12 (Intermediate)   | Unnamed: 9   | Unnamed: 10   | Unnamed: 11   | Day 18 (Late)     | Unnamed: 13   | Unnamed: 14   | Unnamed: 15   |\n|---:|:-------------|:-------------------------------------------|:-------------|:--------------|:-------------------|:-------------|:-------------|:-------------|:------------------------|:-------------|:--------------|:--------------|:------------------|:--------------|:--------------|:--------------|\n|  0 | Gene         | Description                                | Etoposide    | Time Linearly | Etop.Score         | Etop.FDR     | Ess.Score    | Ess.FDR      | Etop.Score              | Etop.FDR     | Ess.Score     | Ess.FDR       | Etop.Score        | Etop.FDR      | Ess.Score     | Ess.FDR       |\n|  1 | ABCC1        | ATP binding cassette subfamily C member 1  | Resistance   | Yes           | -12.0873475832922  | 0.001238     | 0.12144      | 0.929175     | -12.237081477992        | 0.00099      | 0.2567        | 0.903365      | -7.08701315330034 | 0.001238      | 0.0056827     | 1             |\n|  2 | CCNF         | cyclin F                                   | Resistance   | Yes           | -0.400553624274724 | 1            | 0.041139     | 1            | -6.73928480642244       | 0.00165      | 0.047781      | 1             | -6.15502606185311 | 0.006931      | 0.052745      | 1             |\n|  3 | FASN         | fatty acid synthase                        | Resistance   | No            | -2.52198212953521  | 0.792025     | 0.21007      | 0.926012     | -4.84685614348626       | 0.045026     | 1.0842        | 0.344609      | -5.61782080303975 | 0.011757      | 2.0051        | 0.001238      |\n|  4 | GCLM         | glutamate-cysteine ligase modifier subunit | Resistance   | Yes           | -2.14655733073305  | 0.861295     | 0.024248     | 1            | -6.55684657812217       | 0.00165      | 0.52801       | 0.814139      | -4.86356482954162 | 0.054455      | -0.057583     | 1             |"
+    },
+    {
+        "article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+        "dataset_filename": "caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-3_A549 STARS Negative_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "STARS (negative binomial)",
+            "Raw count"
+        ],
+        "conditions": [
+            "A549"
+        ],
+        "preview": "|    | Gene Symbol   |   Number of perturbations | Ranks of perturbations   | Perturbations                                                                       |   Most enriched perturbation |   STARS Score |   Average Score |   p-value |   FDR |   q-value |\n|---:|:--------------|--------------------------:|:-------------------------|:------------------------------------------------------------------------------------|-----------------------------:|--------------:|----------------:|----------:|------:|----------:|\n|  0 | FANCE         |                         4 | 5;61;72;265              | AGGTTCCTCTGGCATATCCG;CATGGCAGTTAAGACTGGCG;GAAACGCAGAAAGGACTCAG;AAGAAGCTGTAGCTCAACTG |                            4 |       9.86292 |         6.84351 |         0 |     0 |         0 |\n|  1 | STAG2         |                         4 | 12;19;201;314            | TTGGAAAACGAGCCAATGAG;ATACCTTGTGGATAGCATGT;TGGAGATTATCCACTTACCA;AATACTAACCTTGAACCGAC |                            4 |       9.56819 |         6.59376 |         0 |     0 |         0 |\n|  2 | EXO1          |                         4 | 34;55;132;498            | TCAGGGGGTAGATTGCCTCG;GTCCAGACTTACCTATCAGT;TCATCTTCATAGGCGTTCAG;AGAGTGTAAGCACTCCACCT |                            4 |       8.76699 |         6.18665 |         0 |     0 |         0 |\n|  3 | UBE2T         |                         4 | 17;41;84;567             | GGAGTGAGAAATCGGATCTG;TGGATGACCTGCGAGCTCGT;TTGCCAACATGTGATGCCTG;CAGCCATGAGCGGGTCATCA |                            4 |       8.54157 |         6.41638 |         0 |     0 |         0 |\n|  4 | PTEN          |                         4 | 76;161;465;723           | AGCTGGCAGACCACAAACTG;CCAATTCAGGACCCACACGA;AGAGCGTGCAGATAATGACA;ATTCTTCATACCAGGACCAG |                            4 |       8.11935 |         5.29495 |         0 |     0 |         0 |"
+    },
+    {
+        "article_title": "Pooled CRISPR Screening in Pancreatic Cancer Cells Implicates Co-Repressor Complexes as a Cause of Multiple Drug Resistance via Regulation of Epithelial-to-Mesenchymal Transition",
+        "dataset_filename": "ramakerPooledCRISPRScreening2021_34049503_12885_2021_8388_MOESM1_ESM_TableS3B_t1",
+        "header_row": "2",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "Gemcitabine",
+            "Oxaliplatin",
+            "Irinotecan",
+            "5FU"
+        ],
+        "preview": "|    | Supplemental Table S3B. Knockout (Gecko) Screen results. L2FC Sum for individual drug-cell line combinations    | Unnamed: 1         | Unnamed: 2         | Unnamed: 3        | Unnamed: 4              | Unnamed: 5         | Unnamed: 6         | Unnamed: 7              | Unnamed: 8         | Unnamed: 9         | Unnamed: 10            | Unnamed: 11        | Unnamed: 12       | Unnamed: 13       | Unnamed: 14        | Unnamed: 15       | Unnamed: 16             | Unnamed: 17       | Unnamed: 18        | Unnamed: 19             | Unnamed: 20       | Unnamed: 21        | Unnamed: 22            | Unnamed: 23       | Unnamed: 24       | Unnamed: 25       | Unnamed: 26        | Unnamed: 27       |\n|---:|:----------------------------------------------------------------------------------------------------------------|:-------------------|:-------------------|:------------------|:------------------------|:-------------------|:-------------------|:------------------------|:-------------------|:-------------------|:-----------------------|:-------------------|:------------------|:------------------|:-------------------|:------------------|:------------------------|:------------------|:-------------------|:------------------------|:------------------|:-------------------|:-----------------------|:------------------|:------------------|:------------------|:-------------------|:------------------|\n|  0 | P1 = Panc1: B3=BxPC3                                                                                            | nan                | nan                | nan               | nan                     | nan                | nan                | nan                     | nan                | nan                | nan                    | nan                | nan               | nan               | nan                | nan               | nan                     | nan               | nan                | nan                     | nan               | nan                | nan                    | nan               | nan               | nan               | nan                | nan               |\n|  1 | For each gene in each screen we calculated a L2FC sum, a p-value and FDR                                        | nan                | nan                | nan               | nan                     | nan                | nan                | nan                     | nan                | nan                | nan                    | nan                | nan               | nan               | nan                | nan               | nan                     | nan               | nan                | nan                     | nan               | nan                | nan                    | nan               | nan               | nan               | nan                | nan               |\n|  2 | nan                                                                                                             | Combined_L2FC_Sum  | Combined_P         | Combined_FDR      | P1_Gemcitabine_L2FC_Sum | P1_Gemcitabine_P   | P1_Gemcitabine_FDR | P1_Oxaliplatin_L2FC_Sum | P1_Oxaliplatin_P   | P1_Oxaliplatin_FDR | P1_Irinotecan_L2FC_Sum | P1_Irinotecan_P    | P1_Irinotecan_FDR | P1_5FU_L2FC_Sum   | P1_5FU_P           | P1_5FU_FDR        | B3_Gemcitabine_L2FC_Sum | B3_Gemcitabine_P  | B3_Gemcitabine_FDR | B3_Oxaliplatin_L2FC_Sum | B3_Oxaliplatin_P  | B3_Oxaliplatin_FDR | B3_Irinotecan_L2FC_Sum | B3_Irinotecan_P   | B3_Irinotecan_FDR | B3_5FU_L2FC_Sum   | B3_5FU_P           | B3_5FU_FDR        |\n|  3 | A1BG                                                                                                            | -0.904586216999054 | 0.314775208036283  | 0.701825580880729 | -0.904586216999054      | 0.705751098984387  | 0.999965452086164  | -0.392715133913581      | 0.72360982484397   | 0.970318452715167  | -1.4862571781002       | 0.28926700246282   | 0.999898342971155 | -2.04481219892761 | 0.618499289440127  | 0.99991789536423  | -0.378696386660878      | 0.747680849435469 | 0.993359561111788  | -0.00544005991251131    | 0.394241943897826 | 0.962196700272364  | -0.607283237222274     | 0.781932864584173 | 0.999628192829801 | -1.11520453166738 | 0.950561172993587  | 0.999687840103799 |\n|  4 | A1CF                                                                                                            | 0.351737973373145  | 0.0193697286062979 | 0.650760987670613 | 0.351737973373145       | 0.0927310393613259 | 0.922223015712754  | 0.517615043804666       | 0.0444151399234951 | 0.618721214655904  | -0.107825095499609     | 0.0502095521796057 | 0.807361064319172 | 0.37677409411936  | 0.0518009297082954 | 0.689169112092335 | -0.684541032563738      | 0.903139463221877 | 0.997791930332779  | -0.362510690205391      | 0.673465770503558 | 0.981022096637038  | -0.378322136192466     | 0.641481478495057 | 0.999628192829801 | 0.510627260795835 | 0.0663233750561576 | 0.885783329272473 |"
+    },
+    {
+        "article_title": "Ribosomal Protein S11 Influences Glioma Response to TOP2 Poisons",
+        "dataset_filename": "awahRibosomalProteinS112020_32528131_NIHMS1599130-supplement-1599130_SuppList_Data_1B_Sheet1_t3",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "Other/ambiguous"
+        ],
+        "conditions": [
+            "DMSO"
+        ],
+        "preview": "|    | DMSO > Day 0 sgRSEA p<0.01   | Unnamed: 1   | Unnamed: 2       | Unnamed: 3           | Unnamed: 4        | Unnamed: 5   |\n|---:|:-----------------------------|:-------------|:-----------------|:---------------------|:------------------|:-------------|\n|  0 | 236                          | nan          | nan              | nan                  | nan               | nan          |\n|  1 | row.names                    | m            | NScore           | p.value.pos          | FDR.pos           | rank.pos     |\n|  2 | NPRL3                        | 4            | 3.10013565764204 | 4.08056073182241e-05 | 0.234999754120058 | 2            |\n|  3 | MOV10                        | 4            | 3.08456132374614 | 4.39445001888567e-05 | 0.234999754120058 | 3            |\n|  4 | ATM                          | 4            | 3.03895441143607 | 4.91759883065778e-05 | 0.234999754120058 | 4            |"
+    },
+    {
+        "article_title": "Genome Scale CRISPR Cas9a Knockout Screen Reveals Genes That Control Glioblastoma Susceptibility to the Alkylating Agent Temozolomide",
+        "dataset_filename": "awahGenomeScaleCRISPR2022_35990011_6399_Temozolomide_Day14_sheet_t1",
+        "header_row": "None",
+        "sgRNA_sequence": "Concatenated",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "Temozolomide"
+        ],
+        "preview": "|    | A1BG_CATCTTCTTTCACCTGAACG   |   311 |\n|---:|:----------------------------|------:|\n|  0 | A1BG_CTCCGGGGAGAACTCCGGCG   |   355 |\n|  1 | A1BG_TCTCCATGGTGCATCAGCAC   |     4 |\n|  2 | A1BG_TGGAAGTCCACTCCACTCAG   |   487 |\n|  3 | A1CF_ACAGGAAGAATTCAGTTATG   |   512 |\n|  4 | A1CF_AGTTATGTTAGGTATACCCG   |   589 |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR/Cas9 Screening Identifies CARHSP1 Responsible for Radiation Resistance in Glioblastoma",
+        "dataset_filename": "zhuGenomewideCRISPRCas92021_34290231_41419_2021_4000_MOESM4_ESM_Sheet3_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "Other/ambiguous"
+        ],
+        "conditions": [
+            "U87 Top 10%",
+            "U87 freq\u22653",
+            "U251 Top 10%",
+            "U251 freq\u22653"
+        ],
+        "preview": "|    | U87 Top 10%   | U87 freq\u22653   | U251 Top 10%   | U251 freq\u22653   |\n|---:|:--------------|:-------------|:---------------|:--------------|\n|  0 | ABCA8         | NREP         | ESPL1          | BDNF          |\n|  1 | DIP2C         | PLEKHG5      | PRR36          | RUNX1T1       |\n|  2 | DHRS4L2       | YY1AP1       | BEAN1          | PQBP1         |\n|  3 | ATP6AP1       | ANKS1B       | POLE           | UBB           |\n|  4 | OR2T11        | CD63         | RNF213         | SLC12A6       |"
+    },
+    {
+        "article_title": "Revealing Temozolomide Resistance Mechanisms via Genome-Wide CRISPR Libraries",
+        "dataset_filename": "ribeiroreilyrochaRevealingTemozolomideResistance2020_33271924_cells-09-02573-s001_Table S2 _t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Temozolomide"
+        ],
+        "preview": "|    | Gene Name     |   pos|p-value |    pos|FDR |   pos|rank |   pos|goodsgrna |\n|---:|:--------------|--------------:|-----------:|-----------:|----------------:|\n|  0 | MSANTD3       |    5.74e-05   | 2.02e-05   |          1 |               3 |\n|  1 | HDAC4         |    6.66e-05   | 4.13e-05   |          2 |               3 |\n|  2 | NFE2L2        |    6.66e-05   | 4.69e-05   |          3 |               2 |\n|  3 | GDNF          |    9.66e-05   | 0.00010001 |          4 |               2 |\n|  4 | UBE2E3        |    0.00010065 | 0.0002002  |          5 |               3 |"
+    },
+    {
+        "article_title": "Ribosomal Protein S11 Influences Glioma Response to TOP2 Poisons",
+        "dataset_filename": "awahRibosomalProteinS112020_32528131_NIHMS1599130-supplement-1599130_SuppList_Data_1B_Sheet1_t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "Other/ambiguous"
+        ],
+        "conditions": [
+            "Et > DMSO"
+        ],
+        "preview": "|    | Et > DMSO sgRSEA p < 0.01   | Unnamed: 1   | Unnamed: 2       | Unnamed: 3           | Unnamed: 4          | Unnamed: 5   | Unnamed: 6     |\n|---:|:----------------------------|:-------------|:-----------------|:---------------------|:--------------------|:-------------|:---------------|\n|  0 | 979                         | nan          | nan              | nan                  | nan                 | nan          | nan            |\n|  1 | row.names                   | m            | NScore           | p.value.pos          | FDR.pos             | rank.pos     | nan            |\n|  2 | CARS                        | 4            | 4.28101023036079 | 1.04629762354421e-06 | 0.00199999790740475 | 1            | nan            |\n|  3 | NAE1                        | 4            | 4.17020109212041 | 1.04629762354421e-06 | 0.00199999790740475 | 2            | NAE1           |\n|  4 | RPL17-C18orf32              | 4            | 4.12117121472224 | 1.04629762354421e-06 | 0.00199999790740475 | 3            | RPL17-C18orf32 |"
+    },
+    {
+        "article_title": "Genome-Scale CRISPR Screen Reveals Neddylation to Contribute to Cisplatin Resistance of Testicular Germ Cell Tumours",
+        "dataset_filename": "funkeGenomescaleCRISPRScreen2023_37024667_41416_2023_2247_MOESM3_ESM_7_NGS_Cand_list_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Own-column",
+        "gene_identifier": "RefSeq ID",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "Cisplatin"
+        ],
+        "preview": "|    | Gene Name   | Refseq ID   | Target sequence sgRNA   |   Read counts |   Unnamed: 4 |\n|---:|:------------|:------------|:------------------------|--------------:|-------------:|\n|  0 | TRAP1       | NM_016292   | AGGGCGACGGGCCTTGCGCG    |       8044032 |          nan |\n|  1 | TK1         | NM_003258   | CGTGCGTCCCTCTGTTTATA    |       7803883 |          nan |\n|  2 | DDB1        | NM_001923   | GCCTTCGGATGTGGCGGATG    |       6841409 |          nan |\n|  3 | ENSA        | NM_207047   | TGCTTTGGCGCTGGTTAGTT    |       1590607 |          nan |\n|  4 | IFNW1       | NM_002177   | CCCAGGTACTCAGGGGGCTG    |        656648 |          nan |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR/Cas9 Screen Identifies Etoposide Response Modulators Associated with Clinical Outcomes in Pediatric AML",
+        "dataset_filename": "nguyenGenomewideCRISPRCas92022_36111891_BLOODA_ADV-2022-007934-mmc1_Supplemental Table S0_t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Etoposide",
+            "Vehicle control",
+            "Day 0",
+            "Day 4",
+            "Day 12",
+            "Day 18"
+        ],
+        "preview": "|    | Supplemental Table S0. Genome-wide Etoposide score (etoposide vs. vehicle controls) and essential score (vehicle control vs. day 0 replicates) at day 4 (early), day 12 (intermediate), and day 18 (late) using MAGeCK-RRA   | Unnamed: 1         | Unnamed: 2    | Unnamed: 3     | Unnamed: 4   | Unnamed: 5         | Unnamed: 6     | Unnamed: 7      | Unnamed: 8    | Unnamed: 9         | Unnamed: 10    | Unnamed: 11     | Unnamed: 12   |\n|---:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------|:--------------|:---------------|:-------------|:-------------------|:---------------|:----------------|:--------------|:-------------------|:---------------|:----------------|:--------------|\n|  0 | Gene                                                                                                                                                                                                                         | Day4.Etop.Score    | Day4.Etop.FDR | Day4.Ess.Score | Day4.Ess.FDR | Day12.Etop.Score   | Day12.Etop.FDR | Day12.Ess.Score | Day12.Ess.FDR | Day18.Etop.Score   | Day18.Etop.FDR | Day18.Ess.Score | Day18.Ess.FDR |\n|  1 | A1BG                                                                                                                                                                                                                         | -0.982757915452354 | 0.972306      | 0.20568        | 0.853545     | 1.7519285990808    | 0.752928       | -1.7533         | 0.099903      | -1.33446591156667  | 0.933154       | -0.036103       | 1             |\n|  2 | A1CF                                                                                                                                                                                                                         | 0.341254264638847  | 1             | 0.092881       | 1            | -0.483398528473466 | 1              | 0.08054         | 1             | 1.19622888552981   | 0.960285       | 0.22909         | 1             |\n|  3 | A2M                                                                                                                                                                                                                          | -0.621456752838356 | 0.998435      | 0.1778         | 0.970935     | -0.715817505363098 | 1              | 0.56573         | 0.82638       | 1.07435277487943   | 0.979498       | 0.18195         | 0.97963       |\n|  4 | A2ML1                                                                                                                                                                                                                        | 0.726373793727041  | 1             | -0.10209       | 0.999976     | 0.3131939780091    | 1              | 0.16833         | 1             | -0.995205889611288 | 0.978192       | 0.13114         | 1             |"
+    },
+    {
+        "article_title": "A Whole-genome CRISPR Screen Identifies a Role of MSH2 in Cisplatin-mediated Cell Death in Muscle-invasive Bladder Cancer",
+        "dataset_filename": "goodspeedWholegenomeCRISPRScreen2019_30414698_NIHMS1510205-supplement-1_Supplementary Table 6_t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics",
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "baseMean1",
+            "baseMean2",
+            "baseMean3"
+        ],
+        "preview": "|    | Supplementary Table 6. Normalized screen data and DeSEQ2 output.    | Unnamed: 1   | Unnamed: 2   | Unnamed: 3   | Unnamed: 4   | Unnamed: 5   | Unnamed: 6   | Unnamed: 7   | Unnamed: 8   | Unnamed: 9   | Unnamed: 10   | Unnamed: 11   | Unnamed: 12   | Unnamed: 13       | Unnamed: 14           |\n|---:|:--------------------------------------------------------------------|:-------------|:-------------|:-------------|:-------------|:-------------|:-------------|:-------------|:-------------|:-------------|:--------------|:--------------|:--------------|:------------------|:----------------------|\n|  0 | Gene                                                                | baseMean1    | Log2_FC1     | pval1        | baseMean2    | Log2_FC2     | pval2        | baseMean3    | Log2_FC3     | pval3        | chi           | combined_p    | combined_q    | Meidan_Log2_FC    | Combined_mean_Log2_FC |\n|  1 | MSH2                                                                | 957.2566405  | 5.67843972   | 1.83e-11     | 1975.317814  | 5.116799119  | 1.77e-11     | 1072.351948  | 4.822651573  | 2.38e-07     | 187           | 1.1e-37       | 1.83e-33      | 5.11679911917568  | 5.25058214863253      |\n|  2 | MLH1                                                                | 1825.532851  | 3.686081025  | 7.95e-08     | 581.8766207  | 3.253182804  | 0.000102254  | 67.24306563  | 2.459707092  | 0.01856056   | 85.2          | 3e-16         | 4.97e-12      | 3.25318280400865  | 3.21759138327125      |\n|  3 | FAM89B                                                              | 34.07272074  | 0.309519502  | 1            | 35.94595749  | -4.138685456 | 2.42e-06     | 418.9378725  | 3.69554062   | 5.49e-07     | 78.9          | 6.03e-15      | 9.98e-11      | 0.309519502289633 | 2.2481295828933       |\n|  4 | XPC                                                                 | 242.0108639  | 3.590859153  | 0.000204781  | 510.0933263  | 2.508409082  | 0.004336734  | 3303.070108  | 3.92785658   | 1.8e-06      | 78.4          | 7.64e-15      | 1.27e-10      | 3.59085915261611  | 3.45762272302659      |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR-Cas9 Screening Identifies NF-$\\kappa$B/E2F6 Responsible for EGFRvIII-Associated Temozolomide Resistance in Glioblastoma",
+        "dataset_filename": "huangGenomeWideCRISPR2019_31508283_ADVS-6-1900782-s005_A-2_t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "DMSO",
+            "TMZ"
+        ],
+        "preview": "|    | The original data for Figure 1b: The differential sgRNAs between day 7 and day 0 (U87 EGFRvIII cells treated with DMSO or temozolomide)   | Unnamed: 1   | Unnamed: 2        | Unnamed: 3        | Unnamed: 4        | Unnamed: 5       | Unnamed: 6     |\n|---:|:------------------------------------------------------------------------------------------------------------------------------------------|:-------------|:------------------|:------------------|:------------------|:-----------------|:---------------|\n|  0 | ID                                                                                                                                        | Entry        | DMSO Log FC       | DMSO significance | TMZ Log FC        | TMZ significance | Druggable like |\n|  1 | 154                                                                                                                                       | ADRB2        | -2.30820250445807 | +                 | -1.87467065158976 | +                | +              |\n|  2 | 175                                                                                                                                       | AGA          | 1.87341642696534  | +                 | 2.02709634327632  | +                | nan            |\n|  3 | 317                                                                                                                                       | APAF1        | -2.23461052684356 | +                 | -1.92638364664918 | +                | nan            |\n|  4 | 325                                                                                                                                       | APCS         | -2.2314617648088  | +                 | -1.93812761250691 | +                | +              |"
+    },
+    {
+        "article_title": "{{mTOR}} Inhibition Attenuates Chemosensitivity through the Induction of Chemotherapy Resistant Persisters",
+        "dataset_filename": "liuMTORInhibitionAttenuates2022_36396656_41467_2022_34890_MOESM5_ESM_Supplementary Data 1a_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "Other/ambiguous"
+        ],
+        "conditions": [
+            "Gemcitabine",
+            "Selinexor"
+        ],
+        "preview": "|    | Supplementary Data 1a. Gene ranking according to \u03b2 scores in gemcitabine and selinexor screens.   | Unnamed: 1                 | Unnamed: 2               |\n|---:|:--------------------------------------------------------------------------------------------------|:---------------------------|:-------------------------|\n|  0 | Gene                                                                                              | Gemcitabine_versus_control | Selinexor_versus_control |\n|  1 | Med12                                                                                             | 4.8147                     | 1.6441                   |\n|  2 | Eed                                                                                               | 4.2514                     | 0.71657                  |\n|  3 | Suz12                                                                                             | 4.0822                     | 0.7081                   |\n|  4 | Dck                                                                                               | 3.8345                     | -0.041706                |"
+    },
+    {
+        "article_title": "Activation of the Integrated Stress Response Is a Vulnerability for Multidrug-resistant {{FBXW7}}-deficient Cells",
+        "dataset_filename": "sanchez-burgosActivationIntegratedStress2022_35861150_EMMM-14-e15855-s001_CISPLATIN SCREEN (POOL) _t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "CISPLATIN"
+        ],
+        "preview": "|    | CISPLATIN (1.5uM)   | Unnamed: 1   |\n|---:|:--------------------|:-------------|\n|  0 | Library 1           | nan          |\n|  1 | Hit                 | N reads      |\n|  2 | Fbxw7               | 362449       |\n|  3 | Myh9                | 330392       |\n|  4 | Fam115c             | 114294       |"
+    },
+    {
+        "article_title": "CRISPR-Cas9 Screen Identifies DYRK1A as a Target for Radiotherapy Sensitization in Pancreatic Cancer",
+        "dataset_filename": "lanCRISPRCas9ScreenIdentifies2022_35053488_cancers-14-00326-s001_RT-2D_t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Radiotherapy"
+        ],
+        "preview": "|    | CRISPR-Cas9 Radiotherapy Screening Results-2D   | Unnamed: 1   | Unnamed: 2   | Unnamed: 3   | Unnamed: 4   | Unnamed: 5    | Unnamed: 6   | Unnamed: 7   | Unnamed: 8   | Unnamed: 9   | Unnamed: 10   | Unnamed: 11   | Unnamed: 12   |\n|---:|:------------------------------------------------|:-------------|:-------------|:-------------|:-------------|:--------------|:-------------|:-------------|:-------------|:-------------|:--------------|:--------------|:--------------|\n|  0 | id                                              | num          | neg|score    | neg|p-value  | neg|rank     | neg|goodsgrna | neg|lfc      | pos|score    | pos|p-value  | pos|fdr      | pos|rank      | pos|goodsgrna | pos|lfc       |\n|  1 | Prkdc                                           | 4            | 2.2631e-05   | 8.3992e-05   | 2            | 4             | -1.5874      | 0.99993      | 0.99995      | 0.999946     | 920           | 0             | -1.5874       |\n|  2 | Aurka                                           | 6            | 0.00018046   | 0.00091403   | 3            | 4             | -1.3258      | 0.79449      | 0.7939       | 0.999946     | 700           | 0             | -1.3258       |\n|  3 | Trp53bp1                                        | 2            | 0.00039293   | 0.00078557   | 4            | 2             | -1.0691      | 0.99961      | 0.99962      | 0.999946     | 919           | 0             | -1.0691       |\n|  4 | Bub1b                                           | 4            | 0.00059158   | 0.0023765    | 5            | 1             | 0.0033863    | 0.022878     | 0.055005     | 0.935795     | 51            | 1             | 0.0033863     |"
+    },
+    {
+        "article_title": "{{MND1}} and {{PSMC3IP}} Control {{PARP}} Inhibitor Sensitivity in Mitotic Cells",
+        "dataset_filename": "zelceskiMND1PSMC3IPControl2023_37163373_1-s2.0-S2211124723004953-mmc2_ST1B_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Own-column",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Z-score/Z-ratios"
+        ],
+        "conditions": [
+            "olap",
+            "talaz"
+        ],
+        "preview": "|    | GeneID   | Ensembl gene ID   | sgRNA                                           |   CRISPRn Viability Z score (olap and talaz screen) |   CRISPRn Drug Effect Z score (olap screen) |   CRISPRn Drug Effect Z score (talaz screen) | Essentiality   |\n|---:|:---------|:------------------|:------------------------------------------------|----------------------------------------------------:|--------------------------------------------:|---------------------------------------------:|:---------------|\n|  0 | A1BG     | ENSG00000121410   | A1BG_CCDS12976.1_ex3_19:58862927-58862950:-_5-1 |                                            0.668991 |                                    0.705699 |                                    -0.505318 | non-essential  |\n|  1 | A1BG     | ENSG00000121410   | A1BG_CCDS12976.1_ex5_19:58864367-58864390:-_5-5 |                                           -1.15848  |                                    0.467419 |                                     0.022966 | non-essential  |\n|  2 | A1BG     | ENSG00000121410   | A1BG_CCDS12976.1_ex4_19:58863655-58863678:+_5-2 |                                           -0.090289 |                                    0.260061 |                                     0.814947 | non-essential  |\n|  3 | A1BG     | ENSG00000121410   | A1BG_CCDS12976.1_ex4_19:58863697-58863720:-_5-3 |                                           -1.12321  |                                    0.215305 |                                     0.754094 | non-essential  |\n|  4 | A1BG     | ENSG00000121410   | A1BG_CCDS12976.1_ex4_19:58863866-58863889:+_5-4 |                                           -2.07258  |                                   -0.373944 |                                     0.446271 | non-essential  |"
+    },
+    {
+        "article_title": "CRISPR-based Knockout Screening Identifies the Loss of MIEF2 to Enhance Oxaliplatin Resistance in Colorectal Cancer through Inhibiting the Mitochondrial Apoptosis Pathway",
+        "dataset_filename": "xieCRISPRbasedKnockoutScreening2022_36106106_DataSheet_1_Genelist of OXL_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "Baseline",
+            "PBS",
+            "OX"
+        ],
+        "preview": "|    | Genelist of OXL   | Unnamed: 1   | Unnamed: 2   | Unnamed: 3   |\n|---:|:------------------|:-------------|:-------------|:-------------|\n|  0 | Gene              | Baseline     | PBS          | OX           |\n|  1 | MIEF2             | 978          | 607          | 17943212     |\n|  2 | ESR1              | 18901        | 69395        | 59540        |\n|  3 | MAST3             | 400          | 475          | 154          |\n|  4 | SIK2              | 476          | 506          | 46           |"
+    },
+    {
+        "article_title": "A Fifteen-Gene Classifier to Predict Neoadjuvant Chemotherapy Responses in Patients with Stage IB to IIB Squamous Cervical Cancer",
+        "dataset_filename": "tianFifteenGeneClassifier2021_34026427_ADVS-8-2001978-s005_Taxol_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "Taxol"
+        ],
+        "preview": "|    |   Unnamed: 0 | Gene    |   baseMean |   log2FoldChange |   lfcSE |     stat |   pvalue |     padj |\n|---:|-------------:|:--------|-----------:|-----------------:|--------:|---------:|---------:|---------:|\n|  0 |            1 | PLEKHG3 |   145.566  |          25.2244 | 4.32897 |  5.82688 | 5.65e-09 | 8.29e-08 |\n|  1 |            2 | AHI1    |    66.7179 |          24.1323 | 4.33013 |  5.57312 | 2.5e-08  | 2.96e-07 |\n|  2 |            3 | PDZRN3  |  1271.83   |          15.1979 | 1.35922 | 11.1813  | 5.03e-29 | 7.88e-27 |\n|  3 |            4 | CDH20   |   658.793  |          13.2867 | 1.32179 | 10.0521  | 8.99e-24 | 9.39e-22 |\n|  4 |            5 | CRTAC1  |   331.017  |          13.2563 | 1.395   |  9.50269 | 2.05e-21 | 1.75e-19 |"
+    },
+    {
+        "article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+        "dataset_filename": "caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-2_H460_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Own-column",
+        "gene_identifier": "None",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "ATMi",
+            "DMSO"
+        ],
+        "preview": "|    | Barcode Sequence     |   Log 2 fold change (H460: ATMi vs DMSO) |\n|---:|:---------------------|-----------------------------------------:|\n|  0 | GATCCACACTCCCAACAAGG |                               -0.182895  |\n|  1 | CTGTTGTCACCATAACAACA |                               -0.109189  |\n|  2 | GAACCATACACAGACCACAA |                                0.652984  |\n|  3 | TCATTGCCGAGTAATACAAA |                                0.0521934 |\n|  4 | GCACCGCCACCATTGCACCA |                               -0.324699  |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR/Cas9 Screen Identifies Etoposide Response Modulators Associated with Clinical Outcomes in Pediatric AML",
+        "dataset_filename": "nguyenGenomewideCRISPRCas92022_36111891_BLOODA_ADV-2022-007934-mmc1_Supplemental Table S1_t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "Other/ambiguous"
+        ],
+        "conditions": [
+            "Etoposide"
+        ],
+        "preview": "|    | Unnamed: 0   | Unnamed: 1                                       | Day 4 (Early)     | Unnamed: 3   | Unnamed: 4   | Day 12 (Intermediate)   | Unnamed: 6   | Unnamed: 7   | Day 18 (Late)     | Unnamed: 9   | Unnamed: 10   |\n|---:|:-------------|:-------------------------------------------------|:------------------|:-------------|:-------------|:------------------------|:-------------|:-------------|:------------------|:-------------|:--------------|\n|  0 | Gene         | Description                                      | Etop.Score        | FDR          | Etoposide    | Etop.Score              | FDR          | Etoposide    | Etop.Score        | FDR          | Etoposide     |\n|  1 | ABCC1        | ATP binding cassette subfamily C member 1        | -12.0873475832922 | 0.001238     | Resistance   | -12.237081477992        | 0.00099      | Resistance   | -7.08701315330034 | 0.001238     | Resistance    |\n|  2 | NHEJ1        | non-homologous end joining factor 1              | -11.6082535558549 | 0.001238     | Resistance   | -7.67964596718233       | 0.00099      | Resistance   | nan               | nan          | nan           |\n|  3 | RAD54L2      | DNA repair and recombination protein RAD54-like2 | -6.97947298772544 | 0.001238     | Resistance   | -9.39989874430861       | 0.00099      | Resistance   | -6.83445892327763 | 0.001238     | Resistance    |\n|  4 | ZNF451       | zinc finger protein 451                          | -10.0497422718239 | 0.001238     | Resistance   | -4.77598518862714       | 0.05243      | Resistance   | -7.57935125458344 | 0.001238     | Resistance    |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR Screen Identifies ELP5 as a Determinant of Gemcitabine Sensitivity in Gallbladder Cancer",
+        "dataset_filename": "xuGenomewideCRISPRScreen2019_31792210_41467_2019_13420_MOESM4_ESM_reads out counts_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "Survive",
+            "Input"
+        ],
+        "preview": "|    | GeneID   |   Survive_1 |   Survive_2 |   Input_1 |   Input_2 |\n|---:|:---------|------------:|------------:|----------:|----------:|\n|  0 | A1BG     |           0 |           0 |         0 |         0 |\n|  1 | A1BG     |         396 |         219 |       153 |       154 |\n|  2 | A1BG     |         286 |         362 |       226 |       262 |\n|  3 | A1BG     |         325 |         237 |       275 |       266 |\n|  4 | A1CF     |         128 |         116 |       129 |       132 |"
+    },
+    {
+        "article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+        "dataset_filename": "caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-3_H460 STARS Negative_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "STARS (negative binomial)",
+            "Raw count"
+        ],
+        "conditions": [
+            "H460"
+        ],
+        "preview": "|    | Gene Symbol   |   Number of perturbations | Ranks of perturbations   | Perturbations                                                                       |   Most enriched perturbation |   STARS Score |   Average Score |     p-value |       FDR |   q-value |\n|---:|:--------------|--------------------------:|:-------------------------|:------------------------------------------------------------------------------------|-----------------------------:|--------------:|----------------:|------------:|----------:|----------:|\n|  0 | RAD18         |                         4 | 6;144;266;5453           | AGTGGATTGTCCTGTTTGCG;TAGGATGCAAAGCATCGCAT;TTCTTGATCAGAGAAATGAG;GACAGCAAGATTCTTTGAAG |                            3 |       6.79172 |         4.89866 | 1.10189e-05 | 0.0119996 | 0.0119996 |\n|  1 | EMSY          |                         4 | 193;1231;1241;2446       | GTTACAGTAAAGGCGGTTTG;GTAGAAGCAATGACTGACGT;GTTCTGACCAATCCTGACGC;GCACACAAGCAACCTATACC |                            4 |       6.00208 |         3.90762 | 5.60961e-05 | 0.0305444 | 0.0305444 |\n|  2 | FAAP100       |                         4 | 116;212;622;3602         | GGCACTGACAAGCCTCAACG;GGGTGGCATCAGCTCCAAAG;GGAGCCCGTCATCTTCATAG;GAGACAGATCCACCACACAG |                            3 |       5.687   |         4.39766 | 9.41614e-05 | 0.0341806 | 0.0310898 |\n|  3 | PRDX6         |                         4 | 1267;1674;1827;3075      | ATTGATACTAACCTTGCTCC;CGATTCCTATCATCGATGAT;TGGCACCAGAATTTGCCAAG;GAAACGGATGCGGCCGACGG |                            4 |       5.60453 |         3.41786 | 0.000114196 | 0.0310898 | 0.0310898 |\n|  4 | HNRNPA1L2     |                         4 | 46;508;919;62248         | GAATACAACGCCACACAAGG;GGGAACGCTCACAGACTGTG;TCAGAAATACCATACTGTGA;CATCCAGCCAAAGAGGTCGA |                            3 |       5.18011 |         3.79961 | 0.000329565 | 0.0717792 | 0.0717792 |"
+    },
+    {
+        "article_title": "Pooled CRISPR Screening in Pancreatic Cancer Cells Implicates Co-Repressor Complexes as a Cause of Multiple Drug Resistance via Regulation of Epithelial-to-Mesenchymal Transition",
+        "dataset_filename": "ramakerPooledCRISPRScreening2021_34049503_12885_2021_8388_MOESM1_ESM_Table S4A_t1",
+        "header_row": "1",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "Gemcitabine",
+            "Irinotecan",
+            "Oxaliplatin",
+            "5FU"
+        ],
+        "preview": "|    | Panc 1 Cell line   | Gemcitabine   | Unnamed: 2             | Irinotecan   | Unnamed: 4   | Unnamed: 5             | Oxaliplatin   | Unnamed: 7   | Unnamed: 8             | 5FU     | Unnamed: 10   | Unnamed: 11            |\n|---:|:-------------------|:--------------|:-----------------------|:-------------|:-------------|:-----------------------|:--------------|:-------------|:-----------------------|:--------|:--------------|:-----------------------|\n|  0 | RefGene            | GeneName      | L2FC Sum of replicates | RefGene      | GeneName     | L2FC Sum of replicates | RefGene       | GeneName     | L2FC Sum of replicates | RefGene | GeneName      | L2FC Sum of replicates |\n|  1 | nan                | GPRASP1       | 4.52110264807771       | nan          | SERPINF2     | 2.60326253141774       | nan           | PDCD2L       | 2.77974549748159       | nan     | RASL11A       | 2.76860823988607       |\n|  2 | nan                | ADAMTS15      | 2.94584007779619       | nan          | FOXD4        | 2.57788199064531       | nan           | CCDC61       | 2.02038609022728       | nan     | ACTRT2        | 2.55485401158767       |\n|  3 | nan                | DNMT3B        | 2.08172384591297       | nan          | hsa-mir-760  | 2.54680430378856       | nan           | hsa-mir-611  | 1.88842066334795       | nan     | TRIO          | 2.4980378864613        |\n|  4 | nan                | MMP2          | 2.07022446803401       | nan          | PNN          | 2.48809630208818       | nan           | CACNA1C      | 1.84794328906158       | nan     | hsa-mir-595   | 2.1685963498245        |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR Screening Identifies DCK and CCNL1 as Genes That Contribute to Gemcitabine Resistance in Pancreatic Cancer",
+        "dataset_filename": "yangGenomeWideCRISPRScreening2022_35804923_cancers-14-03152-s001_Sheet1_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Gemcitabine"
+        ],
+        "preview": "|    | id      |   num |   neg|score |   neg|p-value |   neg|fdr |   neg|rank |   neg|goodsgrna |   neg|lfc |   pos|score |   pos|p-value |   pos|fdr |   pos|rank |   pos|goodsgrna |   pos|lfc |\n|---:|:--------|------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|\n|  0 | Dck     |     6 |     0.81275 |       0.90798 |  0.999991 |      20037 |               2 |   3.705   |  3.093e-12  |    2.1995e-07 |  0.00165  |          1 |               4 |   3.705   |\n|  1 | Ccnl1   |     6 |     0.67345 |       0.84973 |  0.999991 |      18407 |               1 |   1.6041  |  1.7911e-08 |    2.1995e-07 |  0.00165  |          2 |               4 |   1.6041  |\n|  2 | Gpi1    |     6 |     0.99981 |       0.99979 |  0.999991 |      22499 |               0 |   1.75    |  1.0568e-07 |    2.1995e-07 |  0.00165  |          3 |               4 |   1.75    |\n|  3 | Tceanc2 |     4 |     0.99143 |       0.9914  |  0.999991 |      22292 |               0 |   0.84199 |  1.0098e-05 |    2.4855e-05 |  0.139851 |          4 |               3 |   0.84199 |\n|  4 | Olfr616 |     6 |     0.91178 |       0.95304 |  0.999991 |      21088 |               1 |  -1.5737  |  2.4775e-05 |    7.6324e-05 |  0.343564 |          5 |               2 |  -1.5737  |"
+    },
+    {
+        "article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+        "dataset_filename": "oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_Maphosphamide_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Maphosphamide"
+        ],
+        "preview": "|    | id     |   num |   neg|score |   neg|p-value |   neg|fdr |   neg|rank |   neg|goodsgrna |   neg|lfc |   pos|score |   pos|p-value |   pos|fdr |   pos|rank |   pos|goodsgrna |   pos|lfc |\n|---:|:-------|------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|\n|  0 | TP53   |     6 |     1       |       1       |         1 |      20466 |               0 |   2.1621  |  1.7926e-19 |    2.4189e-07 |   0.00033 |          1 |               6 |   2.1621  |\n|  1 | HEATR3 |     6 |     1       |       1       |         1 |      20460 |               0 |   1.2388  |  3.7987e-12 |    2.4189e-07 |   0.00033 |          2 |               6 |   1.2388  |\n|  2 | KAT5   |     6 |     0.57038 |       0.71191 |         1 |      14108 |               1 |   1.2079  |  5.6488e-12 |    2.4189e-07 |   0.00033 |          3 |               5 |   1.2079  |\n|  3 | HNRNPM |     6 |     0.90892 |       0.91167 |         1 |      18329 |               1 |   1.0584  |  8.3701e-11 |    2.4189e-07 |   0.00033 |          4 |               5 |   1.0584  |\n|  4 | PMAIP1 |     6 |     1       |       1       |         1 |      20465 |               0 |   0.84946 |  8.5806e-11 |    2.4189e-07 |   0.00033 |          5 |               6 |   0.84946 |"
+    },
+    {
+        "article_title": "A Genome-Scale CRISPR/Cas9 Knockout Screening Reveals SH3D21 as a Sensitizer for Gemcitabine",
+        "dataset_filename": "masoudiGenomescaleCRISPRCas92019_31844142_41598_2019_55893_MOESM3_ESM_Sheet1_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "Gemcitabine"
+        ],
+        "preview": "|    | Gene     |   # Hairpins |       NES |   Gene rank |   p-value |   p-value rank |\n|---:|:---------|-------------:|----------:|------------:|----------:|---------------:|\n|  0 | KIAA0196 |            6 | 0.0005764 |           1 |    0.0001 |              4 |\n|  1 | SLFN14   |            6 | 0.004255  |           2 |    0.0001 |              2 |\n|  2 | MTRNR2L2 |            6 | 0.004413  |           3 |    0.0001 |              1 |\n|  3 | DGCR6    |            6 | 0.005611  |           4 |    0.0004 |              6 |\n|  4 | TMSB4Y   |            4 | 0.005614  |           5 |    0.0001 |              3 |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR-Cas9 Screening Identifies NF-$kappa$B/E2F6 Responsible for EGFRvIII-Associated Temozolomide Resistance in Glioblastoma",
+        "dataset_filename": "huangGenomeWideCRISPR2019_31508283_ADVS-6-1900782-s006_B-2_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "DMSO",
+            "TMZ"
+        ],
+        "preview": "|    | The original data for Figure 1c and Figure 2a: The differential sgRNAs between U87 EGFRvIII cells treated with DMSO or temozolomide in day 7   | Unnamed: 1   | Unnamed: 2         | Unnamed: 3       | Unnamed: 4   | Unnamed: 5     |\n|---:|:-----------------------------------------------------------------------------------------------------------------------------------------------|:-------------|:-------------------|:-----------------|:-------------|:---------------|\n|  0 | ID                                                                                                                                             | Entry        | DMSO Log FC        | TMZ Log FC       | Up/Down      | Druggable like |\n|  1 | 221                                                                                                                                            | ALDH3B1      | 0.432644749152028  | 2.29814705322889 | Upregulated  | +              |\n|  2 | 822                                                                                                                                            | CAPG         | 0.0380324363008315 | 2.11167723554636 | Upregulated  | nan            |\n|  3 | 1258                                                                                                                                           | CNGB1        | 0.0166127528211293 | 1.49544257956624 | Upregulated  | nan            |\n|  4 | 1398                                                                                                                                           | CRK          | 0.149851769061663  | 1.90077880921983 | Upregulated  | +              |"
+    },
+    {
+        "article_title": "A Fifteen-Gene Classifier to Predict Neoadjuvant Chemotherapy Responses in Patients with Stage IB to IIB Squamous Cervical Cancer",
+        "dataset_filename": "tianFifteenGeneClassifier2021_34026427_ADVS-8-2001978-s005_DDP_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "DDP"
+        ],
+        "preview": "|    |   Unnamed: 0 | Gene    |   baseMean |   log2FoldChange |   lfcSE |    stat |   pvalue |     padj |\n|---:|-------------:|:--------|-----------:|-----------------:|--------:|--------:|---------:|---------:|\n|  0 |            1 | UBR5    |    4178.75 |          15.1326 | 1.27071 | 11.9088 | 1.07e-32 | 9.12e-30 |\n|  1 |            2 | PDZRN3  |    2427.27 |          14.3489 | 1.26373 | 11.3544 | 7.06e-30 | 4.03e-27 |\n|  2 |            3 | KCNH3   |    1684.48 |          13.8218 | 1.27452 | 10.8447 | 2.11e-27 | 7.24e-25 |\n|  3 |            4 | ALKBH6  |    1621.86 |          13.7671 | 1.33197 | 10.3359 | 4.85e-25 | 8.31e-23 |\n|  4 |            5 | PLEKHG3 |    1352.48 |          13.5051 | 1.29938 | 10.3935 | 2.66e-25 | 5.05e-23 |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR/Cas9 Screening Identifies CARHSP1 Responsible for Radiation Resistance in Glioblastoma",
+        "dataset_filename": "zhuGenomewideCRISPRCas92021_34290231_41419_2021_4000_MOESM4_ESM_U87_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Own-column",
+        "gene_identifier": "RefSeq ID",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "U87"
+        ],
+        "preview": "|    | sgRNA       |   num |   U87_tpm | seq                  | gene_id      | target_id   |\n|---:|:------------|------:|----------:|:---------------------|:-------------|:------------|\n|  0 | uid_0041032 |  9970 |   2528.08 | GGTATTAGCCACAATAATCT | NM_007168    | ABCA8       |\n|  1 | uid_0044581 |  7809 |   1980.33 | GTCCGCAGCGCCTGCGGGGA | NM_014974    | DIP2C       |\n|  2 | uid_0018203 |  7557 |   1916.46 | GGAGCCCGCGCTCCAAGGCC | NM_001193635 | DHRS4L2     |\n|  3 | uid_0017306 |  7244 |   1837.12 | GGCCGCGAGTGGCATGCACT | NM_001183    | ATP6AP1     |\n|  4 | uid_002535  |  7240 |   1836.11 | GGATGAAGCTTCCAGGCTAG | NM_001001964 | OR2T11      |"
+    },
+    {
+        "article_title": "A Fifteen-Gene Classifier to Predict Neoadjuvant Chemotherapy Responses in Patients with Stage IB to IIB Squamous Cervical Cancer",
+        "dataset_filename": "tianFifteenGeneClassifier2021_34026427_ADVS-8-2001978-s005_DDP_Taxol_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "DDP",
+            "Taxol"
+        ],
+        "preview": "|    |   Unnamed: 0 | Gene    |   baseMean |   log2FoldChange |   lfcSE |     stat |   pvalue |     padj |\n|---:|-------------:|:--------|-----------:|-----------------:|--------:|---------:|---------:|---------:|\n|  0 |            1 | AKAP8L  |   10.1656  |          19.7789 | 3.68159 |  5.37237 | 7.77e-08 | 2.19e-06 |\n|  1 |            2 | FOXD4L3 |    9.64373 |          19.6969 | 3.68179 |  5.34982 | 8.8e-08  | 2.42e-06 |\n|  2 |            3 | UBR5    | 6131.29    |          15.6171 | 1.35538 | 11.5223  | 1.02e-30 | 8.9e-28  |\n|  3 |            4 | PDZRN3  | 5595.52    |          15.4852 | 1.40365 | 11.0321  | 2.68e-28 | 1.17e-25 |\n|  4 |            5 | ALKBH6  | 2695.63    |          14.4315 | 1.43493 | 10.0573  | 8.53e-24 | 2.49e-21 |"
+    },
+    {
+        "article_title": "{{CCNE1}} Amplification Is Synthetic Lethal with {{PKMYT1}} Kinase Inhibition",
+        "dataset_filename": "galloCCNE1AmplificationSynthetic2022_35444283_41586_2022_4638_MOESM3_ESM_ReadCounts_TKOv3 CCNE1 SL_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Concatenated",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "Raw count"
+        ],
+        "conditions": [
+            "TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T0",
+            "TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18A",
+            "TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18B",
+            "TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T0",
+            "TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T18A",
+            "TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T18B"
+        ],
+        "preview": "|    | Read counts for screens using TKOv3   | Unnamed: 1   | Unnamed: 2                                     | Unnamed: 3                                       | Unnamed: 4                                       | Unnamed: 5                        | Unnamed: 6                          | Unnamed: 7                          |\n|---:|:--------------------------------------|:-------------|:-----------------------------------------------|:-------------------------------------------------|:-------------------------------------------------|:----------------------------------|:------------------------------------|:------------------------------------|\n|  0 | sgRNA                                 | Gene         | TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T0 | TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18A | TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18B | TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T0 | TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T18A | TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T18B |\n|  1 | TKOv3_A1BG_exon1_4                    | A1BG         | 1501                                           | 1029                                             | 240                                              | 451                               | 366                                 | 440                                 |\n|  2 | TKOv3_A1BG_exon3_3                    | A1BG         | 1404                                           | 703                                              | 463                                              | 404                               | 352                                 | 404                                 |\n|  3 | TKOv3_A1BG_exon4_2                    | A1BG         | 535                                            | 401                                              | 266                                              | 146                               | 66                                  | 179                                 |\n|  4 | TKOv3_A1BG_exon5_1                    | A1BG         | 708                                            | 400                                              | 219                                              | 236                               | 111                                 | 252                                 |"
+    },
+    {
+        "article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+        "dataset_filename": "oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_AraC_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "MAGeCK statistics"
+        ],
+        "conditions": [
+            "AraC"
+        ],
+        "preview": "|    | id      |   num |   neg|score |   neg|p-value |   neg|fdr |   neg|rank |   neg|goodsgrna |   neg|lfc |   pos|score |   pos|p-value |   pos|fdr |   pos|rank |   pos|goodsgrna |   pos|lfc |\n|---:|:--------|------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|------------:|--------------:|----------:|-----------:|----------------:|----------:|\n|  0 | DCK     |     6 |           1 |             1 |         1 |      20466 |               0 |    3.3873 |  1.1002e-22 |    2.4189e-07 |  0.000177 |          1 |               6 |    3.3873 |\n|  1 | SLC29A1 |     6 |           1 |             1 |         1 |      20462 |               0 |    3.2527 |  4.7006e-15 |    2.4189e-07 |  0.000177 |          2 |               6 |    3.2527 |\n|  2 | NOP16   |     6 |           1 |             1 |         1 |      20465 |               0 |    1.5237 |  8.6231e-13 |    2.4189e-07 |  0.000177 |          3 |               6 |    1.5237 |\n|  3 | IARS2   |     6 |           1 |             1 |         1 |      20464 |               0 |    1.7807 |  2.1605e-12 |    2.4189e-07 |  0.000177 |          4 |               6 |    1.7807 |\n|  4 | FARSA   |     6 |           1 |             1 |         1 |      20463 |               0 |    1.2936 |  1.5707e-11 |    2.4189e-07 |  0.000177 |          5 |               6 |    1.2936 |"
+    },
+    {
+        "article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+        "dataset_filename": "caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-2_A549_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "Own-column",
+        "gene_identifier": "None",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per sgRNA",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "ATMi",
+            "DMSO"
+        ],
+        "preview": "|    | Barcode Sequence     |   Log 2 fold change (A549: ATMi vs DMSO) |\n|---:|:---------------------|-----------------------------------------:|\n|  0 | GATCCACACTCCCAACAAGG |                                0.0919777 |\n|  1 | CTGTTGTCACCATAACAACA |                               -0.203421  |\n|  2 | GAACCATACACAGACCACAA |                               -0.0465777 |\n|  3 | TCATTGCCGAGTAATACAAA |                               -0.560256  |\n|  4 | GCACCGCCACCATTGCACCA |                               -0.21674   |"
+    },
+    {
+        "article_title": "Genome-Wide CRISPR-Cas9 Screening Identifies NF-$\\kappa$B/E2F6 Responsible for EGFRvIII-Associated Temozolomide Resistance in Glioblastoma",
+        "dataset_filename": "huangGenomeWideCRISPR2019_31508283_ADVS-6-1900782-s006_B-1_t1",
+        "header_row": "0",
+        "sgRNA_sequence": "None",
+        "gene_identifier": "HGNC gene symbol",
+        "dataset_type": "Data",
+        "statistic_aggregation": "Per gene",
+        "metrics": [
+            "fold-change/log fold-change"
+        ],
+        "conditions": [
+            "DMSO",
+            "TMZ"
+        ],
+        "preview": "|    | The original data for Figure 1c and Figure 2a: The differential sgRNAs between U87 EGFRvIII cells treated with DMSO or temozolomide in day 7   | Unnamed: 1   | Unnamed: 2         | Unnamed: 3       | Unnamed: 4   | Unnamed: 5     |\n|---:|:-----------------------------------------------------------------------------------------------------------------------------------------------|:-------------|:-------------------|:-----------------|:-------------|:---------------|\n|  0 | ID                                                                                                                                             | Entry        | DMSO Log FC        | TMZ Log FC       | Up/Down      | Druggable like |\n|  1 | 549                                                                                                                                            | AUH          | 0.734200306342914  | 1.0472767487958  | Upregulated  | nan            |\n|  2 | 865                                                                                                                                            | CBFB         | 0.0555942154938483 | 1.17884978090322 | Upregulated  | nan            |\n|  3 | 1154                                                                                                                                           | CISH         | -0.150608790750621 | 2.32307881827921 | Upregulated  | nan            |\n|  4 | 1496                                                                                                                                           | CTNNA2       | 0.253098858276155  | 1.5057193078905  | Upregulated  | nan            |"
+    }
+]

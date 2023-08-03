@@ -1,0 +1,869 @@
+{
+"article_title": "The Genomic Landscape of Sensitivity to Arsenic Trioxide Uncovered by Genome-Wide CRISPR-Cas9 Screening",
+"dataset_filename": "output_tables/chenGenomicLandscapeSensitivity2023_37251921_Table_1_ATO_normalized-total.gene_summa_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["ATO"]
+}
+{
+"article_title": "Genome Scale CRISPR Cas9a Knockout Screen Reveals Genes That Control Glioblastoma Susceptibility to the Alkylating Agent Temozolomide",
+"dataset_filename": "output_tables/awahGenomeScaleCRISPR2022_35990011_5953_DMSO_Day14_R2_sheet_t1.csv",
+"header_row": "None",
+"sgRNA_sequence": "Concatenated",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["DMSO"]
+}
+{
+"article_title": "Ribosomal Protein S11 Influences Glioma Response to TOP2 Poisons",
+"dataset_filename": "output_tables/awahRibosomalProteinS112020_32528131_NIHMS1599130-supplement-1599130_SuppList_Data_6_CRISPR Read count Awah CU et.al_t2.csv",
+"header_row": "0",
+"sgRNA_sequence": "Concatenated",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["Puromycin R1", "Puromycin R2"]
+}
+{
+"article_title": "{{MND1}} and {{PSMC3IP}} Control {{PARP}} Inhibitor Sensitivity in Mitotic Cells",
+"dataset_filename": "output_tables/zelceskiMND1PSMC3IPControl2023_37163373_1-s2.0-S2211124723004953-mmc2_ST1A_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["Z-score/Z-ratios"],
+"conditions": ["olaparib", "talazoparib"]
+}
+{
+"article_title": "Targeted {{CRISPR}} Screening Identifies {{PRMT5}} as Synthetic Lethality Combinatorial Target with Gemcitabine in Pancreatic Cancer Cells",
+"dataset_filename": "output_tables/weiTargetedCRISPRScreening2020_33097661_pnas.2009899117.sd01_sheet_t1.csv",
+"header_row": "None",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["Unknown"]
+}
+{
+"article_title": "A Fifteen-Gene Classifier to Predict Neoadjuvant Chemotherapy Responses in Patients with Stage IB to IIB Squamous Cervical Cancer",
+"dataset_filename": "output_tables/tianFifteenGeneClassifier2021_34026427_ADVS-8-2001978-s005_all_286_genes_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["fold-change/log fold-change"],
+"conditions": []
+}
+{
+"article_title": "Revealing Temozolomide Resistance Mechanisms via Genome-Wide CRISPR Libraries",
+"dataset_filename": "output_tables/ribeiroreilyrochaRevealingTemozolomideResistance2020_33271924_cells-09-02573-s001_Table S1_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["Temozolomide"]
+}
+{
+"article_title": "Genome-Wide CRISPR-Cas9 Screening Identifies NF-$\\kappa$B/E2F6 Responsible for EGFRvIII-Associated Temozolomide Resistance in Glioblastoma",
+"dataset_filename": "output_tables/huangGenomeWideCRISPR2019_31508283_ADVS-6-1900782-s005_A-1_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["fold-change/log fold-change"],
+"conditions": ["DMSO", "TMZ"]
+}
+{
+"article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+"dataset_filename": "output_tables/caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-2_CP0041_20170705_compat_chip_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "Own-column",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["None"]
+}
+{
+"article_title": "ATM Orchestrates the DNA-damage Response to Counter Toxic Non-Homologous End-Joining at Broken Replication Forks",
+"dataset_filename": "output_tables/balmusATMOrchestratesDNAdamage2019_30622252_41467_2018_7729_MOESM3_ESM_test_BA4_purple_400nM.pos.gene__t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["BA4_purple_400nM"]
+}
+{
+"article_title": "{{MND1}} and {{PSMC3IP}} Control {{PARP}} Inhibitor Sensitivity in Mitotic Cells",
+"dataset_filename": "output_tables/zelceskiMND1PSMC3IPControl2023_37163373_1-s2.0-S2211124723004953-mmc2_ST1I_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["Other/ambiguous"],
+"conditions": ["Olaparib", "Talazoparib"]
+}
+{
+"article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+"dataset_filename": "output_tables/oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_6MP_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics", "fold-change/log fold-change"],
+"conditions": ["6MP"]
+}
+{
+"article_title": "CRISPR-Cas9 Screen Identifies DYRK1A as a Target for Radiotherapy Sensitization in Pancreatic Cancer",
+"dataset_filename": "output_tables/lanCRISPRCas9ScreenIdentifies2022_35053488_cancers-14-00326-s001_RT-3D_t1.csv",
+"header_row": "1",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["Radiotherapy"]
+}
+{
+  "article_title": "A Whole-genome CRISPR Screen Identifies a Role of MSH2 in Cisplatin-mediated Cell Death in Muscle-invasive Bladder Cancer",
+  "dataset_filename": "output_tables/goodspeedWholegenomeCRISPRScreen2019_30414698_NIHMS1510205-supplement-1_Supplementary Table 5_t1.csv",
+  "header_row": "1",
+  "sgRNA_sequence": "Concatenated",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per sgRNA",
+  "metrics": ["Raw count"],
+  "conditions": ["Cisplatin", "DMSO"]
+}
+{
+"article_title": "Spindle Assembly Checkpoint Inhibition Can Resensitize P53-Null Stem Cells to Cancer Chemotherapy",
+"dataset_filename": "output_tables/liuSpindleAssemblyCheckpoint2019_30862715_NIHMS1524158-supplement-5_Cisplatin_DMF_gene_summary.txt_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["Cisplatin"]
+}
+{
+"article_title": "{{MND1}} and {{PSMC3IP}} Control {{PARP}} Inhibitor Sensitivity in Mitotic Cells",
+"dataset_filename": "output_tables/zelceskiMND1PSMC3IPControl2023_37163373_1-s2.0-S2211124723004953-mmc2_ST1J_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["Z-score/Z-ratios"],
+"conditions": ["Olaparib"]
+}
+{
+"article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+"dataset_filename": "output_tables/oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_Vincristine_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics", "fold-change/log fold-change"],
+"conditions": ["Vincristine"]
+}
+{
+"article_title": "Genome-Wide {{CRISPR}} Screen Identifies {{ELP5}} as a Determinant of Gemcitabine Sensitivity in Gallbladder Cancer",
+"dataset_filename": "output_tables/xuGenomewideCRISPRScreen2019_31792210_41467_2019_13420_MOESM4_ESM_210 gene hits_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["Gemcitabine"]
+}
+{
+"article_title": "Activation of the Integrated Stress Response Is a Vulnerability for Multidrug-resistant {{FBXW7}}-deficient Cells",
+"dataset_filename": "output_tables/sanchez-burgosActivationIntegratedStress2022_35861150_EMMM-14-e15855-s001_KMB7 TIGECYCLINE SCREEN_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "Concatenated",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics", "Raw count"],
+"conditions": ["Tigecycline"]
+}
+{
+"article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+"dataset_filename": "output_tables/oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_Daunorubicin_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["Daunorubicin"]
+}
+{
+  "article_title": "Activation of the Integrated Stress Response Is a Vulnerability for Multidrug-resistant {{FBXW7}}-deficient Cells",
+  "dataset_filename": "output_tables/sanchez-burgosActivationIntegratedStress2022_35861150_EMMM-14-e15855-s001_UV SCREEN (POOL) _t1.csv",
+  "header_row": "0",
+  "sgRNA_sequence": "Own-column",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per sgRNA",
+  "metrics": ["Raw count"],
+  "conditions": ["UV-C 25 J/m2"]
+}
+{
+  "article_title": "Ribosomal Protein S11 Influences Glioma Response to TOP2 Poisons",
+  "dataset_filename": "output_tables/awahRibosomalProteinS112020_32528131_NIHMS1599130-supplement-1599130_SuppList_Data_1B_Sheet1_t2.csv",
+  "header_row": "1",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["MAGeCK statistics"],
+  "conditions": ["Et > puro sgRSEA p < 0.01"]
+}
+{
+  "article_title": "Loss of the Abasic Site Sensor {{HMCES}} Is Synthetic Lethal with the Activity of the {{APOBEC3A}} Cytosine Deaminase in Cancer Cells",
+  "dataset_filename": "output_tables/biaynaLossAbasicSite2021_33788831_pbio.3001176.s014_lfc_all_time_points_t1.csv",
+  "header_row": "1",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["fold-change/log fold-change"],
+  "conditions": ["A549 TP53-/-", "A549 TP53 WT", "LXF289 DOX-IC25", "LXF289 DOX-IC50"]
+}
+{
+"article_title": "Targeted {{CRISPR}} Screening Identifies {{PRMT5}} as Synthetic Lethality Combinatorial Target with Gemcitabine in Pancreatic Cancer Cells",
+"dataset_filename": "output_tables/weiTargetedCRISPRScreening2020_33097661_pnas.2009899117.sd02_sheet_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "Ensembl Gene ID",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["Raw count"],
+"conditions": []
+}
+{
+"article_title": "Genome Scale CRISPR Cas9a Knockout Screen Reveals Genes That Control Glioblastoma Susceptibility to the Alkylating Agent Temozolomide",
+"dataset_filename": "output_tables/awahGenomeScaleCRISPR2022_35990011_6398_DMSO_Day14_sheet_t1.csv",
+"header_row": "None",
+"sgRNA_sequence": "Concatenated",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["DMSO"]
+}
+{
+"article_title": "Genome Scale CRISPR Cas9a Knockout Screen Reveals Genes That Control Glioblastoma Susceptibility to the Alkylating Agent Temozolomide",
+"dataset_filename": "output_tables/awahGenomeScaleCRISPR2022_35990011_6377_Library_sheet_t1.csv",
+"header_row": "None",
+"sgRNA_sequence": "Concatenated",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["None"]
+}
+{
+  "article_title": "Activation of the Integrated Stress Response Is a Vulnerability for Multidrug-resistant {{FBXW7}}-deficient Cells",
+  "dataset_filename": "output_tables/sanchez-burgosActivationIntegratedStress2022_35861150_EMMM-14-e15855-s001_CISPLATIN SCREEN (POOL) _t2.csv",
+  "header_row": "0",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["Raw count"],
+  "conditions": ["CISPLATIN"]
+}
+{
+"article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+"dataset_filename": "output_tables/caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-3_H460 STARS Positive_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["STARS"]
+}
+{
+  "article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+  "dataset_filename": "output_tables/caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-3_A549 STARS Positive_t1.csv",
+  "header_row": "0",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["MAGeCK statistics"],
+  "conditions": ["A549 STARS Positive"]
+}
+{
+  "article_title": "Pooled CRISPR Screening in Pancreatic Cancer Cells Implicates Co-Repressor Complexes as a Cause of Multiple Drug Resistance via Regulation of Epithelial-to-Mesenchymal Transition",
+  "dataset_filename": "output_tables/ramakerPooledCRISPRScreening2021_34049503_12885_2021_8388_MOESM1_ESM_TableS3A_t1.csv",
+  "header_row": "2",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "RefSeq ID",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["fold-change/log fold-change"],
+  "conditions": ["Gemcitabine", "Irinotecan", "Oxaliplatin", "5FU"]
+}
+{
+"article_title": "Genome-Wide CRISPR/Cas9 Screening Identifies CARHSP1 Responsible for Radiation Resistance in Glioblastoma",
+"dataset_filename": "output_tables/zhuGenomewideCRISPRCas92021_34290231_41419_2021_4000_MOESM4_ESM_U251_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "Own-column",
+"gene_identifier": "RefSeq ID",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["U251"]
+}
+{
+  "article_title": "{{CCNE1}} Amplification Is Synthetic Lethal with {{PKMYT1}} Kinase Inhibition",
+  "dataset_filename": "output_tables/galloCCNE1AmplificationSynthetic2022_35444283_41586_2022_4638_MOESM3_ESM_ReadCounts RP-6306 resistance_t1.csv",
+  "header_row": "0",
+  "sgRNA_sequence": "Own-column",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per sgRNA",
+  "metrics": ["Raw count"],
+  "conditions": ["TKOv3_FT282.CCNE1oe_C3_NT_T6A", "TKOv3_FT282.CCNE1oe_C3_NT_T6B", "TKOv3_FT282.CCNE1oe_C4_NT_T6A", "TKOv3_FT282.CCNE1oe_C4_NT_T6B", "TKOv3_FT282.CCNE1oe_C3_RP6306_T21A", "TKOv3_FT282.CCNE1oe_C3_RP6306_T21B", "TKOv3_FT282.CCNE1oe_C4_RP6306_T21A", "TKOv3_FT282.CCNE1oe_C4_RP6306_T21B"]
+}
+{
+  "article_title": "Genome Scale CRISPR Cas9a Knockout Screen Reveals Genes That Control Glioblastoma Susceptibility to the Alkylating Agent Temozolomide",
+  "dataset_filename": "output_tables/awahGenomeScaleCRISPR2022_35990011_6397_Puromycin_Day14_sheet_t1.csv",
+  "header_row": "None",
+  "sgRNA_sequence": "Concatenated",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per sgRNA",
+  "metrics": ["Raw count"],
+  "conditions": ["Puromycin"]
+}
+{
+"article_title": "Identifying CDC7 as a Synergistic Target of Chemotherapy in Resistant Small-Cell Lung Cancer via CRISPR/Cas9 Screening",
+"dataset_filename": "output_tables/dengIdentifyingCDC7Synergistic2023_36725843_41420_2023_1315_MOESM8_ESM_Sheet1_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["d7_chemo", "d7_control"]
+}
+{
+"article_title": "{{MND1}} and {{PSMC3IP}} Control {{PARP}} Inhibitor Sensitivity in Mitotic Cells",
+"dataset_filename": "output_tables/zelceskiMND1PSMC3IPControl2023_37163373_1-s2.0-S2211124723004953-mmc2_ST1C_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "Own-column",
+"gene_identifier": "Ensembl Gene ID",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Z-score/Z-ratios"],
+"conditions": ["olap screen", "talaz screen"]
+}
+{
+"article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+"dataset_filename": "output_tables/oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_L-asparaginase_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["L-asparaginase"]
+}
+{
+"article_title": "A Genome-Scale CRISPR/Cas9 Knockout Screening Reveals SH3D21 as a Sensitizer for Gemcitabine",
+"dataset_filename": "output_tables/masoudiGenomescaleCRISPRCas92019_31844142_41598_2019_55893_MOESM2_ESM_Sheet1_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["Gemcitabine"]
+}
+{
+  "article_title": "Ribosomal Protein S11 Influences Glioma Response to TOP2 Poisons",
+  "dataset_filename": "output_tables/awahRibosomalProteinS112020_32528131_NIHMS1599130-supplement-1599130_SuppList_Data_6_CRISPR Read count Awah CU et.al_t1.csv",
+  "header_row": "0",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per sgRNA",
+  "metrics": ["Raw count"],
+  "conditions": ["Eto R1", "Eto R2", "DMSO"]
+}
+{
+"article_title": "Genome Scale CRISPR Cas9a Knockout Screen Reveals Genes That Control Glioblastoma Susceptibility to the Alkylating Agent Temozolomide",
+"dataset_filename": "output_tables/awahGenomeScaleCRISPR2022_35990011_6396_Puromycin_Day0_sheet_t1.csv",
+"header_row": "None",
+"sgRNA_sequence": "Concatenated",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["Puromycin"]
+}
+{
+"article_title": "Ribosomal Protein S11 Influences Glioma Response to TOP2 Poisons",
+"dataset_filename": "output_tables/awahRibosomalProteinS112020_32528131_NIHMS1599130-supplement-1599130_SuppList_Data_6_CRISPR Read count Awah CU et.al_t3.csv",
+"header_row": "0",
+"sgRNA_sequence": "Concatenated",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["Library R1", "Library R2"]
+}
+{
+"article_title": "{{CCNE1}} Amplification Is Synthetic Lethal with {{PKMYT1}} Kinase Inhibition",
+"dataset_filename": "output_tables/galloCCNE1AmplificationSynthetic2022_35444283_41586_2022_4638_MOESM3_ESM_ReadCounts TKOv2 CCNE1 SL_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "Concatenated",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["TKOv2", "RPE1", "hTERT", "Cas9", "dTP53", "CCNE1oe"]
+}
+{
+"article_title": "Genome-Scale CRISPR Screen Reveals Neddylation to Contribute to Cisplatin Resistance of Testicular Germ Cell Tumours",
+"dataset_filename": "output_tables/funkeGenomescaleCRISPRScreen2023_37024667_41416_2023_2247_MOESM3_ESM_7_NGS_Cand_list_t2.csv",
+"header_row": "0",
+"sgRNA_sequence": "Own-column",
+"gene_identifier": "RefSeq ID",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["Cisplatin"]
+}
+{
+"article_title": "DYNLL1 Binds MRE11 to Limit DNA End Resection in BRCA1-deficient Cells",
+"dataset_filename": "output_tables/heDYNLL1BindsMRE112018_30464262_NIHMS1567675-supplement-Table_1_Cov362 Olaparib_t1.csv",
+"header_row": "1",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["Olaparib"]
+}
+{
+"article_title": "ATM Orchestrates the DNA-damage Response to Counter Toxic Non-Homologous End-Joining at Broken Replication Forks",
+"dataset_filename": "output_tables/balmusATMOrchestratesDNAdamage2019_30622252_41467_2018_7729_MOESM4_ESM_test_BA6_yellow_50nm.pos.gene_s_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["BA6_yellow_50nm"]
+}
+{
+"article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+"dataset_filename": "output_tables/oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_Methotrexate_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["Methotrexate"]
+}
+{
+  "article_title": "Genome-Wide CRISPR/Cas9 Screen Identifies Etoposide Response Modulators Associated with Clinical Outcomes in Pediatric AML",
+  "dataset_filename": "output_tables/nguyenGenomewideCRISPRCas92022_36111891_BLOODA_ADV-2022-007934-mmc1_Supplemental Table S2_t1.csv",
+  "header_row": "1",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["MAGeCK statistics"],
+  "conditions": ["Etoposide"]
+}
+{
+"article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+"dataset_filename": "output_tables/caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-3_A549 STARS Negative_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["A549 STARS Negative"]
+}
+{
+  "article_title": "Pooled CRISPR Screening in Pancreatic Cancer Cells Implicates Co-Repressor Complexes as a Cause of Multiple Drug Resistance via Regulation of Epithelial-to-Mesenchymal Transition",
+  "dataset_filename": "output_tables/ramakerPooledCRISPRScreening2021_34049503_12885_2021_8388_MOESM1_ESM_TableS3B_t1.csv",
+  "header_row": "2",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["fold-change/log fold-change"],
+  "conditions": ["Gemcitabine", "Oxaliplatin", "Irinotecan", "5FU"]
+}
+{
+  "article_title": "Ribosomal Protein S11 Influences Glioma Response to TOP2 Poisons",
+  "dataset_filename": "output_tables/awahRibosomalProteinS112020_32528131_NIHMS1599130-supplement-1599130_SuppList_Data_1B_Sheet1_t3.csv",
+  "header_row": "1",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["MAGeCK statistics"],
+  "conditions": ["DMSO"]
+}
+{
+"article_title": "Genome Scale CRISPR Cas9a Knockout Screen Reveals Genes That Control Glioblastoma Susceptibility to the Alkylating Agent Temozolomide",
+"dataset_filename": "output_tables/awahGenomeScaleCRISPR2022_35990011_6399_Temozolomide_Day14_sheet_t1.csv",
+"header_row": "None",
+"sgRNA_sequence": "Concatenated",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["Temozolomide"]
+}
+{
+"article_title": "Genome-Wide CRISPR/Cas9 Screening Identifies CARHSP1 Responsible for Radiation Resistance in Glioblastoma",
+"dataset_filename": "output_tables/zhuGenomewideCRISPRCas92021_34290231_41419_2021_4000_MOESM4_ESM_Sheet3_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["Other/ambiguous"],
+"conditions": ["U87", "U251"]
+}
+{
+"article_title": "Revealing Temozolomide Resistance Mechanisms via Genome-Wide CRISPR Libraries",
+"dataset_filename": "output_tables/ribeiroreilyrochaRevealingTemozolomideResistance2020_33271924_cells-09-02573-s001_Table S2 _t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["Temozolomide"]
+}
+{
+  "article_title": "Ribosomal Protein S11 Influences Glioma Response to TOP2 Poisons",
+  "dataset_filename": "output_tables/awahRibosomalProteinS112020_32528131_NIHMS1599130-supplement-1599130_SuppList_Data_1B_Sheet1_t1.csv",
+  "header_row": "1",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["MAGeCK statistics"],
+  "conditions": ["Et > DMSO"]
+}
+{
+"article_title": "Genome-Scale CRISPR Screen Reveals Neddylation to Contribute to Cisplatin Resistance of Testicular Germ Cell Tumours",
+"dataset_filename": "output_tables/funkeGenomescaleCRISPRScreen2023_37024667_41416_2023_2247_MOESM3_ESM_7_NGS_Cand_list_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "Own-column",
+"gene_identifier": "RefSeq ID",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["Cisplatin"]
+}
+{
+"article_title": "Genome-Wide CRISPR/Cas9 Screen Identifies Etoposide Response Modulators Associated with Clinical Outcomes in Pediatric AML",
+"dataset_filename": "output_tables/nguyenGenomewideCRISPRCas92022_36111891_BLOODA_ADV-2022-007934-mmc1_Supplemental Table S0_t1.csv",
+"header_row": "1",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["Etoposide", "Vehicle control", "Day 0", "Day 4", "Day 12", "Day 18"]
+}
+{
+"article_title": "A Whole-genome CRISPR Screen Identifies a Role of MSH2 in Cisplatin-mediated Cell Death in Muscle-invasive Bladder Cancer",
+"dataset_filename": "output_tables/goodspeedWholegenomeCRISPRScreen2019_30414698_NIHMS1510205-supplement-1_Supplementary Table 6_t1.csv",
+"header_row": "1",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics", "fold-change/log fold-change"],
+"conditions": ["baseMean1", "baseMean2", "baseMean3"]
+}
+{
+"article_title": "Genome-Wide CRISPR-Cas9 Screening Identifies NF-$\\kappa$B/E2F6 Responsible for EGFRvIII-Associated Temozolomide Resistance in Glioblastoma",
+"dataset_filename": "output_tables/huangGenomeWideCRISPR2019_31508283_ADVS-6-1900782-s005_A-2_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["fold-change/log fold-change"],
+"conditions": ["DMSO", "TMZ"]
+}
+{
+  "article_title": "{{mTOR}} Inhibition Attenuates Chemosensitivity through the Induction of Chemotherapy Resistant Persisters",
+  "dataset_filename": "output_tables/liuMTORInhibitionAttenuates2022_36396656_41467_2022_34890_MOESM5_ESM_Supplementary Data 1a_t1.csv",
+  "header_row": "0",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["Other/ambiguous"],
+  "conditions": ["Gemcitabine", "Selinexor"]
+}
+{
+"article_title": "Activation of the Integrated Stress Response Is a Vulnerability for Multidrug-resistant {{FBXW7}}-deficient Cells",
+"dataset_filename": "output_tables/sanchez-burgosActivationIntegratedStress2022_35861150_EMMM-14-e15855-s001_CISPLATIN SCREEN (POOL) _t1.csv",
+"header_row": "1",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["Raw count"],
+"conditions": ["CISPLATIN"]
+}
+{
+"article_title": "CRISPR-Cas9 Screen Identifies DYRK1A as a Target for Radiotherapy Sensitization in Pancreatic Cancer",
+"dataset_filename": "output_tables/lanCRISPRCas9ScreenIdentifies2022_35053488_cancers-14-00326-s001_RT-2D_t1.csv",
+"header_row": "1",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["Radiotherapy"]
+}
+{
+"article_title": "{{MND1}} and {{PSMC3IP}} Control {{PARP}} Inhibitor Sensitivity in Mitotic Cells",
+"dataset_filename": "output_tables/zelceskiMND1PSMC3IPControl2023_37163373_1-s2.0-S2211124723004953-mmc2_ST1B_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "Own-column",
+"gene_identifier": "Ensembl Gene ID",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Z-score/Z-ratios"],
+"conditions": ["olap", "talaz"]
+}
+{
+  "article_title": "CRISPR-based Knockout Screening Identifies the Loss of MIEF2 to Enhance Oxaliplatin Resistance in Colorectal Cancer through Inhibiting the Mitochondrial Apoptosis Pathway",
+  "dataset_filename": "output_tables/xieCRISPRbasedKnockoutScreening2022_36106106_DataSheet_1_Genelist of OXL_t1.csv",
+  "header_row": "0",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["Raw count"],
+  "conditions": ["Baseline", "PBS", "OX"]
+}
+{
+"article_title": "A Fifteen-Gene Classifier to Predict Neoadjuvant Chemotherapy Responses in Patients with Stage IB to IIB Squamous Cervical Cancer",
+"dataset_filename": "output_tables/tianFifteenGeneClassifier2021_34026427_ADVS-8-2001978-s005_Taxol_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["fold-change/log fold-change"],
+"conditions": ["Taxol"]
+}
+{
+"article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+"dataset_filename": "output_tables/caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-2_H460_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "Own-column",
+"gene_identifier": "None",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["fold-change/log fold-change"],
+"conditions": ["ATMi", "DMSO"]
+}
+{
+  "article_title": "Genome-Wide CRISPR/Cas9 Screen Identifies Etoposide Response Modulators Associated with Clinical Outcomes in Pediatric AML",
+  "dataset_filename": "output_tables/nguyenGenomewideCRISPRCas92022_36111891_BLOODA_ADV-2022-007934-mmc1_Supplemental Table S1_t1.csv",
+  "header_row": "1",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["MAGeCK statistics"],
+  "conditions": ["Etoposide"]
+}
+{
+"article_title": "Genome-Wide CRISPR Screen Identifies ELP5 as a Determinant of Gemcitabine Sensitivity in Gallbladder Cancer",
+"dataset_filename": "output_tables/xuGenomewideCRISPRScreen2019_31792210_41467_2019_13420_MOESM4_ESM_reads out counts_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["Survive", "Input"]
+}
+{
+"article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+"dataset_filename": "output_tables/caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-3_H460 STARS Negative_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["H460 STARS Negative"]
+}
+{
+"article_title": "Pooled CRISPR Screening in Pancreatic Cancer Cells Implicates Co-Repressor Complexes as a Cause of Multiple Drug Resistance via Regulation of Epithelial-to-Mesenchymal Transition",
+"dataset_filename": "output_tables/ramakerPooledCRISPRScreening2021_34049503_12885_2021_8388_MOESM1_ESM_Table S4A_t1.csv",
+"header_row": "1",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["fold-change/log fold-change"],
+"conditions": ["Gemcitabine", "Irinotecan", "Oxaliplatin", "5FU"]
+}
+{
+"article_title": "Genome-Wide CRISPR Screening Identifies DCK and CCNL1 as Genes That Contribute to Gemcitabine Resistance in Pancreatic Cancer",
+"dataset_filename": "output_tables/yangGenomeWideCRISPRScreening2022_35804923_cancers-14-03152-s001_Sheet1_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["neg", "pos"]
+}
+{
+  "article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+  "dataset_filename": "output_tables/oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_Maphosphamide_t1.csv",
+  "header_row": "0",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["MAGeCK statistics"],
+  "conditions": ["Maphosphamide"]
+}
+{
+"article_title": "A Genome-Scale CRISPR/Cas9 Knockout Screening Reveals SH3D21 as a Sensitizer for Gemcitabine",
+"dataset_filename": "output_tables/masoudiGenomescaleCRISPRCas92019_31844142_41598_2019_55893_MOESM3_ESM_Sheet1_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": []
+}
+{
+  "article_title": "Genome-Wide CRISPR-Cas9 Screening Identifies NF-$\\kappa$B/E2F6 Responsible for EGFRvIII-Associated Temozolomide Resistance in Glioblastoma",
+  "dataset_filename": "output_tables/huangGenomeWideCRISPR2019_31508283_ADVS-6-1900782-s006_B-2_t1.csv",
+  "header_row": "1",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["fold-change/log fold-change"],
+  "conditions": ["DMSO", "TMZ"]
+}
+{
+  "article_title": "A Fifteen-Gene Classifier to Predict Neoadjuvant Chemotherapy Responses in Patients with Stage IB to IIB Squamous Cervical Cancer",
+  "dataset_filename": "output_tables/tianFifteenGeneClassifier2021_34026427_ADVS-8-2001978-s005_DDP_t1.csv",
+  "header_row": "0",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["fold-change/log fold-change", "Other/ambiguous"],
+  "conditions": ["DDP"]
+}
+{
+"article_title": "Genome-Wide CRISPR/Cas9 Screening Identifies CARHSP1 Responsible for Radiation Resistance in Glioblastoma",
+"dataset_filename": "output_tables/zhuGenomewideCRISPRCas92021_34290231_41419_2021_4000_MOESM4_ESM_U87_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "Own-column",
+"gene_identifier": "RefSeq ID",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["U87"]
+}
+{
+  "article_title": "A Fifteen-Gene Classifier to Predict Neoadjuvant Chemotherapy Responses in Patients with Stage IB to IIB Squamous Cervical Cancer",
+  "dataset_filename": "output_tables/tianFifteenGeneClassifier2021_34026427_ADVS-8-2001978-s005_DDP_Taxol_t1.csv",
+  "header_row": "0",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["fold-change/log fold-change"],
+  "conditions": ["DDP", "Taxol"]
+}
+{
+"article_title": "{{CCNE1}} Amplification Is Synthetic Lethal with {{PKMYT1}} Kinase Inhibition",
+"dataset_filename": "output_tables/galloCCNE1AmplificationSynthetic2022_35444283_41586_2022_4638_MOESM3_ESM_ReadCounts_TKOv3 CCNE1 SL_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "Own-column",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["Raw count"],
+"conditions": ["TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T0", "TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18A", "TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18B", "TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T0", "TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T18A", "TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T18B"]
+}
+{
+"article_title": "Mutational and Functional Genetics Mapping of Chemotherapy Resistance Mechanisms in Relapsed Acute Lymphoblastic Leukemia",
+"dataset_filename": "output_tables/oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_AraC_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "None",
+"gene_identifier": "HGNC gene symbol",
+"dataset_type": "Data",
+"statistic_aggregation": "Per gene",
+"metrics": ["MAGeCK statistics"],
+"conditions": ["AraC"]
+}
+{
+"article_title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+"dataset_filename": "output_tables/caiCooperationATMFanconi2020_32075772_NIHMS1563617-supplement-2_A549_t1.csv",
+"header_row": "0",
+"sgRNA_sequence": "Own-column",
+"gene_identifier": "None",
+"dataset_type": "Data",
+"statistic_aggregation": "Per sgRNA",
+"metrics": ["fold-change/log fold-change"],
+"conditions": ["ATMi", "DMSO"]
+}
+{
+  "article_title": "Genome-Wide CRISPR-Cas9 Screening Identifies NF-$\\kappa$B/E2F6 Responsible for EGFRvIII-Associated Temozolomide Resistance in Glioblastoma",
+  "dataset_filename": "output_tables/huangGenomeWideCRISPR2019_31508283_ADVS-6-1900782-s006_B-1_t1.csv",
+  "header_row": "1",
+  "sgRNA_sequence": "None",
+  "gene_identifier": "HGNC gene symbol",
+  "dataset_type": "Data",
+  "statistic_aggregation": "Per gene",
+  "metrics": ["fold-change/log fold-change"],
+  "conditions": ["DMSO", "TMZ"]
+}
