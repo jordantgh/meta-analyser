@@ -1,6 +1,7 @@
 from pyparsing import infixNotation, opAssoc, Keyword, Word, alphanums, QuotedString
 import argparse
 import os
+import shutil
 
 class QueryTerm:
     def __init__(self, term):
@@ -70,8 +71,11 @@ def main():
     parser.add_argument('-q', '--query', type=str, nargs='?', default=None, help='Query string')
     parser.add_argument('-qf', '--queryfile', type=str, nargs='?', default=None, help='File containing the query')
     parser.add_argument('targetdir', type=str, help='Directory to search')
+    parser.add_argument('destdir', type=str, help='Destination directory')  # Add a new argument for the destination directory
 
     args = parser.parse_args()
+    
+    os.makedirs(args.destdir, exist_ok=True)
 
     if args.query is not None:
         query = args.query
@@ -87,6 +91,9 @@ def main():
 
     for match in matches:
         print(match)
+        # Copy each matched file to the destination directory
+        shutil.copy(os.path.join(args.targetdir, match), os.path.join(args.destdir, match))
+
 
 if __name__ == "__main__":
     main()
