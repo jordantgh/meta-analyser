@@ -80,7 +80,7 @@ Supplementary Data 1: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9671908/bin/4
 Zelceski A, Francica P, Lingg L, Mutlu M, Stok C, Liptay M, Alexander J, Baxter JS, Brough R, Gulati A, Haider S, Raghunandan M, Song F, Sridhar S, Forment JV, O'Connor MJ, Davies BR, van Vugt MATM, Krastev DB, Pettitt SJ, Tutt ANJ, Rottenberg S, Lord CJ. MND1 and PSMC3IP control PARP inhibitor sensitivity in mitotic cells. Cell Rep. 2023 May 30;42(5):112484. doi: 10.1016/j.celrep.2023.112484. Epub 2023 May 9. PMID: 37163373.
 
 Links:
-Table S1. Supplemental data including: CRISPRn and CRISPRi screen data, shRNA screen data, KEGG analysis of CRISPR screen data, mRNA and protein expression data for MND1, PSMC3IP, BRCA1, BRCA2, and primer guide RNA sequences: https://www.cell.com/cms/10.1016/j.celrep.2023.112484/attachment/beb3063a-a926-4dce-985d-091f2f223443/mmc2.xlsx
+Table S1. Supplemental data including: CRISPRn and CRISPRi screen data, shRNA screen data, KEGG analysis of CRISPR screen data, mRNA and protein expression data for MND1, PSMC3IP, BRCA1, BRCA2, and primer guide RNA sequences: https://https://ars.els-cdn.com/content/image/1-s2.0-S2211124723004953-mmc2.xlsx
 ]
 
 [
