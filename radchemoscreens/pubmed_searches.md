@@ -1,5 +1,4 @@
-## PMC all
-
+## PMC
 (
     (
         "CRISPR screen"[Abstract] OR 
@@ -95,9 +94,7 @@
     )
 )
 
-
-## Pubmed all
-
+## Pubmed
 (
     (
         "CRISPR screen"[Title/Abstract] OR 
@@ -188,92 +185,6 @@
             "DNA damage resistance"[Title/Abstract] OR
             "DNA damage sensitivity"[Title/Abstract] OR
             "sensitivity to DNA damage"[Title/Abstract] OR
-            "resistance to DNA damage"[Title/Abstract]
-        )
-    )
-)
-
-## Pubmed resist only
-
-(
-    (
-        "CRISPR screen"[Title/Abstract] OR 
-        "CRISPR-Cas9 screen"[Title/Abstract] OR 
-        "CRISPR/Cas9 screen"[Title/Abstract] OR 
-        "CRISPR library"[Title/Abstract] OR 
-        "genome-wide CRISPR"[Title/Abstract] OR 
-        "genome wide CRISPR"[Title/Abstract] OR 
-        "genome-scale CRISPR"[Title/Abstract] OR 
-        "genome scale CRISPR"[Title/Abstract]
-    ) 
-    AND 
-    (
-        "cancer"[Title/Abstract] OR 
-        "tumor"[Title/Abstract] OR 
-        "tumour"[Title/Abstract] OR 
-        "neoplasia"[Title/Abstract] OR 
-        "carcinoma"[Title/Abstract] OR 
-        "sarcoma"[Title/Abstract] OR 
-        "lymphoma"[Title/Abstract] OR 
-        "leukemia"[Title/Abstract] OR 
-        "adenocarcinoma"[Title/Abstract] OR 
-        "malignancy"[Title/Abstract]
-    )
-    AND 
-    (
-        (
-            "radioresistance"[Title/Abstract] OR 
-            "radio-resistance"[Title/Abstract] OR 
-            "radiation resistance"[Title/Abstract] OR 
-            (
-                "radiotherapy"[Title/Abstract] AND 
-                "resistance"
-            )
-        ) 
-        OR 
-        (
-            "chemoresistance"[Title/Abstract] OR 
-            "chemo-resistance"[Title/Abstract] OR 
-            (
-                "chemotherapy"[Title/Abstract] AND 
-                "resistance"
-            ) 
-            OR
-            (
-                (
-                    "cisplatin"[Title/Abstract] OR 
-                    "carboplatin"[Title/Abstract] OR 
-                    "oxaliplatin"[Title/Abstract] OR 
-                    "doxorubicin"[Title/Abstract] OR 
-                    "daunorubicin"[Title/Abstract] OR 
-                    "epirubicin"[Title/Abstract] OR 
-                    "idarubicin"[Title/Abstract] OR 
-                    "bleomycin"[Title/Abstract] OR 
-                    "etoposide"[Title/Abstract] OR 
-                    "irinotecan"[Title/Abstract] OR 
-                    "topotecan"[Title/Abstract] OR 
-                    "gemcitabine"[Title/Abstract] OR 
-                    "5-fluorouracil"[Title/Abstract] OR 
-                    "capecitabine"[Title/Abstract] OR 
-                    "methotrexate"[Title/Abstract] OR 
-                    "pemetrexed"[Title/Abstract] OR 
-                    "cyclophosphamide"[Title/Abstract] OR 
-                    "ifosfamide"[Title/Abstract] OR 
-                    "mitomycin C"[Title/Abstract] OR 
-                    "camptothecin"[Title/Abstract] OR 
-                    "methyl methanesulfonate"[Title/Abstract] OR 
-                    "ionizing radiation"[Title/Abstract] OR 
-                    "temozolomide"[Title/Abstract] OR 
-                    "chlorambucil"[Title/Abstract] OR 
-                    "busulfan"[Title/Abstract]
-                )
-                AND
-                "resistance"
-            )
-        ) 
-        OR 
-        (
-            "DNA damage resistance"[Title/Abstract] OR
             "resistance to DNA damage"[Title/Abstract]
         )
     )
