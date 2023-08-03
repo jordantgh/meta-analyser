@@ -1,0 +1,149 @@
+[
+  {
+    "name": "analyze_table",
+    "description": "Analyzes a table within a dataset from a scientific article and provides structured data interpretation.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "article_title": {
+          "type": "string",
+          "description": "The title of the article (camelCase)."
+        },
+        "article_abstract": {
+          "type": "string",
+          "description": "The abstract of the article."
+        },
+        "dataset_filename": {
+          "type": "string",
+          "description": "The filename of the dataset that the table belongs to."
+        },
+        "table": {
+          "type": "object",
+          "properties": {
+            "table_title": {
+              "type": "string",
+              "description": "Suggested camelCase title of the table."
+            },
+            "table_summary": {
+              "type": "string",
+              "description": "The summary of the table."
+            },
+            "geneid_type": {
+              "type": "string",
+              "description": "The type of gene identification used in the table."
+            },
+            "n_rows": {
+              "type": "integer",
+              "description": "The number of rows in the table."
+            },
+            "n_cols": {
+              "type": "integer",
+              "description": "The number of columns in the table."
+            }
+          },
+          "description": "The table included in the dataset."
+        }
+      },
+      "required": [
+        "article_title",
+        "article_abstract",
+        "dataset_filename",
+        "table"
+      ]
+    }
+  },
+  {
+    "name": "analyze_dataset",
+    "description": "Analyzes a CRISPR screen dataset and provides structured data interpretation.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "article_title": {
+          "type": "string",
+          "description": "The title of the paper"
+        },
+        "dataset_filename": {
+          "type": "string",
+          "description": "The filename of the dataset."
+        },
+        "header_row": {
+          "type": "string",
+          "description": "Which row the header is in (if any). The first row is '0'. If there is no header, then this should be 'None'."
+        },
+        "sgRNA_sequence": {
+          "type": "string",
+          "enum": [
+            "Own-column",
+            "Concatenated",
+            "None"
+          ],
+          "description": "Whether the sgRNA sequence is included in the table, and if so, whether on its own or concatenated with the gene name e.g. A1BG_CATCTTCTTTCACCTGAACG."
+        },
+        "gene_identifier": {
+          "type": "string",
+          "enum": [
+            "HGNC gene symbol",
+            "HGNC ID",
+            "Ensembl Gene ID",
+            "EntrezGene ID",
+            "RefSeq ID",
+            "UniProt ID",
+            "Other/Unclear",
+            "None"
+          ],
+          "description": "The type of gene identification used in the table."
+        },
+        "dataset_type": {
+          "type": "string",
+          "enum": [
+            "Data",
+            "Lookup/Reference/Metadata"
+          ],
+          "description": "Whether the dataset contains experimentally measured data or is merely a lookup/reference/metadata table."
+        },
+        "statistic_aggregation": {
+          "type": "string",
+          "enum": [
+            "Per gene",
+            "Per sgRNA",
+            "NA"
+          ],
+          "description": "Whether the statistics are aggregated per gene or per sgRNA. If there is more than one row for any gene, then this should be 'per sgRNA', even if sgRNA sequence is not explicitly present. NA if the dataset is of type 'Lookup/Reference/Metadata'."
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "MAGeCK statistics",
+              "Z-score/Z-ratios",
+              "fold-change/log fold-change",
+              "Raw count",
+              "Other/ambiguous",
+              "NA"
+            ]
+          },
+          "description": "The metrics of gene/sgRNA abundance in the dataset (all that apply). NA if the dataset is of type 'Lookup/Reference/Metadata'."
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The conditions explicitly mentioned in the dataset (or inferred from the file name if high confidence), e.g., DMSO, library, cisplatin, etc, if any. None if there are no explicitly mentioned conditions. NA if the dataset is of type 'Lookup/Reference/Metadata'."
+        }
+      }
+    },
+    "required": [
+      "article_title",
+      "dataset_filename",
+      "header_row",
+      "sgRNA_sequence",
+      "gene_identifier",
+      "dataset_type",
+      "statistic_aggregation",
+      "metrics",
+      "conditions"
+    ]
+  }
+]
