@@ -13,7 +13,7 @@ def analyze_dataset(dataset_filepath, paper_title):
     # Load the dataset
     file_ext = os.path.splitext(dataset_filepath)[-1]
     if file_ext == '.csv':
-        df = pd.read_csv(dataset_filepath)
+        df = pd.read_csv(dataset_filepath, header=None)
     else:
         print(f"Unsupported file format: {file_ext}")
         return
@@ -32,34 +32,30 @@ def convert_to_markdown(json_obj):
             markdown_str += f"{key}: {value}\n\n"
     return markdown_str
   
-sys_prompt = "You are an app that understands and analyzes CRISPR screen datasets and outputs structured JSON data specifying key parameters of the dataset in human readable form. All of the datasets you will see pertain to screens looking for genes which promote resistance (or sensitivity) to DNA damaging insults (drugs or radiation)."
+sys_prompt = "You're an app that analyzes CRISPR screen datasets and outputs structured JSON data with key parameters of the dataset. All datasets you'll see pertain to screens for genes promoting resistance or sensitivity to DNA damaging insults (drugs/radiation)."
 
 with open('dependencies/prompt_examples.json', 'r') as file:
-    prompt_examples = json.load(file)
+    cot = json.load(file)
     
 with open('dependencies/functioncall.json', 'r') as file:
     functioncall = json.load(file)
 
-def process_dataset(df, filename, paper_title, max_retries=5, output_file='gpt_output/output_4.md'):
+def process_dataset(df, filename, paper_title, max_retries=5, output_file='gpt_output/output_5.md'):
     time.sleep(1)
 
     # Generate API call
-    dataset_sample = df.head(10).to_string()
-    user_prompt = f"""
-    I need to analyze a dataset from this paper: '{paper_title}'. The filename of this dataset is '{filename}'. Here are the first 10 lines of the dataset:
+    dataset_sample = df.head(6).to_markdown()
+    user_prompt = [f"""
+    I need to analyze a dataset from this paper: '{paper_title}'. The dataset filename is '{filename}'. Here are the first 5 rows:
     
     {dataset_sample}
     
-    I need an interpretation of the dataset in structured JSON format. (A few examples of correcly labeled datasets are shown below.)
-    
-    """
+    I need an interpretation of this dataset in structured JSON format. (A few examples of correcly labeled datasets are shown above.)
+    """]
 
-    prompt = [
-          {"role": "system", "content": sys_prompt},
-          {"role": "user", "content": user_prompt}
-      ]
+    prompt = [{"role": "system", "content": sys_prompt}, {"role": "user", "content": str(cot + user_prompt)}]
     
-    message_input = prompt + prompt_examples
+    message_input = prompt 
     
     retries = 0
     while retries < max_retries:
@@ -75,9 +71,9 @@ def process_dataset(df, filename, paper_title, max_retries=5, output_file='gpt_o
             # Convert the response to a dictionary
             response_dict = json.loads(str(response.choices[0]["message"]["function_call"]["arguments"]))
 
-            df.columns = df.columns.str.replace('|', '_')
+            # df.columns = df.columns.str.replace('|', '_')
             df.replace('\|', '_', regex=True, inplace=True, )
-            dataset_sample = df.head(10).to_markdown()
+            dataset_sample = df.head(6).to_markdown()
             
             # Add the dataset_sample to the dictionary
             response_dict["sample"] = dataset_sample
@@ -87,6 +83,10 @@ def process_dataset(df, filename, paper_title, max_retries=5, output_file='gpt_o
             with open(output_file, 'a') as file:
                 file.write(markdown_output)
                 file.write("\n")
+                
+            # Write the prompt to a file
+            # with open('gpt_output/prompt.md', 'w') as file:
+            #     file.write(str(message_input))
             break
         except Exception as e:
             print(f"Error: {e}")

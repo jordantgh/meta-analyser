@@ -5,17 +5,13 @@
   "parameters": {
     "type": "object",
     "properties": {
-      "article_title": {
-        "type": "string",
-        "description": "The title of the paper"
-      },
       "dataset_filename": {
         "type": "string",
         "description": "The filename of the dataset."
       },
       "header_row": {
         "type": "string",
-        "description": "Which row the header is in (if any). The first row is '0'. If there is no header, then this should be 'None'."
+        "description": "Which row the proper header is in (if any). The first row is '0'. If there is no header, then this should be 'None'. The pandas inserted '0', '1', '2', etc, col label row doesn't count."
       },
       "sgRNA_sequence": {
         "type": "string",
@@ -44,7 +40,7 @@
           "Other/Unclear [MOD]",
           "None"
         ],
-        "description": "The type of gene identifier used in the table. Add [MOD] if you recognize the gene identifier but it is modified in some way e.g. appended with a uuid (but not if it is simply appended with sgRNA sequence e.g. A1BG_CATCTTCTTTCACCTGAACG. In this case do not add [MOD])."
+        "description": "The type of gene identifier used in the table. Add [MOD] if you recognize a gene identifier but it is modified in some way e.g. appended with a uuid (but not if it is simply appended with sgRNA sequence e.g. A1BG_CATCTTCTTTCACCTGAACG. In this case do NOT add [MOD])."
       },
       "dataset_type": {
         "type": "string",
@@ -68,8 +64,11 @@
         "items": {
           "type": "string",
           "enum": [
-            "MAGeCK statistics",
-            "Z-score/Z-ratios",
+            "MAGeCK statistics (positive selection)",
+            "MAGeCK statistics (negative selection)",
+            "MAGeCK statistics (positive/negative selection)",
+            "Z-score",
+            "Z-ratio",
             "fold-change/log fold-change",
             "STARS (negative binomial)",
             "Raw count",
@@ -77,19 +76,25 @@
             "NA"
           ]
         },
-        "description": "The metrics of gene/sgRNA abundance in the dataset (all that apply, but don't mention fold change if it's part of MAGeCK). NA if the dataset is of type 'Lookup/Reference/Metadata'."
+        "description": "The metrics of gene/sgRNA abundance in the dataset (ALL that apply, but don't mention fold change if it's part of MAGeCK). NA if the dataset is of type 'Lookup/Reference/Metadata'."
       },
       "conditions": {
         "type": "array",
         "items": {
           "type": "string"
         },
-        "description": "The conditions explicitly mentioned in the dataset (or inferred from the file name if high confidence), e.g., DMSO, library, cisplatin, etc, if any. None if there are no explicitly mentioned conditions. NA if the dataset is of type 'Lookup/Reference/Metadata'."
+        "description": "The conditions explicitly mentioned in the dataset (or inferred from the file name if high confidence), e.g., DMSO, library, cisplatin, CRISPRa, CRISPR KO, etc, if any. None if there are no explicitly mentioned conditions. 'NA' if the dataset is of type 'Lookup/Reference/Metadata'."
+      },
+      "condition_variables": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "The variables which the conditions are based on, e.g.,drug, cell line, experiment type (e.g. CRISPRa/CRISPR KO), etc, if any. None if there are no explicitly mentioned conditions. 'NA' if the dataset is of type 'Lookup/Reference/Metadata'."
       }
     }
   },
   "required": [
-    "article_title",
     "dataset_filename",
     "header_row",
     "sgRNA_sequence",
@@ -97,7 +102,8 @@
     "dataset_type",
     "statistic_aggregation",
     "metrics",
-    "conditions"
+    "conditions",
+    "condition_variables"
   ]
 }
 ]
