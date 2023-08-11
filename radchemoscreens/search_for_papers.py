@@ -2,63 +2,107 @@ import json
 from Bio import Entrez
 import time
 from urllib.error import HTTPError
+from playwright.sync_api import sync_playwright
+import random
+from dotenv import load_dotenv
+import os
+from http.client import IncompleteRead
+import logging
+
+logging.basicConfig(filename="app.log", level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+
+load_dotenv()
 
 # Add email and script name
-Entrez.email = "jtaylor81284@hotmail.com"
+Entrez.email = os.environ.get("ENTEREZ_EMAIL")
 Entrez.tool = "PMC Search and Summarise"
 
-def search_and_summarize_pmc(query, callback=None):
-    
-    # First, get the total number of results for the query
-    handle = Entrez.esearch(db="pmc", term=query)
-    record = Entrez.read(handle)
-    total_results = int(record["Count"])
-    handle.close()
-    
-    articles = []
-    retmax = 100  # Number of results to fetch in one request
-    total_batches = (total_results + retmax - 1) // retmax  # Calculate how many batches are there
-    
-    for batch_number, retstart in enumerate(range(0, total_results, retmax)):
-        handle = Entrez.esearch(db="pmc", term=query, retstart=retstart, retmax=retmax)
+def get_supp_files(pmc_id, browser, max_retries=3):
+    supplementary_files = []
+    for attempt in range(max_retries):
+        try:
+            page = browser.new_page()
+            page.goto(f"https://www.ncbi.nlm.nih.gov/pmc/articles/{pmc_id}/")
+            supp_mats_tag = page.query_selector('#data-suppmats')
+            if supp_mats_tag is not None:
+                links = supp_mats_tag.query_selector_all('a')
+                for link in links:
+                    href = link.get_attribute('href')
+                    # Filter out .pdf and .zip files
+                    if not (href.endswith('.pdf') or href.endswith('.zip') or href.endswith('.docx')):
+                        full_url = f"https://www.ncbi.nlm.nih.gov{href}"
+                        supplementary_files.append(full_url)
+            page.close()
+            return supplementary_files
+        except IncompleteRead as e:
+            wait_time = (2 ** attempt) + random.random()
+            logging.error(f"IncompleteRead error: {e}. Bytes missing. Retrying in {wait_time:.2f} seconds.")
+            time.sleep(wait_time)
+        except Exception as e:
+            wait_time = (2 ** attempt) + random.random()
+            logging.error(f"Error encountered: {e}. Retrying in {wait_time:.2f} seconds.")
+            time.sleep(wait_time)
+    logging.error(f"Failed to scrape after {max_retries} attempts.")
+    return supplementary_files
+
+def query_pmc(query, callback=None):
+    # Launch browser once for all scrapes
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+
+        # Other code remains mostly unchanged
+        handle = Entrez.esearch(db="pmc", term=query)
         record = Entrez.read(handle)
-        pmids = record["IdList"]
+        total_results = int(record["Count"])
         handle.close()
+        
+        retmax = 100
+        total_batches = (total_results + retmax - 1) // retmax
+        
+        for batch_number, retstart in enumerate(range(0, total_results, retmax)):
+            handle = Entrez.esearch(db="pmc", term=query, retstart=retstart, retmax=retmax)
+            record = Entrez.read(handle)
+            pmids = record["IdList"]
+            handle.close()
 
-        handle = Entrez.esummary(db="pmc", id=",".join(pmids))
-        summaries = Entrez.read(handle)
-        handle.close()
+            handle = Entrez.esummary(db="pmc", id=",".join(pmids))
+            summaries = Entrez.read(handle)
+            handle.close()
 
-        for index, summary in enumerate(summaries):
-            pmid = summary["ArticleIds"]["pmid"]
+            for index, summary in enumerate(summaries):
+                pmid = summary["ArticleIds"]["pmid"]
+                pmcid = summary["ArticleIds"]["pmcid"]
 
-            try:
-                handle = Entrez.efetch(db="pubmed", id=pmid, rettype="medline", retmode="xml") 
-                abstract_list = Entrez.read(handle, validate=False)['PubmedArticle'][0]['MedlineCitation']['Article']['Abstract']['AbstractText']
-                abstract_text = ' '.join([str(element) for element in abstract_list])
-                handle.close()
-            except (KeyError, IndexError, HTTPError):
-                abstract_text = "No abstract available."
+                try:
+                    handle = Entrez.efetch(db="pubmed", id=pmid, rettype="medline", retmode="xml") 
+                    abstract_list = Entrez.read(handle, validate=False)['PubmedArticle'][0]['MedlineCitation']['Article']['Abstract']['AbstractText']
+                    abstract_text = ' '.join([str(element) for element in abstract_list])
+                    handle.close()
+                except (KeyError, IndexError, HTTPError):
+                    abstract_text = "No abstract available."
 
-            article_data = {
-                "Title": summary["Title"],
-                "Authors": summary["AuthorList"],
-                "PMID": pmid,
-                "PMCID": summary["ArticleIds"]["pmcid"],
-                "Abstract": abstract_text
-            }
+                supplementary_files = get_supp_files(pmcid, browser)
 
-            # Send the article data to the callback function (if provided)
-            if callback:
-                progress = int(((batch_number + (index + 1) / len(summaries)) / total_batches) * 100)
-                callback(article_data, progress)
-            
-            # Add the article data to the articles list (this step may not be necessary anymore since we're emitting articles as they come)
-            articles.append(article_data)
+                article_data = {
+                    "Title": summary["Title"],
+                    "Authors": summary["AuthorList"],
+                    "PMID": pmid,
+                    "PMCID": pmcid,
+                    "Abstract": abstract_text,
+                    "SupplementaryFiles": supplementary_files
+                }
 
-            time.sleep(0.5)
+                if callback:
+                    progress = int(((batch_number + (index + 1) / len(summaries)) / total_batches) * 100)
+                    callback(article_data, progress)
 
-    return articles
+                time.sleep(random.uniform(0.2, 0.5))
+
+        # Close the browser
+        browser.close()
+
+    return article_data
 
 def main(query_file):
     with open(query_file, 'r') as f:
@@ -67,7 +111,7 @@ def main(query_file):
     articles = []
     if query:
         print("Searching and summarizing PMC with the provided query...")
-        articles.extend(search_and_summarize_pmc(query))
+        articles.extend(query_pmc(query))
 
     # Save to structured JSON
     with open("output_articles_5.json", 'w') as out:
