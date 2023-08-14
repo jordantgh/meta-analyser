@@ -14,7 +14,6 @@ logging.basicConfig(filename="app.log", level=logging.DEBUG,
 
 load_dotenv()
 
-# Add email and script name
 Entrez.email = os.environ.get("ENTEREZ_EMAIL")
 Entrez.tool = "PMC Search and Summarise"
 
@@ -29,8 +28,7 @@ def get_supp_files(pmc_id, browser, max_retries=3):
                 links = supp_mats_tag.query_selector_all('a')
                 for link in links:
                     href = link.get_attribute('href')
-                    # Filter out .pdf and .zip files
-                    if not (href.endswith('.pdf') or href.endswith('.zip') or href.endswith('.docx')):
+                    if (href.endswith('.csv') or href.endswith('.xlsx') or href.endswith('.xls') or href.endswith('.txt')):
                         full_url = f"https://www.ncbi.nlm.nih.gov{href}"
                         supplementary_files.append(full_url)
             page.close()
