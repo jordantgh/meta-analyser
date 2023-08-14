@@ -1,8 +1,12 @@
 import sys
+from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtWidgets import *
 from search_for_papers import query_pmc
 import logging
+import requests
+import os
+import pandas as pd
 
 class SearchThread(QThread):
     article_signal = pyqtSignal(dict, int)  # Will send a single article
@@ -44,9 +48,43 @@ class UIListItem(QWidget):
         list_item = list_widget.itemAt(self.parent().mapToParent(event.pos()))
         list_widget.setCurrentItem(list_item)
 
+class SuppFileItem(UIListItem):
+    def __init__(self, file_url, main_window):
+        self.file_url = file_url
+        self.main_window = main_window
+        
+        # Get the width of the parent container (supp_files_list)
+        parent_width = self.main_window.supp_files_list.width()
+
+        # Space for preview button, checkbox, and layout margins/paddings
+        reserved_width = 150
+        
+        available_width = parent_width - reserved_width
+
+        filename = file_url.split('/')[-1]
+        font_metrics = QFontMetrics(self.main_window.font())
+
+        # Elide the text if it's too long for the available space
+        elided_filename = font_metrics.elidedText(filename, Qt.ElideMiddle, available_width)
+
+        super().__init__(elided_filename)
+
+        # Set the size policy of the label
+        self.layout().itemAt(1).widget().setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        self.layout().itemAt(1).widget().setMaximumWidth(available_width)
+        
+        self.preview_btn = QPushButton("Preview", self)
+        self.preview_btn.clicked.connect(self.preview_file)
+        self.layout().addWidget(self.preview_btn)
+    
+    def preview_file(self):
+        # Use the main_window reference to access the preview_supp_file method
+        self.main_window.preview_supp_file(self.file_url)
+
 class CRISPRApp(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.resize(800, 600)
 
         # Central widget and layout
         central_widget = QWidget(self)
@@ -75,18 +113,24 @@ class CRISPRApp(QMainWindow):
         self.title_display.setPlaceholderText("Title will be shown here")
         self.abstract_display = QTextEdit(self)
         self.abstract_display.setPlaceholderText("Abstract will be shown here")
-        self.supp_files_table = QTableWidget(self)
-        self.supp_files_table.setColumnCount(1)
+        self.supp_files_list = QListWidget(self)
         right_panel.addWidget(QLabel("Title:"))
         right_panel.addWidget(self.title_display)
         right_panel.addWidget(QLabel("Abstract:"))
         right_panel.addWidget(self.abstract_display)
         right_panel.addWidget(QLabel("Supplementary Files:"))
-        right_panel.addWidget(self.supp_files_table)
+        right_panel.addWidget(self.supp_files_list)
+
+        # Add the preview pane to the right
+        self.preview_pane = QWidget(self)
+        self.preview_pane_layout = QVBoxLayout(self.preview_pane)
+        self.preview_pane.setLayout(self.preview_pane_layout)
 
         main_panel = QHBoxLayout(central_widget)
         main_panel.addLayout(left_panel)
         main_panel.addLayout(right_panel)
+        main_panel.addWidget(self.preview_pane)
+        self.preview_pane.hide()
 
         # Connect the signals
         self.search_button.clicked.connect(self.search_papers)
@@ -133,12 +177,70 @@ class CRISPRApp(QMainWindow):
         self.abstract_display.setText(paper["abstract"])
 
         # Clear and populate supplementary files
-        self.supp_files_table.setRowCount(0)
+        self.supp_files_list.clear()  # This replaces the supp files table
         for file_url in paper["files"]:
-            filename = file_url.split('/')[-1]
-            row_position = self.supp_files_table.rowCount()
-            self.supp_files_table.insertRow(row_position)
-            self.supp_files_table.setItem(row_position, 0, QTableWidgetItem(filename))
+            list_item = QListWidgetItem()
+            custom_item = SuppFileItem(file_url, self)
+            list_item.setSizeHint(custom_item.sizeHint())
+            self.supp_files_list.addItem(list_item)
+            self.supp_files_list.setItemWidget(list_item, custom_item)
+
+    def preview_supp_file(self, file_url):
+        # clear any previous content
+        for i in reversed(range(self.preview_pane_layout.count())):
+            self.preview_pane_layout.itemAt(i).widget().setParent(None)
+        # Download the file
+        filename = download_file(file_url)
+        if filename:
+            # Load and display the file content
+            if filename.endswith('.xlsx'):
+                # For Excel files, load all sheets
+                data = pd.read_excel(filename, sheet_name=None)
+                if isinstance(data, dict):
+                    # Multiple sheets
+                    tab_widget = QTabWidget(self.preview_pane)
+                    for sheet_name, sheet_data in data.items():
+                        table_widget = QTableWidget()
+                        self.load_dataframe_to_table(table_widget, sheet_data)
+                        tab_widget.addTab(table_widget, sheet_name)
+                    self.preview_pane.layout().addWidget(tab_widget)
+                else:
+                    # Single sheet
+                    self.load_dataframe_to_table(self.preview_pane, data)
+            elif filename.endswith(('.csv')):
+                data = pd.read_csv(filename)
+                table_widget = QTableWidget(self.preview_pane)
+                self.load_dataframe_to_table(table_widget, data)
+                self.preview_pane_layout.addWidget(table_widget)
+            elif filename.endswith(('.txt')):
+                data = pd.read_csv(filename, delimiter='\t')
+                table_widget = QTableWidget(self.preview_pane)
+                self.load_dataframe_to_table(table_widget, data)
+                self.preview_pane_layout.addWidget(table_widget)
+            self.preview_pane.show()
+            # Remove the downloaded file after previewing
+            os.remove(filename)
+
+    def load_dataframe_to_table(self, table_widget, data):
+        # Display the DataFrame in QTableWidget
+        table_widget.setColumnCount(len(data.columns))
+        table_widget.setHorizontalHeaderLabels(data.columns)
+        for row_num, row_data in data.iterrows():
+            table_widget.insertRow(row_num)
+            for col_num, value in enumerate(row_data):
+                table_widget.setItem(row_num, col_num, QTableWidgetItem(str(value)))
+
+def download_file(url):
+    local_filename = url.split('/')[-1]
+    if not local_filename.endswith(('.txt', '.csv', '.xlsx')):
+        print(f"Skipping {local_filename} because it's not a .txt, .csv or .xlsx file.")
+        return
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(local_filename, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
+    return local_filename
 
 app = QApplication(sys.argv)
 window = CRISPRApp()
