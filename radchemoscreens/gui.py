@@ -27,6 +27,16 @@ class SearchThread(QThread):
     def emit_article(self, article, progress):
         self.article_signal.emit(article, progress)
 
+class FilePreviewThread(QThread):
+    preview_ready_signal = pyqtSignal(str)
+
+    def __init__(self, file_url):
+        super().__init__()
+        self.file_url = file_url
+
+    def run(self):
+        filename = download_file(self.file_url)
+        self.preview_ready_signal.emit(filename)
 
 class UIListItem(QWidget):
     def __init__(self, title):
@@ -140,6 +150,9 @@ class CRISPRApp(QMainWindow):
         self.search_thread = SearchThread()
         self.search_thread.article_signal.connect(self.add_article_to_list)
         self.search_thread.finished_signal.connect(self.on_search_finished)
+
+        self.file_preview_thread = FilePreviewThread("")
+        self.file_preview_thread.preview_ready_signal.connect(self.load_preview)
     
     def add_article_to_list(self, article, progress):
         item = QListWidgetItem()
@@ -153,7 +166,7 @@ class CRISPRApp(QMainWindow):
         item.setData(Qt.UserRole, paper_data)
         self.paper_list.addItem(item)
         self.paper_list.setItemWidget(item, custom_item)
-        self.prog_bar.setValue(progress)
+        self.prog_bar.setValue(progress + 1)
 
     def search_papers(self):
         query = self.query_input.text()
@@ -186,40 +199,52 @@ class CRISPRApp(QMainWindow):
             self.supp_files_list.setItemWidget(list_item, custom_item)
 
     def preview_supp_file(self, file_url):
-        # clear any previous content
+        # Stop the thread if it's running
+        if self.file_preview_thread.isRunning():
+            self.file_preview_thread.terminate()
+            self.file_preview_thread.wait()
+
+        # Set the file URL and start the thread
+        self.file_preview_thread.file_url = file_url
+        self.file_preview_thread.start()
+
+    # This method goes inside the CRISPRApp class
+    def load_preview(self, filename):
+        # Clear any previous content
         for i in reversed(range(self.preview_pane_layout.count())):
             self.preview_pane_layout.itemAt(i).widget().setParent(None)
-        # Download the file
-        filename = download_file(file_url)
-        if filename:
-            # Load and display the file content
-            if filename.endswith('.xlsx'):
-                # For Excel files, load all sheets
-                data = pd.read_excel(filename, sheet_name=None)
-                if isinstance(data, dict):
-                    # Multiple sheets
-                    tab_widget = QTabWidget(self.preview_pane)
-                    for sheet_name, sheet_data in data.items():
-                        table_widget = QTableWidget()
-                        self.load_dataframe_to_table(table_widget, sheet_data)
-                        tab_widget.addTab(table_widget, sheet_name)
-                    self.preview_pane.layout().addWidget(tab_widget)
-                else:
-                    # Single sheet
-                    self.load_dataframe_to_table(self.preview_pane, data)
-            elif filename.endswith(('.csv')):
-                data = pd.read_csv(filename)
+        
+        # Load and display the file content based on its type
+        if (filename.endswith('.xlsx') or filename.endswith('.xls')):
+            # For Excel files, load all sheets
+            data = pd.read_excel(filename, sheet_name=None)
+            if isinstance(data, dict):
+                # Multiple sheets
+                tab_widget = QTabWidget(self.preview_pane)
+                for sheet_name, sheet_data in data.items():
+                    table_widget = QTableWidget()
+                    self.load_dataframe_to_table(table_widget, sheet_data)
+                    tab_widget.addTab(table_widget, sheet_name)
+                self.preview_pane_layout.addWidget(tab_widget)
+            else:
+                # Single sheet
                 table_widget = QTableWidget(self.preview_pane)
                 self.load_dataframe_to_table(table_widget, data)
                 self.preview_pane_layout.addWidget(table_widget)
-            elif filename.endswith(('.txt')):
-                data = pd.read_csv(filename, delimiter='\t')
-                table_widget = QTableWidget(self.preview_pane)
-                self.load_dataframe_to_table(table_widget, data)
-                self.preview_pane_layout.addWidget(table_widget)
-            self.preview_pane.show()
-            # Remove the downloaded file after previewing
-            os.remove(filename)
+        elif filename.endswith('.csv'):
+            data = pd.read_csv(filename)
+            table_widget = QTableWidget(self.preview_pane)
+            self.load_dataframe_to_table(table_widget, data)
+            self.preview_pane_layout.addWidget(table_widget)
+        elif filename.endswith('.txt'):
+            data = pd.read_csv(filename, delimiter='\t')
+            table_widget = QTableWidget(self.preview_pane)
+            self.load_dataframe_to_table(table_widget, data)
+            self.preview_pane_layout.addWidget(table_widget)
+
+        self.preview_pane.show()
+        # Remove the downloaded file after previewing
+        os.remove(filename)
 
     def load_dataframe_to_table(self, table_widget, data):
         # Display the DataFrame in QTableWidget
