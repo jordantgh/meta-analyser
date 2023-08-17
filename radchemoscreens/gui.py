@@ -12,8 +12,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHB
 from search_for_papers import query_pmc
 
 class SearchThread(QThread):
-    article_sig = pyqtSignal(dict, int)  # Will send a single article
-    finished_sig = pyqtSignal()  # Signal when all articles are processed
+    article_sig = pyqtSignal(dict, int)
+    finished_sig = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -44,7 +44,6 @@ class FilePreviewThread(QThread):
     def download_file(self, url):
         local_fname = url.split('/')[-1]
         if not local_fname.endswith(('.txt', '.csv', '.xlsx')):
-            print(f"Skipping {local_fname} because it's not a .txt, .csv or .xlsx file.")
             return
         with requests.get(url, stream=True) as r:
             r.raise_for_status()
@@ -53,23 +52,39 @@ class FilePreviewThread(QThread):
                     f.write(chunk)
         return local_fname
 
-class UIListItem(QWidget):
-    def __init__(self, title):
-        super().__init__()
-        layout = QHBoxLayout(self)
-        self.checkbox = QCheckBox()
-        self.checkbox.setChecked(True)
-        label = QLabel(title)
+class SupplementaryFile:
+    def __init__(self, url):
+        self.url = url
+        self.checked = True
 
+class Paper:
+    def __init__(self, title, abstract, pmc_id, files=[]):
+        self.title = title
+        self.abstract = abstract
+        self.pmc_id = pmc_id
+        self.files = [SupplementaryFile(url) for url in files]
+        self.checked = True
+
+class UIListItem(QWidget):
+    def __init__(self, title, data=None):
+        super().__init__()
+        self.data = data
+        self.checkbox = QCheckBox()
+        self.checkbox.setChecked(self.data.checked)
+        self.checkbox.toggled.connect(self.checkbox_toggled)
+        
+        label = QLabel(title)
         label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        layout = QHBoxLayout(self)
         layout.addWidget(self.checkbox)
         layout.addWidget(label)
         layout.addStretch(1)
         self.setLayout(layout)
 
-    def is_checked(self):
-        return self.checkbox.isChecked()
+    def checkbox_toggled(self):
+        self.data.checked = self.checkbox.isChecked()
 
+    # override default mousePressEvent behaviour
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
         list_widget = self.parent().parent()
@@ -77,21 +92,18 @@ class UIListItem(QWidget):
         list_widget.setCurrentItem(list_item)
 
 class SuppFileItem(UIListItem):
-    def __init__(self, file_url, main_window):
+    def __init__(self, file_url, main_window, file_instance):
         self.file_url = file_url
         self.main_window = main_window
-        fname = file_url.split('/')[-1]
-        elided_fname = self.elide_text(fname)
-        super().__init__(elided_fname)
+        disp_name = self.get_disp_name(file_url.split('/')[-1])
+
+        super().__init__(disp_name, file_instance)
 
         self.preview_btn = QPushButton("Preview", self)
         self.preview_btn.clicked.connect(self.preview_file)
         self.layout().addWidget(self.preview_btn)
 
-    def is_checked(self):
-        return super().is_checked()
-
-    def elide_text(self, text):
+    def get_disp_name(self, text):
         font_metrics = QFontMetrics(self.main_window.font())
         available_width = self.main_window.supp_files.width() - 150
         return font_metrics.elidedText(text, Qt.ElideMiddle, available_width)
@@ -103,14 +115,9 @@ class CRISPRApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.resize(800, 600)
-
-        # UI Initialization
         self.init_uis()
         self.setup_layouts()
         self.connect_sigs()
-        
-
-        # After the layout setup and before app initialization
         self.init_load_animation()
 
     def init_uis(self):
@@ -119,8 +126,7 @@ class CRISPRApp(QMainWindow):
         self.setCentralWidget(central_widget)
 
         self.stop_search_btn = QPushButton("Stop Search", self)
-        self.stop_search_btn.setEnabled(False)  # Disabled by default
-
+        self.stop_search_btn.setEnabled(False)
         self.proceed_btn = QPushButton("Proceed", self)
 
         # Paper list elements
@@ -154,8 +160,6 @@ class CRISPRApp(QMainWindow):
         pane_0.addWidget(self.search_btn)
         pane_0.addWidget(self.stop_search_btn)
         pane_0.addWidget(self.paper_list)
-        
-
 
         # Paper details layout
         pane_1 = QVBoxLayout()
@@ -179,16 +183,14 @@ class CRISPRApp(QMainWindow):
 
         # Thread signals
         self.search_thread = SearchThread()
-        self.search_thread.article_sig.connect(self.add_article_to_list)
+        self.search_thread.article_sig.connect(self.add_paper)
         self.search_thread.finished_sig.connect(self.on_search_finished)
 
         self.preview_thread = FilePreviewThread("")
         self.preview_thread.prev_ready_sig.connect(self.load_preview)
         
         self.stop_search_btn.clicked.connect(self.stop_search)
-        
         self.proceed_btn.clicked.connect(self.on_proceed)
-
 
     def init_load_animation(self):
         self.load_timer = QTimer(self)
@@ -198,7 +200,7 @@ class CRISPRApp(QMainWindow):
     def start_load_animation(self):
         self.load_dots = 0
         self.load_label.setText("Loading.")
-        self.load_timer.start(500)  # Update the text every 500ms
+        self.load_timer.start(500)  # ms
 
     def stop_load_animation(self):
         self.load_timer.stop()
@@ -208,18 +210,16 @@ class CRISPRApp(QMainWindow):
         self.load_dots = (self.load_dots + 1) % 4
         self.load_label.setText("Loading" + "." * self.load_dots)
 
-    def add_article_to_list(self, article, progress):
+    def add_paper(self, article, progress):
         item = QListWidgetItem()
-        paper_name = UIListItem(article["Title"])
+        paper_data = Paper(
+            title=article["Title"],
+            abstract=article["Abstract"],
+            pmc_id=article["PMCID"],
+            files=article["SupplementaryFiles"]
+        )
+        paper_name = UIListItem(article["Title"], paper_data)
         item.setSizeHint(paper_name.sizeHint())
-        paper_data = {
-            "title": article["Title"],
-            "authors": article["Authors"],
-            "pmid": article["PMID"],
-            "pmc_id": article["PMCID"],
-            "abstract": article["Abstract"],
-            "files": article["SupplementaryFiles"]
-        }
         item.setData(Qt.UserRole, paper_data)
         self.paper_list.addItem(item)
         self.paper_list.setItemWidget(item, paper_name)
@@ -257,20 +257,19 @@ class CRISPRApp(QMainWindow):
         self.stop_search_btn.setEnabled(False)
 
     def show_paper_details(self, item):
-        # Retrieve the paper details from the item's custom data
         paper = item.data(Qt.UserRole)
 
-        self.title_disp.setText(paper["title"])
-        self.abstract_disp.setText(paper["abstract"])
+        self.title_disp.setText(paper.title)
+        self.abstract_disp.setText(paper.abstract)
 
-        # Clear and populate supplementary files
-        self.supp_files.clear()  # This replaces the supp files table
-        for file_url in paper["files"]:
+        self.supp_files.clear()
+        for f in paper.files:
             list_item = QListWidgetItem()
-            file_item = SuppFileItem(file_url, self)
-            list_item.setSizeHint(file_item.sizeHint())
+            custom_item = SuppFileItem(f.url, self, f)
+            custom_item.checkbox.setChecked(f.checked)
+            list_item.setSizeHint(custom_item.sizeHint())
             self.supp_files.addItem(list_item)
-            self.supp_files.setItemWidget(list_item, file_item)
+            self.supp_files.setItemWidget(list_item, custom_item)
 
     def preview_supp_file(self, file_url):
         self.start_load_animation()
@@ -287,13 +286,12 @@ class CRISPRApp(QMainWindow):
             self.previews_layout.itemAt(i).widget().setParent(None)
         
         if fname.endswith(('.xlsx', '.xls')):
-            data = pd.read_excel(fname, sheet_name=None)
+            data = pd.read_excel(fname, sheet_name=None, header=None, index_col=None)
         elif fname.endswith('.csv'):
-            data = pd.read_csv(fname)
+            data = pd.read_csv(fname, header=None, index_col=None)
         else: 
-            data = pd.read_csv(fname, delimiter='\t')
-        
-        # Display the file content
+            data = pd.read_csv(fname, delimiter='\t', header=None, index_col=None)
+
         self.display_data(data)
         self.previews.show()
         os.remove(fname)
@@ -301,10 +299,10 @@ class CRISPRApp(QMainWindow):
     def display_data(self, data):
         if isinstance(data, dict):
             tab_widget = QTabWidget(self.previews)
-            for sheet_name, sheet_data in data.items():
+            for sheet, data in data.items():
                 table_widget = QTableWidget()
-                self.load_dataframe_to_table(table_widget, sheet_data)
-                tab_widget.addTab(table_widget, sheet_name)
+                self.load_dataframe_to_table(table_widget, data)
+                tab_widget.addTab(table_widget, sheet)
             self.previews_layout.addWidget(tab_widget)
         else:
             table_widget = QTableWidget(self.previews)
@@ -313,11 +311,11 @@ class CRISPRApp(QMainWindow):
 
     def load_dataframe_to_table(self, table_widget, data):
         table_widget.setColumnCount(len(data.columns))
-        table_widget.setHorizontalHeaderLabels(data.columns)
-        for row_num, row_data in data.iterrows():
-            table_widget.insertRow(row_num)
-            for col_num, value in enumerate(row_data):
-                table_widget.setItem(row_num, col_num, QTableWidgetItem(str(value)))
+        table_widget.setHorizontalHeaderLabels(data.columns.astype(str))
+        for row, data in data.iterrows():
+            table_widget.insertRow(row)
+            for col, value in enumerate(data):
+                table_widget.setItem(row, col, QTableWidgetItem(str(value)))
 
     def on_proceed(self):
         selected_data = self.get_selected_papers_and_files()
@@ -327,24 +325,18 @@ class CRISPRApp(QMainWindow):
 
     def get_selected_papers_and_files(self):
         selected_papers = {}
-        for idx in range(self.paper_list.count()):
-            item = self.paper_list.item(idx)
-            paper_data = item.data(Qt.UserRole)
-            if self.paper_list.itemWidget(item).is_checked():
-                selected_files = []
-                for file_url in paper_data["files"]:
-                    # Here, we're directly checking the files associated with the paper
-                    # instead of looking at the displayed supp files.
-                    # We assume that if a file is associated with a paper, it's selected.
-                    # If you need to keep track of individual file selections,
-                    # you will need additional logic here.
-                    selected_files.append(file_url)
-                selected_papers[paper_data["pmc_id"]] = {
-                    "title": paper_data["title"],
-                    "files": selected_files
-                }
-        return selected_papers
+        for i in range(self.paper_list.count()):
+            item = self.paper_list.item(i)
+            paper = item.data(Qt.UserRole)   
+            if paper.checked:
+                selected_files = [f.url for f in paper.files if f.checked]
+                if selected_files:
+                    selected_papers[paper.pmc_id] = {
+                        "title": paper.title,
+                        "files": selected_files
+                    }
 
+        return selected_papers
 
 def main():
     app = QApplication(sys.argv)
