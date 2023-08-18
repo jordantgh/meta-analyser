@@ -8,7 +8,6 @@ class CRISPRController:
         self.model = model
         self.view = view
         self.view.init_load_animation()
-        self.bibliography = Bibliography()
         self.connect_sigs()
 
     def connect_sigs(self):
@@ -26,7 +25,7 @@ class CRISPRController:
 
     def add_paper(self, article, progress):
         paper_data = self.model.create_paper_data(article)
-        self.bibliography.add_paper(paper_data)
+        self.model.bibliography.add_paper(paper_data)
         self.view.display_paper_in_ui(paper_data, progress)
 
     def search_papers(self):
@@ -94,18 +93,7 @@ class CRISPRController:
             self.view.display_data_in_table(data)
 
     def on_proceed(self):
-        selected_data = self.extract_selected_papers_and_files()
+        selected_data = self.model.extract_selected_papers_and_files()
         with open('selected_papers_and_files.json', 'w') as f:
             json.dump(selected_data, f, indent=4)
         QMessageBox.information(self.view, "Saved", "Selected papers and files have been saved to selected_papers_and_files.json")
-
-    def extract_selected_papers_and_files(self):
-        selected_papers = {}
-        for paper in self.bibliography.get_selected_papers():
-            selected_files = [f.url for f in paper.files if f.checked]
-            if selected_files:
-                selected_papers[paper.pmc_id] = {
-                    "title": paper.title,
-                    "files": selected_files
-                }
-        return selected_papers

@@ -71,6 +71,9 @@ class Bibliography:
         return [p for p in self.papers if p.checked]
 
 class CRISPRModel:
+    def __init__(self):
+        self.bibliography = Bibliography()        
+        
     def create_paper_data(self, article):
         return Paper(
             title=article["Title"],
@@ -99,17 +102,14 @@ class CRISPRModel:
         os.remove(fname)
         return data
 
-    def get_selected_papers_and_files(self):
+    def extract_selected_papers_and_files(self):
         selected_papers = {}
-        for i in range(self.paper_list.count()):
-            item = self.paper_list.item(i)
-            paper = item.data(Qt.UserRole)   
-            if paper.checked:
-                selected_files = [f.url for f in paper.files if f.checked]
-                if selected_files:
-                    selected_papers[paper.pmc_id] = {
-                        "title": paper.title,
-                        "files": selected_files
-                    }
+        for paper in self.bibliography.get_selected_papers():
+            selected_files = [f.url for f in paper.files if f.checked]
+            if selected_files:
+                selected_papers[paper.pmc_id] = {
+                    "title": paper.title,
+                    "files": selected_files
+                }
 
         return selected_papers
