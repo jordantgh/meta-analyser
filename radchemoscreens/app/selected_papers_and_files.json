@@ -1,0 +1,54 @@
+{
+    "PMC10241889": {
+        "title": "Genome-scale CRISPR screen reveals neddylation to contribute to cisplatin resistance of testicular germ cell tumours",
+        "files": [
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10241889/bin/41416_2023_2247_MOESM3_ESM.xlsx"
+        ]
+    },
+    "PMC10214836": {
+        "title": "The genomic landscape of sensitivity to arsenic trioxide uncovered by genome-wide CRISPR-Cas9 screening",
+        "files": [
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10214836/bin/Table_1.xlsx"
+        ]
+    },
+    "PMC9942122": {
+        "title": "Pseudo-temporal dynamics of chemoresistant triple negative breast cancer cells reveal EGFR/HER2 inhibition as synthetic lethal during mid-neoadjuvant chemotherapy",
+        "files": [
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9942122/bin/mmc2.xlsx",
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9942122/bin/mmc3.xlsx",
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9942122/bin/mmc4.xlsx",
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9942122/bin/mmc5.xlsx",
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9942122/bin/mmc6.xlsx",
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9942122/bin/mmc7.xlsx"
+        ]
+    },
+    "PMC10182178": {
+        "title": "Genome-wide CRISPR/Cas9 screen identifies etoposide response modulators associated with clinical outcomes in pediatric AML",
+        "files": [
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10182178/bin/BLOODA_ADV-2022-007934-mmc1.xlsx"
+        ]
+    },
+    "PMC9892530": {
+        "title": "Identifying CDC7 as a synergistic target of chemotherapy in resistant small-cell lung cancer via CRISPR/Cas9 screening",
+        "files": [
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9892530/bin/41420_2023_1315_MOESM8_ESM.xlsx"
+        ]
+    },
+    "PMC9475249": {
+        "title": "Large-Scale In Vitro and In Vivo CRISPR-Cas9 Knockout Screens Identify a 16-Gene Fitness Score for Improved Risk Assessment in Acute Myeloid Leukemia",
+        "files": [
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9475249/bin/ccr-22-1618_supplementary_tables_s1-_s16_suppts16.xlsx"
+        ]
+    },
+    "PMC9671908": {
+        "title": "mTOR inhibition attenuates chemosensitivity through the induction of chemotherapy resistant persisters",
+        "files": [
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9671908/bin/41467_2022_34890_MOESM5_ESM.xlsx",
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9671908/bin/41467_2022_34890_MOESM6_ESM.xlsx",
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9671908/bin/41467_2022_34890_MOESM7_ESM.xlsx",
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9671908/bin/41467_2022_34890_MOESM8_ESM.xlsx",
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9671908/bin/41467_2022_34890_MOESM9_ESM.xlsx",
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9671908/bin/41467_2022_34890_MOESM10_ESM.xlsx"
+        ]
+    }
+}

@@ -152,16 +152,16 @@ class View(QMainWindow):
         tab_widget = QTabWidget(self.previews)
         for sheet, data in data_dict.items():
             table_widget = QTableWidget()
-            self.load_dataframe_to_table(table_widget, data)
+            self.load_data_to_table(table_widget, data)
             tab_widget.addTab(table_widget, sheet)
         self.previews_layout.addWidget(tab_widget)
 
     def display_table(self, data_frame):
         table_widget = QTableWidget(self.previews)
-        self.load_dataframe_to_table(table_widget, data_frame)
+        self.load_data_to_table(table_widget, data_frame)
         self.previews_layout.addWidget(table_widget)
 
-    def load_dataframe_to_table(self, table_widget, data):
+    def load_data_to_table(self, table_widget, data):
         table_widget.setColumnCount(len(data.columns))
         table_widget.setHorizontalHeaderLabels(data.columns.astype(str))
         for row, data in data.iterrows():
