@@ -28,7 +28,7 @@ class UIListItem(QWidget):
         list_item = list_widget.itemAt(self.parent().mapToParent(event.pos()))
         list_widget.setCurrentItem(list_item)
 
-class SuppFileItem(UIListItem):
+class SuppFileListItem(UIListItem):
     preview_requested = pyqtSignal(str)
     def __init__(self, file_url, main_window, file_instance):
         self.file_url = file_url
@@ -43,52 +43,48 @@ class SuppFileItem(UIListItem):
 
     def get_disp_name(self, text):
         font_metrics = QFontMetrics(self.main_window.font())
-        available_width = self.main_window.supp_files.width() - 150
+        available_width = self.main_window.supp_files_view.width() - 150
         return font_metrics.elidedText(text, Qt.ElideMiddle, available_width)
 
     def preview_file(self):
         self.preview_requested.emit(self.file_url)
 
-class CRISPRView(QMainWindow):
+class View(QMainWindow):
     def __init__(self):
         super().__init__()
         self.resize(800, 600)
-        self.init_uis()
-        self.setup_layouts()
+        self.init_ui_elements()
+        self.init_layouts()
+        self.init_load_animation()
 
-    def init_uis(self):
-        # Central widget
+    def init_ui_elements(self):
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
 
-        self.stop_search_btn = QPushButton("Stop Search", self)
-        self.stop_search_btn.setEnabled(False)
-        self.proceed_btn = QPushButton("Proceed", self)
-
-        # Paper list elements
-        self.query_field = QLineEdit(self)
         self.search_status = QLabel("")
-        self.search_btn = QPushButton("Search", self)
-        self.paper_list = QListWidget(self)
+        self.query_field = QLineEdit(self)
         self.prog_bar = QProgressBar(self)
         self.prog_bar.setRange(0, 100)
         self.prog_bar.setValue(0)
         self.prog_bar.hide()
+        self.search_btn = QPushButton("Search", self)
+        self.stop_search_btn = QPushButton("Stop Search", self)
+        self.stop_search_btn.setEnabled(False)
+        self.proceed_btn = QPushButton("Proceed", self)
+        self.paper_list = QListWidget(self)
 
-        # Paper details elements
         self.title_disp = QTextEdit(self)
         self.title_disp.setPlaceholderText("Title will be shown here")
         self.abstract_disp = QTextEdit(self)
         self.abstract_disp.setPlaceholderText("Abstract will be shown here")
-        self.supp_files = QListWidget(self)
+        self.supp_files_view = QListWidget(self)
         self.load_label = QLabel(self)
         self.load_label.setAlignment(Qt.AlignCenter)
         self.previews = QWidget(self)
         self.previews_layout = QVBoxLayout(self.previews)
         self.previews.setLayout(self.previews_layout)
 
-    def setup_layouts(self):
-        # Paper list layout
+    def init_layouts(self):
         pane_0 = QVBoxLayout()
         pane_0.addWidget(QLabel("Enter Query:"))
         pane_0.addWidget(self.query_field)
@@ -96,18 +92,17 @@ class CRISPRView(QMainWindow):
         pane_0.addWidget(self.search_btn)
         pane_0.addWidget(self.stop_search_btn)
         pane_0.addWidget(self.paper_list)
+        pane_0.addWidget(self.proceed_btn)
 
-        # Paper details layout
         pane_1 = QVBoxLayout()
         pane_1.addWidget(QLabel("Title:"))
         pane_1.addWidget(self.title_disp)
         pane_1.addWidget(QLabel("Abstract:"))
         pane_1.addWidget(self.abstract_disp)
         pane_1.addWidget(QLabel("Supplementary Files:"))
-        pane_1.addWidget(self.supp_files)
+        pane_1.addWidget(self.supp_files_view)
         pane_1.addWidget(self.load_label)
 
-        # Main layout
         main_pane = QHBoxLayout(self.centralWidget())
         main_pane.addLayout(pane_0)
         main_pane.addLayout(pane_1)
@@ -131,7 +126,7 @@ class CRISPRView(QMainWindow):
         self.load_dots = (self.load_dots + 1) % 4
         self.load_label.setText("Loading" + "." * self.load_dots)
 
-    def display_paper_in_ui(self, paper_data, progress):
+    def display_paper(self, paper_data, progress):
         item = QListWidgetItem()
         paper_name = UIListItem(paper_data.title, paper_data)
         item.setSizeHint(paper_name.sizeHint())
@@ -144,16 +139,16 @@ class CRISPRView(QMainWindow):
         self.title_disp.setText(paper.title)
         self.abstract_disp.setText(paper.abstract)
 
-        self.supp_files.clear()
+        self.supp_files_view.clear()
         for f in paper.files:
-            list_item = QListWidgetItem()
-            custom_item = SuppFileItem(f.url, self, f)
-            custom_item.checkbox.setChecked(f.checked)
-            list_item.setSizeHint(custom_item.sizeHint())
-            self.supp_files.addItem(list_item)
-            self.supp_files.setItemWidget(list_item, custom_item)
+            item_container = QListWidgetItem()
+            file_item = SuppFileListItem(f.url, self, f)
+            file_item.checkbox.setChecked(f.checked)
+            item_container.setSizeHint(file_item.sizeHint())
+            self.supp_files_view.addItem(item_container)
+            self.supp_files_view.setItemWidget(item_container, file_item)
 
-    def display_data_in_tabs(self, data_dict):
+    def display_multisheet_table(self, data_dict):
         tab_widget = QTabWidget(self.previews)
         for sheet, data in data_dict.items():
             table_widget = QTableWidget()
@@ -161,7 +156,7 @@ class CRISPRView(QMainWindow):
             tab_widget.addTab(table_widget, sheet)
         self.previews_layout.addWidget(tab_widget)
 
-    def display_data_in_table(self, data_frame):
+    def display_table(self, data_frame):
         table_widget = QTableWidget(self.previews)
         self.load_dataframe_to_table(table_widget, data_frame)
         self.previews_layout.addWidget(table_widget)
