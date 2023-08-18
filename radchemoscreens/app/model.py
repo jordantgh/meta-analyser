@@ -72,7 +72,9 @@ class Bibliography:
 
 class CRISPRModel:
     def __init__(self):
-        self.bibliography = Bibliography()        
+        self.bibliography = Bibliography()
+        self.search_thread = SearchThread()
+        self.preview_thread = FilePreviewThread("")   
         
     def create_paper_data(self, article):
         return Paper(

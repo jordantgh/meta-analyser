@@ -1,7 +1,7 @@
 import json
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox
-from model import SearchThread, FilePreviewThread, Bibliography
+from model import SearchThread, FilePreviewThread
 
 class CRISPRController:
     def __init__(self, model, view):
@@ -14,11 +14,9 @@ class CRISPRController:
         self.view.search_btn.clicked.connect(self.search_papers)
         self.view.paper_list.itemClicked.connect(self.handle_paper_click)
 
-        self.search_thread = SearchThread()
-        self.search_thread.article_sig.connect(self.add_paper)
-        self.search_thread.finished_sig.connect(self.on_search_finished)
-        self.preview_thread = FilePreviewThread("")
-        self.preview_thread.prev_ready_sig.connect(self.load_preview)
+        self.model.search_thread.article_sig.connect(self.add_paper)
+        self.model.search_thread.finished_sig.connect(self.on_search_finished)
+        self.model.preview_thread.prev_ready_sig.connect(self.load_preview)
         
         self.view.stop_search_btn.clicked.connect(self.stop_search)
         self.view.proceed_btn.clicked.connect(self.on_proceed)
@@ -29,26 +27,26 @@ class CRISPRController:
         self.view.display_paper_in_ui(paper_data, progress)
 
     def search_papers(self):
-        if self.search_thread.isRunning():
+        if self.model.search_thread.isRunning():
             QMessageBox.warning(self.view, "Search in Progress", "A search is already in progress. Please wait or stop the current search.")
             return
-        self.search_thread.should_stop = False
+        self.model.search_thread.should_stop = False
         query = self.view.query_field.text()
         if not query: return
         self.view.paper_list.clear()
         self.view.prog_bar.setValue(0)
         self.view.prog_bar.show()
         self.view.search_status.setText("Searching...")
-        self.search_thread.query = query
-        self.search_thread.start()
+        self.model.search_thread.query = query
+        self.model.search_thread.start()
         
         self.view.stop_search_btn.setEnabled(True)
 
     def stop_search(self):
-        if self.search_thread.isRunning():
-            self.search_thread.stop()
-            self.search_thread.quit()
-            self.search_thread.wait()
+        if self.model.search_thread.isRunning():
+            self.model.search_thread.stop()
+            self.model.search_thread.quit()
+            self.model.search_thread.wait()
             self.view.search_status.setText("Stopping search...")
         self.view.prog_bar.hide()
         self.view.search_status.setText("Search stopped.")
@@ -80,11 +78,11 @@ class CRISPRController:
 
     def preview_supp_file(self, file_url):
         self.view.start_load_animation()
-        if self.preview_thread.isRunning():
-            self.preview_thread.quit()
-            self.preview_thread.wait()
-        self.preview_thread.file_url = file_url
-        self.preview_thread.start()
+        if self.model.preview_thread.isRunning():
+            self.model.preview_thread.quit()
+            self.model.preview_thread.wait()
+        self.model.preview_thread.file_url = file_url
+        self.model.preview_thread.start()
 
     def determine_data_type_and_display(self, data):
         if isinstance(data, dict):
