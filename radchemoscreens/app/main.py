@@ -1,14 +1,14 @@
 from PyQt5.QtWidgets import QApplication
-from model import CRISPRModel
-from view import CRISPRView
-from controller import CRISPRController
+from model import Model
+from view import View
+from controller import Controller
 
 def main():
     app = QApplication([])
 
-    model = CRISPRModel()
-    view = CRISPRView()
-    controller = CRISPRController(model, view)
+    model = Model()
+    view = View()
+    Controller(model, view)
 
     view.show()
     app.exec_()
