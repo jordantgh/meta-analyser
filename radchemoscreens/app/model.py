@@ -26,7 +26,7 @@ class SearchThread(QThread):
             logging.error(f"Unhandled exception in SearchThread: {e}")
 
 class FilePreviewThread(QThread):
-    prev_ready_sig = pyqtSignal(str)
+    prev_ready_sig = pyqtSignal(dict)
 
     def __init__(self, file_url):
         super().__init__()
@@ -34,8 +34,20 @@ class FilePreviewThread(QThread):
 
     def run(self):
         fname = self.download_file(self.file_url)
-        self.prev_ready_sig.emit(fname)
+        data = self.extract_data_from_file(fname)
+        self.prev_ready_sig.emit(data)
+    
+    def extract_data_from_file(self, fname):
+        if fname.endswith(('.xlsx', '.xls')):
+            data = pd.read_excel(fname, sheet_name=None, header=None, index_col=None)
+        elif fname.endswith('.csv'):
+            data = pd.read_csv(fname, header=None, index_col=None)
+        else: 
+            data = pd.read_csv(fname, delimiter='\t', header=None, index_col=None)
         
+        os.remove(fname)
+        return data
+
     def download_file(self, url):
         local_fname = url.split('/')[-1]
         if not local_fname.endswith(('.txt', '.csv', '.xlsx')):
@@ -93,17 +105,6 @@ class Model:
         }
         return paper_details
 
-    def extract_data_from_file(self, fname):
-        if fname.endswith(('.xlsx', '.xls')):
-            data = pd.read_excel(fname, sheet_name=None, header=None, index_col=None)
-        elif fname.endswith('.csv'):
-            data = pd.read_csv(fname, header=None, index_col=None)
-        else: 
-            data = pd.read_csv(fname, delimiter='\t', header=None, index_col=None)
-        
-        os.remove(fname)
-        return data
-
     def extract_selected_papers_and_files(self):
         selected_papers = {}
         for paper in self.bibliography.get_selected_papers():
@@ -113,5 +114,4 @@ class Model:
                     "title": paper.title,
                     "files": selected_files
                 }
-
         return selected_papers

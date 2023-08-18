@@ -58,17 +58,18 @@ class Controller:
         paper = item.data(Qt.UserRole)
         self.view.update_paper_display(paper)
         
-        for i in range(self.view.supp_files.count()):
-            list_item = self.view.supp_files.item(i)
-            widget = self.view.supp_files.itemWidget(list_item)
+        for i in range(self.view.supp_files_view.count()):
+            list_item = self.view.supp_files_view.item(i)
+            widget = self.view.supp_files_view.itemWidget(list_item)
             widget.preview_requested.connect(self.preview_supp_file)
 
-    def load_preview(self, fname):
-        data = self.model.extract_data_from_file(fname)
+    def load_preview(self, data):
         self.view.stop_load_animation()
 
         for i in reversed(range(self.view.previews_layout.count())):
-            self.view.previews_layout.itemAt(i).widget().setParent(None)
+            widget = self.view.previews_layout.itemAt(i).widget()
+            if widget:
+                widget.deleteLater()
 
         self.determine_data_type_and_display(data)
         self.view.previews.show()
