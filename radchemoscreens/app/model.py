@@ -70,7 +70,7 @@ class Bibliography:
     def get_selected_papers(self):
         return [p for p in self.papers if p.checked]
 
-class CRISPRModel:
+class Model:
     def __init__(self):
         self.bibliography = Bibliography()
         self.search_thread = SearchThread()
