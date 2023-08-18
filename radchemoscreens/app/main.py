@@ -8,7 +8,7 @@ def main():
 
     model = Model()
     view = View()
-    Controller(model, view)
+    _ = Controller(model, view)
 
     view.show()
     app.exec_()
