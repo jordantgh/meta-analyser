@@ -16,7 +16,6 @@ class UIListItem(QWidget):
         layout.addWidget(self.checkbox)
         layout.addWidget(label)
         layout.addStretch(1)
-        self.setLayout(layout)
 
     def checkbox_toggled(self):
         self.data.checked = self.checkbox.isChecked()
@@ -148,23 +147,24 @@ class View(QMainWindow):
             self.supp_files_view.addItem(item_container)
             self.supp_files_view.setItemWidget(item_container, file_item)
 
-    def display_multisheet_table(self, data_dict):
+    def display_multisheet_table(self, df_dict):
         tab_widget = QTabWidget(self.previews)
-        for sheet, data in data_dict.items():
-            table_widget = QTableWidget()
-            self.load_data_to_table(table_widget, data)
-            tab_widget.addTab(table_widget, sheet)
+        for sheet, df in df_dict.items():
+            table = self._create_ui_table(df)
+            tab_widget.addTab(table, sheet)
         self.previews_layout.addWidget(tab_widget)
 
-    def display_table(self, data_frame):
-        table_widget = QTableWidget(self.previews)
-        self.load_data_to_table(table_widget, data_frame)
-        self.previews_layout.addWidget(table_widget)
+    def display_table(self, df):
+        table = self._create_ui_table(df)
+        self.previews_layout.addWidget(table)
 
-    def load_data_to_table(self, table_widget, data):
-        table_widget.setColumnCount(len(data.columns))
-        table_widget.setHorizontalHeaderLabels(data.columns.astype(str))
+    def _create_ui_table(self, data):
+        table = QTableWidget()
+        table.setColumnCount(len(data.columns))
+        table.setHorizontalHeaderLabels(data.columns.astype(str))
         for row, data in data.iterrows():
-            table_widget.insertRow(row)
+            table.insertRow(row)
             for col, value in enumerate(data):
-                table_widget.setItem(row, col, QTableWidgetItem(str(value)))
+                table.setItem(row, col, QTableWidgetItem(str(value)))
+
+        return table
