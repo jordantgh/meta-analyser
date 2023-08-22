@@ -2,6 +2,7 @@ import json
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox
 
+
 class Controller:
     def __init__(self, model, view):
         self.model = model
@@ -17,7 +18,7 @@ class Controller:
         self.model.search_thread.article_sig.connect(self.add_paper)
         self.model.search_thread.finished_sig.connect(self.on_search_finished)
         self.model.preview_thread.prev_ready_sig.connect(self.load_preview)
-        
+
     def add_paper(self, article, progress):
         paper_data = self.model.create_paper_data(article)
         self.model.bibliography.add_paper(paper_data)
@@ -68,10 +69,9 @@ class Controller:
 
         for i in reversed(range(self.view.previews_layout.count())):
             widget = self.view.previews_layout.itemAt(i).widget()
-            if widget:
-                widget.deleteLater()
+            if widget: widget.deleteLater()
 
-        self.determine_data_type_and_display(data)
+        self.view.display_multisheet_table(data)
         self.view.previews.show()
 
     def preview_supp_file(self, file_url):
@@ -81,12 +81,6 @@ class Controller:
             self.model.preview_thread.wait()
         self.model.preview_thread.file_url = file_url
         self.model.preview_thread.start()
-
-    def determine_data_type_and_display(self, data):
-        if isinstance(data, dict):
-            self.view.display_multisheet_table(data)
-        else:
-            self.view.display_table(data)
 
     def on_proceed(self):
         selected_data = self.model.extract_selected_papers_and_files()

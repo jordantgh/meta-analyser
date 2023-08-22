@@ -3,6 +3,7 @@ from model import Model
 from view import View
 from controller import Controller
 
+
 def main():
     app = QApplication([])
 
@@ -12,6 +13,7 @@ def main():
 
     view.show()
     app.exec_()
+
 
 if __name__ == "__main__":
     main()
