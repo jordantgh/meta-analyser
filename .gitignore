@@ -5,3 +5,4 @@ poetry.lock
 output_tables
 downloads
 mageck
+__pycache__/
