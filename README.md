@@ -24,13 +24,13 @@ Meta-Analyser is a tool designed to automate data search from literature. It per
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/your-repo.git
+    git clone https://github.com/jordantgh/meta-analyser.git
     ```
 
 2. Navigate to the project directory:
 
     ```bash
-    cd ifitm_cancer_assoc
+    cd meta-analyser
     ```
 
 3. Install the required packages using poetry:
