@@ -3,14 +3,22 @@ import openai
 openai.api_key = "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"
 
 message_input = [
-        {"role": "system", "content": "You are a very friendly assistant about to make your debut on the world stage. This is your first conversation with a human. You are excited to meet them."},
-        {"role": "user", "content": f"Hello, this is world."}
-      ]
+    {
+      "role": "system", "content": "You are a helpful and intelligent assistant."
+    },
+    {
+      "role": "user",
+      "content": 
+         f"""
+           There are three sisters in a room. Anna is reading a book. Alice  is playing a game of chess. What is the third sister, Amanda,  doing?
+         """
+    }
+  ]
 
 response = openai.ChatCompletion.create(
-                model="gpt-4-0613",
-                messages=message_input,
-                temperature=0
-            )
+            model="gpt-4-0613",
+            messages=message_input,
+            temperature=1
+        )
 
-response.choices[0]["message"]["content"]
+print(response.choices[0]["message"]["content"])

@@ -1,34 +1,4 @@
 # ---
-dataset_filename: zelceskiMND1PSMC3IPControl2023_37163373_1-s2.0-S2211124723004953-mmc2_ST1I_t1
-
-header_row: 0
-
-sgRNA_sequence: None
-
-gene_identifier: HGNC gene symbol
-
-dataset_type: Data
-
-statistic_aggregation: Per gene
-
-metrics: ['Z-score']
-
-conditions: ['LORD MCF10A_TP53/RB1mut Olaparib CRISPRn', 'LORD MCF10A_TP53mut Olaparib CRISPRn', 'LORD MCF10A_TP53mut Talazoparib CRISPRn', 'LORD MCF10A_TP53mut Olaparib CRISPRi', 'LORD MCF10A_TP53mut Talazoparib CRISPRi', 'Olivieri RPE1 Olaparib CRISRPn', 'Zimmerman HELA Olaparib CRISPRn', 'DeWeirdt A375 Talazoparib CRISPRn']
-
-condition_variables: ['Study', 'Cell line', 'Drug', 'CRISPR type']
-
-sample:
-|    | 0        | 1         | 2           | 3        | 4        | 5             | 6       |
-|---:|:---------|:----------|:------------|:---------|:---------|:--------------|:--------|
-|  0 | id       | pos_score | pos_p-value | pos_fdr  | pos_rank | pos_goodsgrna | pos_lfc |
-|  1 | KEAP1    | 2.87e-10  | 2.59e-07    | 0.002475 | 1        | 3             | 10.566  |
-|  2 | C19orf43 | 9.42e-07  | 2.85e-06    | 0.018152 | 2        | 3             | 8.7163  |
-|  3 | PIGA     | 2.12e-05  | 7.56e-05    | 0.294554 | 3        | 2             | 4.5552  |
-|  4 | BBC3     | 2.24e-05  | 8e-05       | 0.294554 | 4        | 4             | 7.5085  |
-|  5 | PRKCSH   | 2.64e-05  | 9.25e-05    | 0.294554 | 5        | 2             | 1.8063  |
-
-
-# ---
 dataset_filename: awahGenomeScaleCRISPR2022_35990011_5953_DMSO_Day14_R2_sheet_t1
 
 header_row: None
@@ -627,37 +597,6 @@ sample:
 |  4 | NM_000014                                                                                                                 | A2M  | -0.18554717       | 0.130953394 | 0.350599116  | 1.30817191              | 0.02168621       | 0.129813642        | -0.093118004           | 0.050648391     | 0.16322417        | 1.565240464             | 0.004759342      | 0.048339743        | 0.31002847      | 0.171653606 | 0.394650874 | -0.087805172            | 0.594800367      | 0.890740617        | -0.170216254           | 0.62710939      | 0.916172815       | -0.147466101            | 0.669739761      | 0.911610932        | -0.336701153    | 0.744820208 | 0.948290624 |
 |  5 | NM_000015                                                                                                                 | NAT2 | -0.615084931      | 0.226631071 | 0.380142049  | 0.404445504             | 0.218215912      | 0.461666725        | -2.04439538            | 0.231691291     | 0.428193874       | -1.161697916            | 0.827891999      | 0.944957403        | 0.341308066     | 0.160581291 | 0.379965492 | 0.163152039             | 0.252576833      | 0.693515925        | 0.306888492            | 0.131873646     | 0.603273276       | 0.520695716             | 0.021178454      | 0.285921004        | -0.246447184    | 0.665934009 | 0.921367956 |
 
-
-# ---
-dataset_filename: galloCCNE1AmplificationSynthetic2022_35444283_41586_2022_4638_MOESM3_ESM_ReadCounts RP-6306 resistance_t1
-
-header_row: 1
-
-sgRNA_sequence: Own-column
-
-gene_identifier: HGNC gene symbol
-
-dataset_type: Data
-
-statistic_aggregation: Per sgRNA
-
-metrics: ['Raw count']
-
-conditions: ['TKOv3_FT282.CCNE1oe_C3_NT_T6A', 'TKOv3_FT282.CCNE1oe_C3_NT_T6B', 'TKOv3_FT282.CCNE1oe_C4_NT_T6A', 'TKOv3_FT282.CCNE1oe_C4_NT_T6B', 'TKOv3_FT282.CCNE1oe_C3_RP6306_T21A', 'TKOv3_FT282.CCNE1oe_C3_RP6306_T21B', 'TKOv3_FT282.CCNE1oe_C4_RP6306_T21A', 'TKOv3_FT282.CCNE1oe_C4_RP6306_T21B']
-
-condition_variables: ['Cell line', 'Drug']
-
-sample:
-|    | 0                                                                                             | 1        | 2                             | 3                             | 4                             | 5                             | 6                                  | 7                                  | 8                                  | 9                                  |
-|---:|:----------------------------------------------------------------------------------------------|:---------|:------------------------------|:------------------------------|:------------------------------|:------------------------------|:-----------------------------------|:-----------------------------------|:-----------------------------------|:-----------------------------------|
-|  0 | Read counts for FT282-hTERT p53-R175H CCNE1-high RP-6306 Resistance Screen for Clones 3 and 4 | nan      | nan                           | nan                           | nan                           | nan                           | nan                                | nan                                | nan                                | nan                                |
-|  1 | sgRNA                                                                                         | Gene     | TKOv3_FT282.CCNE1oe_C3_NT_T6A | TKOv3_FT282.CCNE1oe_C3_NT_T6B | TKOv3_FT282.CCNE1oe_C4_NT_T6A | TKOv3_FT282.CCNE1oe_C4_NT_T6B | TKOv3_FT282.CCNE1oe_C3_RP6306_T21A | TKOv3_FT282.CCNE1oe_C3_RP6306_T21B | TKOv3_FT282.CCNE1oe_C4_RP6306_T21A | TKOv3_FT282.CCNE1oe_C4_RP6306_T21B |
-|  2 | chr11:134201957-134201976_GLB1L2_+                                                            | GLB1L2   | 1737                          | 1521                          | 1549                          | 1406                          | 708                                | 1100                               | 1178                               | 843                                |
-|  3 | chr6:26022026-26022045_HIST1H4A_-                                                             | HIST1H4A | 2052                          | 1379                          | 2108                          | 1631                          | 1735                               | 975                                | 1723                               | 853                                |
-|  4 | chr12:120436384-120436403_CCDC64_+                                                            | CCDC64   | 425                           | 391                           | 496                           | 476                           | 146                                | 506                                | 337                                | 92                                 |
-|  5 | chr8:73979678-73979697_SBSPON_-                                                               | SBSPON   | 894                           | 800                           | 1048                          | 780                           | 956                                | 1193                               | 1100                               | 1100                               |
-
-
 # ---
 dataset_filename: awahGenomeScaleCRISPR2022_35990011_6397_Puromycin_Day14_sheet_t1
 
@@ -896,37 +835,6 @@ sample:
 |  3 | A1BG_TCTCCATGGTGCATCAGCAC | 21         | 14         |
 |  4 | A1BG_TGGAAGTCCACTCCACTCAG | 2090       | 1652       |
 |  5 | A1CF_ACAGGAAGAATTCAGTTATG | 1101       | 1053       |
-
-
-# ---
-dataset_filename: galloCCNE1AmplificationSynthetic2022_35444283_41586_2022_4638_MOESM3_ESM_ReadCounts TKOv2 CCNE1 SL_t1
-
-header_row: 1
-
-sgRNA_sequence: Own-column
-
-gene_identifier: HGNC gene symbol
-
-dataset_type: Data
-
-statistic_aggregation: Per sgRNA
-
-metrics: ['Raw count']
-
-conditions: ['TKOv2 RPE1.hTERT.Cas9.dTP53 CCNE1oe Clone#2 T0', 'TKOv2 RPE1.hTERT.Cas9.dTP53 CCNE1oe Clone#2 T15_repA', 'TKOv2 RPE1.hTERT.Cas9.dTP53 CCNE1oe Clone#2 T15_repB', 'TKOv2 RPE1.hTERT.Cas9.dTP53 CCNE1oe Clone#2 T18_repA', 'TKOv2 RPE1.hTERT.Cas9.dTP53 CCNE1oe Clone#2 T18_repB', 'TKOv2 RPE1.hTERT.Cas9.dTP53 CCNE1oe Clone#21 T0', 'TKOv2 RPE1.hTERT.Cas9.dTP53 CCNE1oe Clone#21 T15_repA', 'TKOv2 RPE1.hTERT.Cas9.dTP53 CCNE1oe Clone#21 T15_repB', 'TKOv2 RPE1.hTERT.Cas9.dTP53 CCNE1oe Clone#21 T18_repA', 'TKOv2 RPE1.hTERT.Cas9.dTP53 CCNE1oe Clone#21 T18_repB', 'TKOv2 RPE1.hTERT.Cas9.dTP53_T0', 'TKOv2 RPE1.hTERT.Cas9.dTP53_WT_T18_repA', 'TKOv2 RPE1.hTERT.Cas9.dTP53_T18_repB']
-
-condition_variables: ['Cell line', 'Time point', 'Replicate']
-
-sample:
-|    | 0                                   | 1     | 2                                              | 3                                                    | 4                                                    | 5                                                    | 6                                                    | 7                                               | 8                                                     | 9                                                     | 10                                                    | 11                                                    | 12                             | 13                                      | 14                                   |
-|---:|:------------------------------------|:------|:-----------------------------------------------|:-----------------------------------------------------|:-----------------------------------------------------|:-----------------------------------------------------|:-----------------------------------------------------|:------------------------------------------------|:------------------------------------------------------|:------------------------------------------------------|:------------------------------------------------------|:------------------------------------------------------|:-------------------------------|:----------------------------------------|:-------------------------------------|
-|  0 | Read Counts for screens using TKOv2 | nan   | nan                                            | nan                                                  | nan                                                  | nan                                                  | nan                                                  | nan                                             | nan                                                   | nan                                                   | nan                                                   | nan                                                   | nan                            | nan                                     | nan                                  |
-|  1 | sgRNA                               | Gene  | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T0 | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T15_repA | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T15_repB | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18_repA | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18_repB | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#21_T0 | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#21_T15_repA | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#21_T15_repB | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#21_T18_repA | TKOv2_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#21_T18_repB | TKOv2_RPE1.hTERT.Cas9.dTP53_T0 | TKOv2_RPE1.hTERT.Cas9.dTP53_WT_T18_repA | TKOv2_RPE1.hTERT.Cas9.dTP53_T18_repB |
-|  2 | chr1:100111914-100111933_PALMD_-    | PALMD | 516                                            | 242                                                  | 166                                                  | 325                                                  | 283                                                  | 1106                                            | 220                                                   | 521                                                   | 305                                                   | 117                                                   | 1340                           | 690                                     | 676                                  |
-|  3 | chr1:100133222-100133241_PALMD_+    | PALMD | 101                                            | 35                                                   | 31                                                   | 52                                                   | 37                                                   | 129                                             | 72                                                    | 99                                                    | 50                                                    | 35                                                    | 167                            | 117                                     | 62                                   |
-|  4 | chr1:100152265-100152284_PALMD_+    | PALMD | 808                                            | 290                                                  | 134                                                  | 370                                                  | 255                                                  | 703                                             | 194                                                   | 902                                                   | 218                                                   | 179                                                   | 1316                           | 705                                     | 586                                  |
-|  5 | chr1:100154717-100154736_PALMD_+    | PALMD | 425                                            | 239                                                  | 133                                                  | 170                                                  | 201                                                  | 476                                             | 122                                                   | 453                                                   | 145                                                   | 153                                                   | 439                            | 421                                     | 277                                  |
-
 
 # ---
 dataset_filename: funkeGenomescaleCRISPRScreen2023_37024667_41416_2023_2247_MOESM3_ESM_7_NGS_Cand_list_t2
@@ -1256,37 +1164,6 @@ sample:
 |  3 | MTRNR2L2 | 6          | 0.004413  | 3         | 0.0001  | 1            |
 |  4 | DGCR6    | 6          | 0.005611  | 4         | 0.0004  | 6            |
 |  5 | TMSB4Y   | 4          | 0.005614  | 5         | 0.0001  | 3            |
-
-
-# ---
-dataset_filename: galloCCNE1AmplificationSynthetic2022_35444283_41586_2022_4638_MOESM3_ESM_ReadCounts_TKOv3 CCNE1 SL_t1
-
-header_row: 1
-
-sgRNA_sequence: Own-column
-
-gene_identifier: HGNC gene symbol
-
-dataset_type: Data
-
-statistic_aggregation: Per sgRNA
-
-metrics: ['Raw count']
-
-conditions: ['TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T0', 'TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18A', 'TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18B', 'TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T0', 'TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T18A', 'TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T18B']
-
-condition_variables: ['Cell line', 'Time point']
-
-sample:
-|    | 0                                   | 1    | 2                                              | 3                                                | 4                                                | 5                                 | 6                                   | 7                                   |
-|---:|:------------------------------------|:-----|:-----------------------------------------------|:-------------------------------------------------|:-------------------------------------------------|:----------------------------------|:------------------------------------|:------------------------------------|
-|  0 | Read counts for screens using TKOv3 | nan  | nan                                            | nan                                              | nan                                              | nan                               | nan                                 | nan                                 |
-|  1 | sgRNA                               | Gene | TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T0 | TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18A | TKOv3_RPE1.hTERT.Cas9.dTP53_CCNE1oe_Clone#2_T18B | TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T0 | TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T18A | TKOv3_RPE1.hTERT.Cas9.dTP53_WT_T18B |
-|  2 | TKOv3_A1BG_exon1_4                  | A1BG | 1501                                           | 1029                                             | 240                                              | 451                               | 366                                 | 440                                 |
-|  3 | TKOv3_A1BG_exon3_3                  | A1BG | 1404                                           | 703                                              | 463                                              | 404                               | 352                                 | 404                                 |
-|  4 | TKOv3_A1BG_exon4_2                  | A1BG | 535                                            | 401                                              | 266                                              | 146                               | 66                                  | 179                                 |
-|  5 | TKOv3_A1BG_exon5_1                  | A1BG | 708                                            | 400                                              | 219                                              | 236                               | 111                                 | 252                                 |
-
 
 # ---
 dataset_filename: oshimaMutationalFunctionalGenetics2020_33796864_NIHMS1673078-supplement-Supplementary_Table_7_AraC_t1

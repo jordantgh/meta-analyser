@@ -1,4 +1,0 @@
-2023-08-18 07:31:34,550 - DEBUG - Using selector: EpollSelector
-2023-08-18 07:32:24,528 - DEBUG - Using selector: EpollSelector
-2023-08-18 07:32:34,723 - DEBUG - Starting new HTTPS connection (1): www.ncbi.nlm.nih.gov:443
-2023-08-18 07:32:35,410 - DEBUG - https://www.ncbi.nlm.nih.gov:443 "GET /pmc/articles/PMC10241889/bin/41416_2023_2247_MOESM3_ESM.xlsx HTTP/1.1" 200 None

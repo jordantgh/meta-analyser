@@ -1,0 +1,1312 @@
+[
+    {
+        "Title": "GENETIC SCREENING REVEALS DEPENDENCY ON FEN1 TO RESIST TEMOZOLOMIDE IN TREATMENT-RESISTANT GLIOBLASTOMA STEM CELLS",
+        "Authors": [
+            "Brakel B",
+            "Saleh A",
+            "Saleh M",
+            "Miletic P",
+            "Salim S",
+            "Maich W",
+            "Brown KR",
+            "Tieu D",
+            "Venugopal C",
+            "Moffat J",
+            "Katyal S",
+            "Singh SK",
+            "Chokshi CR"
+        ],
+        "PMID": "0",
+        "PMCID": "PMC10337540"
+    },
+    {
+        "Title": "Integrated multi-omics analyses reveal homology-directed repair pathway as a unique dependency in near-haploid leukemia",
+        "Authors": [
+            "Liu-Lupo Y",
+            "Ham JD",
+            "Jeewajee SK",
+            "Nguyen L",
+            "Delorey T",
+            "Ramos A",
+            "Weinstock DM",
+            "Regev A",
+            "Hemann MT"
+        ],
+        "PMID": "37286545",
+        "PMCID": "PMC10247733"
+    },
+    {
+        "Title": "Genome-scale CRISPR screen reveals neddylation to contribute to cisplatin resistance of testicular germ cell tumours",
+        "Authors": [
+            "Funke K",
+            "Einsfelder U",
+            "Hansen A",
+            "Ar\u00e9valo L",
+            "Schneider S",
+            "Nettersheim D",
+            "Stein V",
+            "Schorle H"
+        ],
+        "PMID": "37024667",
+        "PMCID": "PMC10241889"
+    },
+    {
+        "Title": "The genomic landscape of sensitivity to arsenic trioxide uncovered by genome-wide CRISPR-Cas9 screening",
+        "Authors": [
+            "Chen JZ",
+            "Wang LN",
+            "Luo XQ",
+            "Tang YL"
+        ],
+        "PMID": "37251921",
+        "PMCID": "PMC10214836"
+    },
+    {
+        "Title": "Pseudo-temporal dynamics of chemoresistant triple negative breast cancer cells reveal EGFR/HER2 inhibition as synthetic lethal during mid-neoadjuvant chemotherapy",
+        "Authors": [
+            "Song WM",
+            "Chia PL",
+            "Zhou X",
+            "Walsh M",
+            "Silva J",
+            "Zhang B"
+        ],
+        "PMID": "36824282",
+        "PMCID": "PMC9942122"
+    },
+    {
+        "Title": "Genome-scale CRISPR-Cas9 knockout screening in nasopharyngeal carcinoma for radiosensitive and radioresistant genes",
+        "Authors": [
+            "Zhou Z",
+            "Chen G",
+            "Shen M",
+            "Li J",
+            "Liu K",
+            "Liu M",
+            "Shi S",
+            "Yang D",
+            "Chen W",
+            "Chen S",
+            "Yin Y",
+            "Qin Y",
+            "Su X",
+            "Chen W",
+            "Kang M"
+        ],
+        "PMID": "36739730",
+        "PMCID": "PMC9932185"
+    },
+    {
+        "Title": "Genome-wide CRISPR/Cas9 screen identifies etoposide response modulators associated with clinical outcomes in pediatric AML",
+        "Authors": [
+            "Nguyen NH",
+            "Rafiee R",
+            "Tagmount A",
+            "Sobh A",
+            "Loguinov A",
+            "de Jesus Sosa AK",
+            "Elsayed AH",
+            "Gbadamosi M",
+            "Seligson N",
+            "Cogle CR",
+            "Rubnitz J",
+            "Ribeiro R",
+            "Downing J",
+            "Cao X",
+            "Pounds SB",
+            "Vulpe CD",
+            "Lamba JK"
+        ],
+        "PMID": "36111891",
+        "PMCID": "PMC10182178"
+    },
+    {
+        "Title": "Identifying CDC7 as a synergistic target of chemotherapy in resistant small-cell lung cancer via CRISPR/Cas9 screening",
+        "Authors": [
+            "Deng L",
+            "Yang L",
+            "Zhu S",
+            "Li M",
+            "Wang Y",
+            "Cao X",
+            "Wang Q",
+            "Guo L"
+        ],
+        "PMID": "36725843",
+        "PMCID": "PMC9892530"
+    },
+    {
+        "Title": "Large-Scale In Vitro and In Vivo CRISPR-Cas9 Knockout Screens Identify a 16-Gene Fitness Score for Improved Risk Assessment in Acute Myeloid Leukemia",
+        "Authors": [
+            "Jin P",
+            "Jin Q",
+            "Wang X",
+            "Zhao M",
+            "Dong F",
+            "Jiang G",
+            "Li Z",
+            "Shen J",
+            "Zhang W",
+            "Wu S",
+            "Li R",
+            "Zhang Y",
+            "Li X",
+            "Li J"
+        ],
+        "PMID": "35877119",
+        "PMCID": "PMC9475249"
+    },
+    {
+        "Title": "mTOR inhibition attenuates chemosensitivity through the induction of chemotherapy resistant persisters",
+        "Authors": [
+            "Liu Y",
+            "Azizian NG",
+            "Sullivan DK",
+            "Li Y"
+        ],
+        "PMID": "36396656",
+        "PMCID": "PMC9671908"
+    },
+    {
+        "Title": "Genome-wide CRISPR-Cas9 screen identifies rationally designed combination therapies for CRLF2-rearranged Ph-like ALL",
+        "Authors": [
+            "Sasaki K",
+            "Yamauchi T",
+            "Semba Y",
+            "Nogami J",
+            "Imanaga H",
+            "Terasaki T",
+            "Nakao F",
+            "Akahane K",
+            "Inukai T",
+            "Verhoeyen E",
+            "Akashi K",
+            "Maeda T"
+        ],
+        "PMID": "34587248",
+        "PMCID": "PMC9632759"
+    },
+    {
+        "Title": "Genomic Amplification of UBQLN4 Is a Prognostic and Treatment Resistance Factor",
+        "Authors": [
+            "Kobayashi Y",
+            "Bustos MA",
+            "Shoji Y",
+            "Jachimowicz RD",
+            "Shiloh Y",
+            "Hoon DS"
+        ],
+        "PMID": "36291176",
+        "PMCID": "PMC9600423"
+    },
+    {
+        "Title": "CRISPR-based knockout screening identifies the loss of MIEF2 to enhance oxaliplatin resistance in colorectal cancer through inhibiting the mitochondrial apoptosis pathway",
+        "Authors": [
+            "Xie C",
+            "Li K",
+            "Li Y",
+            "Peng X",
+            "Teng B",
+            "He K",
+            "Jin A",
+            "Wang W",
+            "Wei Z"
+        ],
+        "PMID": "36106106",
+        "PMCID": "PMC9465453"
+    },
+    {
+        "Title": "Activation of the integrated stress response is a vulnerability for multidrug\u2010resistant FBXW7\u2010deficient cells",
+        "Authors": [
+            "Sanchez\u2010Burgos L",
+            "Navarro\u2010Gonz\u00e1lez B",
+            "Garc\u00eda\u2010Mart\u00edn S",
+            "Sirozh O",
+            "Mota\u2010Pino J",
+            "Fueyo\u2010Marcos E",
+            "Tejero H",
+            "Ant\u00f3n ME",
+            "Murga M",
+            "Al\u2010Shahrour F",
+            "Fernandez\u2010Capetillo O"
+        ],
+        "PMID": "35861150",
+        "PMCID": "PMC9449593"
+    },
+    {
+        "Title": "A Four-Cell-Senescence-Regulator-Gene Prognostic Index Verified by Genome-Wide CRISPR Can Depict the Tumor Microenvironment and Guide Clinical Treatment of Bladder Cancer",
+        "Authors": [
+            "Sun JX",
+            "Liu CQ",
+            "Xu JZ",
+            "An Y",
+            "Xu MY",
+            "Zhong XY",
+            "Zeng N",
+            "Ma SY",
+            "He HD",
+            "Zhang ZB",
+            "Wang SG",
+            "Xia QD"
+        ],
+        "PMID": "35898492",
+        "PMCID": "PMC9312376"
+    },
+    {
+        "Title": "Patient Derived Organoids Confirm That PI3K/AKT Signalling Is an Escape Pathway for Radioresistance and a Target for Therapy in Rectal Cancer",
+        "Authors": [
+            "Wanigasooriya K",
+            "Barros-Silva JD",
+            "Tee L",
+            "El-asrag ME",
+            "Stodolna A",
+            "Pickles OJ",
+            "Stockton J",
+            "Bryer C",
+            "Hoare R",
+            "Whalley CM",
+            "Tyler R",
+            "Sillo T",
+            "Yau C",
+            "Ismail T",
+            "Beggs AD"
+        ],
+        "PMID": "35860583",
+        "PMCID": "PMC9289101"
+    },
+    {
+        "Title": "Machine Learning Screens Potential Drugs Targeting a Prognostic Gene Signature Associated With Proliferation in Hepatocellular Carcinoma",
+        "Authors": [
+            "Liu J",
+            "Lu J",
+            "Li W",
+            "Mao W",
+            "Lu Y"
+        ],
+        "PMID": "35836576",
+        "PMCID": "PMC9273781"
+    },
+    {
+        "Title": "Genome-Wide CRISPR Screening Identifies DCK and CCNL1 as Genes That Contribute to Gemcitabine Resistance in Pancreatic Cancer",
+        "Authors": [
+            "Yang H",
+            "Liu B",
+            "Liu D",
+            "Yang Z",
+            "Zhang S",
+            "Xu P",
+            "Xing Y",
+            "Kutschick I",
+            "Pfeffer S",
+            "Britzen-Laurent N",
+            "Gr\u00fctzmann R",
+            "Pilarsky C"
+        ],
+        "PMID": "35804923",
+        "PMCID": "PMC9264918"
+    },
+    {
+        "Title": "Genome\u2010wide CRISPR/Cas9 screening for therapeutic targets in NSCLC carrying wild\u2010type TP53 and receptor tyrosine kinase genes",
+        "Authors": [
+            "Wang Q",
+            "Li J",
+            "Zhu J",
+            "Mao J",
+            "Duan C",
+            "Liang X",
+            "Zhu L",
+            "Zhu M",
+            "Zhang Z",
+            "Lin F",
+            "Guo R"
+        ],
+        "PMID": "35692096",
+        "PMCID": "PMC9189421"
+    },
+    {
+        "Title": "Cross talk between acetylation and methylation regulators reveals histone modifier expression patterns posing prognostic and therapeutic implications on patients with colon cancer",
+        "Authors": [
+            "Zhou R",
+            "Xie F",
+            "Liu K",
+            "Zhou X",
+            "Chen X",
+            "Chen J",
+            "Xi S",
+            "Huang Z",
+            "Rong X"
+        ],
+        "PMID": "35606881",
+        "PMCID": "PMC9128235"
+    },
+    {
+        "Title": "Evaluation of stromal cell infiltration in the tumor microenvironment enable prediction of treatment sensitivity and prognosis in colon cancer",
+        "Authors": [
+            "Zhou R",
+            "Wen Z",
+            "Liao Y",
+            "Wu J",
+            "Xi S",
+            "Zeng D",
+            "Sun H",
+            "Wu J",
+            "Shi M",
+            "Bin J",
+            "Liao Y",
+            "Liao W"
+        ],
+        "PMID": "35615026",
+        "PMCID": "PMC9118126"
+    },
+    {
+        "Title": "Genome-wide CRISPR screen identified Rad18 as a determinant of doxorubicin sensitivity in osteosarcoma",
+        "Authors": [
+            "Du M",
+            "Gu J",
+            "Liu C",
+            "Liu N",
+            "Yu Z",
+            "Zhou C",
+            "Heng W",
+            "Cao Z",
+            "Wei F",
+            "Zhu K",
+            "Wang Y",
+            "Zhang W",
+            "Xue X",
+            "Zhang Y",
+            "Qian J"
+        ],
+        "PMID": "35459258",
+        "PMCID": "PMC9034549"
+    },
+    {
+        "Title": "CCNE1 amplification is synthetic lethal with PKMYT1 kinase inhibition",
+        "Authors": [
+            "Gallo D",
+            "Young JT",
+            "Fourtounis J",
+            "Martino G",
+            "\u00c1lvarez-Quil\u00f3n A",
+            "Bernier C",
+            "Duffy NM",
+            "Papp R",
+            "Roulston A",
+            "Stocco R",
+            "Szychowski J",
+            "Veloso A",
+            "Alam H",
+            "Baruah PS",
+            "Fortin AB",
+            "Bowlan J",
+            "Chaudhary N",
+            "Desjardins J",
+            "Dietrich E",
+            "Fournier S",
+            "Fug\u00e8re-Desjardins C",
+            "Goullet de Rugy T",
+            "Leclaire ME",
+            "Liu B",
+            "Bhaskaran V",
+            "Mamane Y",
+            "Melo H",
+            "Nicolas O",
+            "Singhania A",
+            "Szilard RK",
+            "Tk\u00e1\u010d J",
+            "Yin SY",
+            "Morris SJ",
+            "Zinda M",
+            "Marshall CG",
+            "Durocher D"
+        ],
+        "PMID": "35444283",
+        "PMCID": "PMC9046089"
+    },
+    {
+        "Title": "Genome-wide CRISPR/Cas9 screening identifies determinant of panobinostat sensitivity in acute lymphoblastic leukemia",
+        "Authors": [
+            "Jiang C",
+            "Qian M",
+            "Gocho Y",
+            "Yang W",
+            "Du G",
+            "Shen S",
+            "Yang JJ",
+            "Zhang H"
+        ],
+        "PMID": "35192680",
+        "PMCID": "PMC9043932"
+    },
+    {
+        "Title": "Targeting HNRNPU to overcome cisplatin resistance in bladder cancer",
+        "Authors": [
+            "Shi ZD",
+            "Hao L",
+            "Han XX",
+            "Wu ZX",
+            "Pang K",
+            "Dong Y",
+            "Qin JX",
+            "Wang GY",
+            "Zhang XM",
+            "Xia T",
+            "Liang Q",
+            "Zhao Y",
+            "Li R",
+            "Zhang SQ",
+            "Zhang JH",
+            "Chen JG",
+            "Wang GC",
+            "Chen ZS",
+            "Han CH"
+        ],
+        "PMID": "35130920",
+        "PMCID": "PMC8819945"
+    },
+    {
+        "Title": "SHMT2 inhibition disrupts the TCF3 transcriptional survival program in Burkitt lymphoma",
+        "Authors": [
+            "Wilke AC",
+            "Doebele C",
+            "Zindel A",
+            "Lee KS",
+            "Rieke SA",
+            "Ceribelli M",
+            "Comoglio F",
+            "Phelan JD",
+            "Wang JQ",
+            "Pikman Y",
+            "Jahn D",
+            "H\u00e4upl B",
+            "Schneider C",
+            "Scheich S",
+            "Tosto FA",
+            "Bohnenberger H",
+            "Stauder P",
+            "Schn\u00fctgen F",
+            "Slabicki M",
+            "Coulibaly ZA",
+            "Wolf S",
+            "Bojarczuk K",
+            "Chapuy B",
+            "Brandts CH",
+            "Stroebel P",
+            "Lewis CA",
+            "Engelke M",
+            "Xu X",
+            "Kim H",
+            "Dang TH",
+            "Schmitz R",
+            "Hodson DJ",
+            "Stegmaier K",
+            "Urlaub H",
+            "Serve H",
+            "Schmitt CA",
+            "Kreuz F",
+            "Knittel G",
+            "Rabinowitz JD",
+            "Reinhardt HC",
+            "Vander Heiden MG",
+            "Thomas C",
+            "Staudt LM",
+            "Zenz T",
+            "Oellerich T"
+        ],
+        "PMID": "34624079",
+        "PMCID": "PMC8938936"
+    },
+    {
+        "Title": "Genome scale CRISPR Cas9a knockout screen reveals genes that control glioblastoma susceptibility to the alkylating agent temozolomide",
+        "Authors": [
+            "Awah CU",
+            "Winter J",
+            "Ogunwobi OO"
+        ],
+        "PMID": "35990011",
+        "PMCID": "PMC9389140"
+    },
+    {
+        "Title": "Epigenetic and Immune-Cell Infiltration Changes in the Tumor Microenvironment in Hepatocellular Carcinoma",
+        "Authors": [
+            "Wu ZH",
+            "Yang DL",
+            "Wang L",
+            "Liu J"
+        ],
+        "PMID": "34925377",
+        "PMCID": "PMC8674919"
+    },
+    {
+        "Title": "DDRE-24. ARF4-MEDIATED RETROGRADE TRAFFICKING PROMOTES CHEMORESISTANCE IN GBM",
+        "Authors": [
+            "Budhiraja S",
+            "Baisiwala S",
+            "Nandoliya K",
+            "Dara G",
+            "Perrault E",
+            "Zolp A",
+            "Chen L",
+            "Dmello C",
+            "Park C",
+            "Sonabend A",
+            "Ahmed A"
+        ],
+        "PMID": "0",
+        "PMCID": "PMC8598722"
+    },
+    {
+        "Title": "Targeting serine hydroxymethyltransferases 1 and 2 for T-cell acute lymphoblastic leukemia therapy",
+        "Authors": [
+            "Pikman Y",
+            "Ocasio-Martinez N",
+            "Alexe G",
+            "Dimitrov B",
+            "Kitara S",
+            "Diehl FF",
+            "Robichaud AL",
+            "Conway AS",
+            "Ross L",
+            "Su A",
+            "Ling F",
+            "Qi J",
+            "Roti G",
+            "Lewis CA",
+            "Puissant A",
+            "Vander Heiden MG",
+            "Stegmaier K"
+        ],
+        "PMID": "34341479",
+        "PMCID": "PMC8807390"
+    },
+    {
+        "Title": "A Genome-Scale CRISPR Knock-Out Screen Identifies MicroRNA-5197-5p as a Promising Radiosensitive Biomarker in Colorectal Cancer",
+        "Authors": [
+            "Yu S",
+            "Li L",
+            "Fan K",
+            "Li Y",
+            "Gao Y"
+        ],
+        "PMID": "34395263",
+        "PMCID": "PMC8362832"
+    },
+    {
+        "Title": "Genome-wide CRISPR/Cas9 screening identifies CARHSP1 responsible for radiation resistance in glioblastoma",
+        "Authors": [
+            "Zhu GD",
+            "Yu J",
+            "Sun ZY",
+            "Chen Y",
+            "Zheng HM",
+            "Lin ML",
+            "Ou-yang S",
+            "Liu GL",
+            "Zhang JW",
+            "Shao FM"
+        ],
+        "PMID": "34290231",
+        "PMCID": "PMC8295287"
+    },
+    {
+        "Title": "Pooled CRISPR screening in pancreatic cancer cells implicates co-repressor complexes as a cause of multiple drug resistance via regulation of epithelial-to-mesenchymal transition",
+        "Authors": [
+            "Ramaker RC",
+            "Hardigan AA",
+            "Gordon ER",
+            "Wright CA",
+            "Myers RM",
+            "Cooper SJ"
+        ],
+        "PMID": "34049503",
+        "PMCID": "PMC8164247"
+    },
+    {
+        "Title": "A Potential Role for HUWE1 in Modulating Cisplatin Sensitivity",
+        "Authors": [
+            "Wenmaekers S",
+            "Viergever BJ",
+            "Kumar G",
+            "Kranenburg O",
+            "Black PC",
+            "Daugaard M",
+            "Meijer RP"
+        ],
+        "PMID": "34065298",
+        "PMCID": "PMC8160634"
+    },
+    {
+        "Title": "STING enhances cell death through regulation of reactive oxygen species and DNA damage",
+        "Authors": [
+            "Hayman TJ",
+            "Baro M",
+            "MacNeil T",
+            "Phoomak C",
+            "Aung TN",
+            "Cui W",
+            "Leach K",
+            "Iyer R",
+            "Challa S",
+            "Sandoval-Schaefer T",
+            "Burtness BA",
+            "Rimm DL",
+            "Contessa JN"
+        ],
+        "PMID": "33875663",
+        "PMCID": "PMC8055995"
+    },
+    {
+        "Title": "Loss of the abasic site sensor HMCES is synthetic lethal with the activity of the APOBEC3A cytosine deaminase in cancer cells",
+        "Authors": [
+            "Biayna J",
+            "Garcia-Cao I",
+            "\u00c1lvarez MM",
+            "Salvadores M",
+            "Espinosa-Carrasco J",
+            "McCullough M",
+            "Supek F",
+            "Stracker TH"
+        ],
+        "PMID": "33788831",
+        "PMCID": "PMC8041192"
+    },
+    {
+        "Title": "CRISPR Screens in Synthetic Lethality and Combinatorial Therapies for Cancer",
+        "Authors": [
+            "Castells-Roca L",
+            "Tejero E",
+            "Rodr\u00edguez-Santiago B",
+            "Surrall\u00e9s J"
+        ],
+        "PMID": "33808217",
+        "PMCID": "PMC8037779"
+    },
+    {
+        "Title": "A Fifteen\u2010Gene Classifier to Predict Neoadjuvant Chemotherapy Responses in Patients with Stage IB to IIB Squamous Cervical Cancer",
+        "Authors": [
+            "Tian X",
+            "Wang X",
+            "Cui Z",
+            "Liu J",
+            "Huang X",
+            "Shi C",
+            "Zhang M",
+            "Liu T",
+            "Du X",
+            "Li R",
+            "Huang L",
+            "Gong D",
+            "Tian R",
+            "Cao C",
+            "Jin P",
+            "Zeng Z",
+            "Pan G",
+            "Xia M",
+            "Zhang H",
+            "Luo B",
+            "Xie Y",
+            "Li X",
+            "Li T",
+            "Wu J",
+            "Zhang Q",
+            "Chen G",
+            "Hu Z"
+        ],
+        "PMID": "34026427",
+        "PMCID": "PMC8132153"
+    },
+    {
+        "Title": "Genome-wide CRISPR-Cas9 screen identified KLF11 as a druggable suppressor for sarcoma cancer stem cells",
+        "Authors": [
+            "Wang Y",
+            "Wu J",
+            "Chen H",
+            "Yang Y",
+            "Xiao C",
+            "Yi X",
+            "Shi C",
+            "Zhong K",
+            "He H",
+            "Li Y",
+            "Wu Z",
+            "Zhou G",
+            "Rao Q",
+            "Wang X",
+            "Zhou X",
+            "Lomberk G",
+            "Liu B",
+            "Zhao J",
+            "Ge J",
+            "Zhou W",
+            "Chu X",
+            "Chen C",
+            "Zhou X",
+            "Wang L",
+            "Guan K",
+            "Qu L"
+        ],
+        "PMID": "33571129",
+        "PMCID": "PMC7840125"
+    },
+    {
+        "Title": "Revealing Temozolomide Resistance Mechanisms via Genome-Wide CRISPR Libraries",
+        "Authors": [
+            "Ribeiro Reily Rocha C",
+            "Reily Rocha A",
+            "Molina Silva M",
+            "Rodrigues Gomes L",
+            "Teatin Latancia M",
+            "Andrade Tomaz M",
+            "de Souza I",
+            "Karolynne Seregni Monteiro L",
+            "Frederico Martins Menck C"
+        ],
+        "PMID": "33271924",
+        "PMCID": "PMC7760831"
+    },
+    {
+        "Title": "Targeted CRISPR screening identifies PRMT5 as synthetic lethality combinatorial target with gemcitabine in pancreatic cancer cells",
+        "Authors": [
+            "Wei X",
+            "Yang J",
+            "Adair SJ",
+            "Ozturk H",
+            "Kuscu C",
+            "Lee KY",
+            "Kane WJ",
+            "O\u2019Hara PE",
+            "Liu D",
+            "Demirlenk YM",
+            "Habieb AH",
+            "Yilmaz E",
+            "Dutta A",
+            "Bauer TW",
+            "Adli M"
+        ],
+        "PMID": "33097661",
+        "PMCID": "PMC7668168"
+    },
+    {
+        "Title": "Mutational and functional genetics mapping of chemotherapy resistance mechanisms in relapsed acute lymphoblastic leukemia",
+        "Authors": [
+            "Oshima K",
+            "Zhao J",
+            "P\u00e9rez-Dur\u00e1n P",
+            "Brown JA",
+            "Pati\u00f1o-Galindo JA",
+            "Chu T",
+            "Quinn A",
+            "Gunning T",
+            "Belver L",
+            "Ambesi-Impiombato A",
+            "Tosello V",
+            "Wang Z",
+            "Sulis ML",
+            "Kato M",
+            "Koh K",
+            "Paganin M",
+            "Basso G",
+            "Balbin M",
+            "Nicolas C",
+            "Gastier-Foster JM",
+            "Devidas M",
+            "Loh ML",
+            "Paietta E",
+            "Tallman MS",
+            "Rowe JM",
+            "Litzow M",
+            "Minden MD",
+            "Meijerink J",
+            "Rabadan R",
+            "Ferrando A"
+        ],
+        "PMID": "33796864",
+        "PMCID": "PMC8011577"
+    },
+    {
+        "Title": "In vivo CRISPR/Cas9 knockout screen: TCEAL1 silencing enhances docetaxel efficacy in prostate cancer",
+        "Authors": [
+            "Rushworth LK",
+            "Harle V",
+            "Repiscak P",
+            "Clark W",
+            "Shaw R",
+            "Hall H",
+            "Bushell M",
+            "Leung HY",
+            "Patel R"
+        ],
+        "PMID": "33033111",
+        "PMCID": "PMC7556750"
+    },
+    {
+        "Title": "IL10RA modulates crizotinib sensitivity in NPM1-ALK+ anaplastic large cell lymphoma",
+        "Authors": [
+            "Prokoph N",
+            "Probst NA",
+            "Lee LC",
+            "Monahan JM",
+            "Matthews JD",
+            "Liang HC",
+            "Bahnsen K",
+            "Montes-Mojarro IA",
+            "Karaca-Atabay E",
+            "Sharma GG",
+            "Malik V",
+            "Larose H",
+            "Forde SD",
+            "Ducray SP",
+            "Lobello C",
+            "Wang Q",
+            "Luan SL",
+            "Posp\u00ed\u0161ilov\u00e1 \u0160",
+            "Gambacorti-Passerini C",
+            "Burke GA",
+            "Pervez S",
+            "Attarbaschi A",
+            "Jan\u00edkov\u00e1 A",
+            "Pacquement H",
+            "Landman-Parker J",
+            "Lambilliotte A",
+            "Schleiermacher G",
+            "Klapper W",
+            "Jauch R",
+            "Woessmann W",
+            "Vassal G",
+            "Kenner L",
+            "Merkel O",
+            "Mologni L",
+            "Chiarle R",
+            "Brugi\u00e8res L",
+            "Geoerger B",
+            "Barbieri I",
+            "Turner SD"
+        ],
+        "PMID": "32573700",
+        "PMCID": "PMC7530646"
+    },
+    {
+        "Title": "Truncated HDAC9 identified by integrated genome-wide screen as the key modulator for paclitaxel resistance in triple-negative breast cancer",
+        "Authors": [
+            "Lian B",
+            "Pei YC",
+            "Jiang YZ",
+            "Xue MZ",
+            "Li DQ",
+            "Li XG",
+            "Zheng YZ",
+            "Liu XY",
+            "Qiao F",
+            "Sun WL",
+            "Ling H",
+            "He M",
+            "Yao L",
+            "Hu X",
+            "Shao ZM"
+        ],
+        "PMID": "33042272",
+        "PMCID": "PMC7532680"
+    },
+    {
+        "Title": "MYCN drives chemoresistance in small cell lung cancer while USP7 inhibition can restore chemosensitivity",
+        "Authors": [
+            "Grunblatt E",
+            "Wu N",
+            "Zhang H",
+            "Liu X",
+            "Norton JP",
+            "Ohol Y",
+            "Leger P",
+            "Hiatt JB",
+            "Eastwood EC",
+            "Thomas R",
+            "Ibrahim AH",
+            "Jia D",
+            "Basom R",
+            "Eaton KD",
+            "Martins R",
+            "Houghton AM",
+            "MacPherson D"
+        ],
+        "PMID": "32820040",
+        "PMCID": "PMC7462062"
+    },
+    {
+        "Title": "The Novel Zinc Finger Protein 587B Gene, ZNF587B, Regulates Cell Proliferation and Metastasis in Ovarian Cancer Cells in vivo and in vitro",
+        "Authors": [
+            "Liu Y",
+            "Ouyang Q",
+            "Sun Z",
+            "Tan J",
+            "Huang W",
+            "Liu J",
+            "Liu Z",
+            "Zhou H",
+            "Zeng F",
+            "Liu Y"
+        ],
+        "PMID": "32617020",
+        "PMCID": "PMC7326209"
+    },
+    {
+        "Title": "Ribosomal protein S11 influences glioma response to TOP2 poisons",
+        "Authors": [
+            "Awah CU",
+            "Chen L",
+            "Bansal M",
+            "Mahajan A",
+            "Winter J",
+            "Lad M",
+            "Warnke L",
+            "Gonzalez-Buendia E",
+            "Park C",
+            "Daniel Z",
+            "Feldstein E",
+            "Yu D",
+            "Zannikou M",
+            "Balyasnikova IV",
+            "Martuscello R",
+            "Konerman S",
+            "Gy\u0151rffy B",
+            "Burdett KB",
+            "Scholtens DM",
+            "Stupp R",
+            "Ahmed A",
+            "Hsu P",
+            "Sonabend AM"
+        ],
+        "PMID": "32528131",
+        "PMCID": "PMC7646677"
+    },
+    {
+        "Title": "Cooperation of the ATM and Fanconi Anemia/BRCA Pathways in Double-Strand Break End Resection",
+        "Authors": [
+            "Cai MY",
+            "Dunn CE",
+            "Chen W",
+            "Kochupurakkal BS",
+            "Nguyen H",
+            "Moreau LA",
+            "Shapiro GI",
+            "Parmar K",
+            "Kozono D",
+            "D\u2019Andrea AD"
+        ],
+        "PMID": "32075772",
+        "PMCID": "PMC8713357"
+    },
+    {
+        "Title": "CRISPR/CAS9-based DNA damage response screens reveal gene-drug interactions",
+        "Authors": [
+            "Su D",
+            "Feng X",
+            "Colic M",
+            "Wang Y",
+            "Zhang C",
+            "Wang C",
+            "Tang M",
+            "Hart T",
+            "Chen J"
+        ],
+        "PMID": "31991288",
+        "PMCID": "PMC7034363"
+    },
+    {
+        "Title": "CRISPR/Cas9 genome-wide screening identifies KEAP1 as a sorafenib, lenvatinib, and regorafenib sensitivity gene in hepatocellular carcinoma",
+        "Authors": [
+            "Zheng A",
+            "Chevalier N",
+            "Calderoni M",
+            "Dubuis G",
+            "Dormond O",
+            "Ziros PG",
+            "Sykiotis GP",
+            "Widmann C"
+        ],
+        "PMID": "31903165",
+        "PMCID": "PMC6925031"
+    },
+    {
+        "Title": "A genome-scale CRISPR/Cas9 knockout screening reveals SH3D21 as a sensitizer for gemcitabine",
+        "Authors": [
+            "Masoudi M",
+            "Seki M",
+            "Yazdanparast R",
+            "Yachie N",
+            "Aburatani H"
+        ],
+        "PMID": "31844142",
+        "PMCID": "PMC6915784"
+    },
+    {
+        "Title": "Genome-wide CRISPR screen identifies ELP5 as a determinant of gemcitabine sensitivity in gallbladder cancer",
+        "Authors": [
+            "Xu S",
+            "Zhan M",
+            "Jiang C",
+            "He M",
+            "Yang L",
+            "Shen H",
+            "Huang S",
+            "Huang X",
+            "Lin R",
+            "Shi Y",
+            "Liu Q",
+            "Chen W",
+            "Mohan M",
+            "Wang J"
+        ],
+        "PMID": "31792210",
+        "PMCID": "PMC6889377"
+    },
+    {
+        "Title": "STEM-27. LEVERAGING FUNCTIONAL GENETIC DEPENDENCIES IN TREATMENT-REFRACTORY GLIOBLASTOMA",
+        "Authors": [
+            "Chokshi C",
+            "Tieu D",
+            "Brown K",
+            "Venugopal C",
+            "Kuhlmann L",
+            "Ignatchenko V",
+            "Tong A",
+            "Chan K",
+            "Savage N",
+            "Subapanditha M",
+            "McKenna D",
+            "Lazo J",
+            "Kislinger T",
+            "Moffat J",
+            "Singh S"
+        ],
+        "PMID": "0",
+        "PMCID": "PMC6847410"
+    },
+    {
+        "Title": "SLC19A1 transports immunoreactive cyclic dinucleotides",
+        "Authors": [
+            "Luteijn RD",
+            "Zaver SA",
+            "Gowen BG",
+            "Wyman S",
+            "Garelis N",
+            "Onia L",
+            "McWhirter SM",
+            "Katibah GE",
+            "Corn JE",
+            "Woodward JJ",
+            "Raulet DH"
+        ],
+        "PMID": "31511694",
+        "PMCID": "PMC6785039"
+    },
+    {
+        "Title": "Radiosensitization approaches for HPV\u2010positive and HPV\u2010negative head and neck squamous carcinomas",
+        "Authors": [
+            "Dok R",
+            "Bamps M",
+            "Glorieux M",
+            "Zhao P",
+            "Sablina A",
+            "Nuyts S"
+        ],
+        "PMID": "31283004",
+        "PMCID": "PMC6973261"
+    },
+    {
+        "Title": "Genome-scale CRISPR activation screening identifies a role of ELAVL2-CDKN1A axis in paclitaxel resistance in esophageal squamous cell carcinoma",
+        "Authors": [
+            "Zhao WS",
+            "Yan WP",
+            "Chen DB",
+            "Dai L",
+            "Yang YB",
+            "Kang XZ",
+            "Fu H",
+            "Chen P",
+            "Deng KJ",
+            "Wang XY",
+            "Xie XW",
+            "Chen HS",
+            "Chen KN"
+        ],
+        "PMID": "31285951",
+        "PMCID": "PMC6610048"
+    },
+    {
+        "Title": "Genome-scale CRISPR/Cas9 screen determines factors modulating sensitivity to ProTide NUC-1031",
+        "Authors": [
+            "Sarr A",
+            "Br\u00e9 J",
+            "Um IH",
+            "Chan TH",
+            "Mullen P",
+            "Harrison DJ",
+            "Reynolds PA"
+        ],
+        "PMID": "31113993",
+        "PMCID": "PMC6529431"
+    },
+    {
+        "Title": "Loss of ZNF587B and SULF1 contributed to cisplatin resistance in ovarian cancer cell lines based on Genome-scale CRISPR/Cas9 screening",
+        "Authors": [
+            "Ouyang Q",
+            "Liu Y",
+            "Tan J",
+            "Li J",
+            "Yang D",
+            "Zeng F",
+            "Huang W",
+            "Kong Y",
+            "Liu Z",
+            "Zhou H",
+            "Liu Y"
+        ],
+        "PMID": "31218106",
+        "PMCID": "PMC6556596"
+    },
+    {
+        "Title": "Spindle assembly checkpoint inhibition can resensitize p53-null stem cells to cancer chemotherapy",
+        "Authors": [
+            "Liu C",
+            "Banister CE",
+            "Buckhaults PJ"
+        ],
+        "PMID": "30862715",
+        "PMCID": "PMC6497569"
+    },
+    {
+        "Title": "Functional Profiling Identifies Determinants of Arsenic Trioxide Cellular Toxicity",
+        "Authors": [
+            "Sobh A",
+            "Loguinov A",
+            "Yazici GN",
+            "Zeidan RS",
+            "Tagmount A",
+            "Hejazi NS",
+            "Hubbard AE",
+            "Zhang L",
+            "Vulpe CD"
+        ],
+        "PMID": "30815697",
+        "PMCID": "PMC6484884"
+    },
+    {
+        "Title": "ATM orchestrates the DNA-damage response to counter toxic non-homologous end-joining at broken replication forks",
+        "Authors": [
+            "Balmus G",
+            "Pilger D",
+            "Coates J",
+            "Demir M",
+            "Sczaniecka-Clift M",
+            "Barros AC",
+            "Woods M",
+            "Fu B",
+            "Yang F",
+            "Chen E",
+            "Ostermaier M",
+            "Stankovic T",
+            "Ponstingl H",
+            "Herzog M",
+            "Yusa K",
+            "Martinez FM",
+            "Durant ST",
+            "Galanty Y",
+            "Beli P",
+            "Adams DJ",
+            "Bradley A",
+            "Metzakopian E",
+            "Forment JV",
+            "Jackson SP"
+        ],
+        "PMID": "30622252",
+        "PMCID": "PMC6325118"
+    },
+    {
+        "Title": "A Whole-genome CRISPR Screen Identifies a Role of MSH2 in Cisplatin-mediated Cell Death in Muscle-invasive Bladder Cancer",
+        "Authors": [
+            "Goodspeed A",
+            "Jean A",
+            "Costello JC"
+        ],
+        "PMID": "30414698",
+        "PMCID": "PMC6339584"
+    },
+    {
+        "Title": "Cells Lacking the RB1 Tumor Suppressor Gene are Hyperdependent on Aurora B Kinase for Survival",
+        "Authors": [
+            "Oser MG",
+            "Fonseca R",
+            "Chakraborty AA",
+            "Brough R",
+            "Spektor A",
+            "Jennings RB",
+            "Flaifel A",
+            "Novak JS",
+            "Gulati A",
+            "Buss E",
+            "Younger ST",
+            "McBrayer SK",
+            "Cowley GS",
+            "Bonal DM",
+            "Nguyen QD",
+            "Brulle-Soumare L",
+            "Taylor P",
+            "Cairo S",
+            "Ryan CJ",
+            "Pease EJ",
+            "Maratea K",
+            "Travers J",
+            "Root DE",
+            "Signoretti S",
+            "Pellman D",
+            "Ashton S",
+            "Lord CJ",
+            "Barry ST",
+            "Kaelin WG"
+        ],
+        "PMID": "30373918",
+        "PMCID": "PMC6368871"
+    },
+    {
+        "Title": "Identification of genes associated with SiHa cell sensitivity to paclitaxel by CRISPR-Cas9 knockout screening",
+        "Authors": [
+            "Wei W",
+            "He Y",
+            "Wu YM"
+        ],
+        "PMID": "31938303",
+        "PMCID": "PMC6958192"
+    },
+    {
+        "Title": "STEM-42. GENOME-WIDE CRISPR SCREENS IN BRAIN TUMOR INITIATING CELLS (BTICS) IDENTIFY POTENT SENSITIZERS OF CONVENTIONAL CHEMORADIOTHERAPY",
+        "Authors": [
+            "Chokshi C",
+            "Tieu D",
+            "Vora P",
+            "Venugopal C",
+            "Chan K",
+            "Tong A",
+            "Brown K",
+            "Singh M",
+            "Moffat J",
+            "Singh S"
+        ],
+        "PMID": "0",
+        "PMCID": "PMC5692777"
+    },
+    {
+        "Title": "Using genome-wide CRISPR library screening with library resistant DCK to find new sources of Ara-C drug resistance in AML",
+        "Authors": [
+            "Kurata M",
+            "Rathe SK",
+            "Bailey NJ",
+            "Aumann NK",
+            "Jones JM",
+            "Veldhuijzen GW",
+            "Moriarity BS",
+            "Largaespada DA"
+        ],
+        "PMID": "27808171",
+        "PMCID": "PMC5093682"
+    }
+]

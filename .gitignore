@@ -6,3 +6,4 @@ output_tables
 downloads
 mageck
 __pycache__/
+*.db
