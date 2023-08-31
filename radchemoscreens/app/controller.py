@@ -23,9 +23,8 @@ class Controller:
 
         self.model.preview_thread.prev_ready_sig.connect(self.load_preview)
 
-    def add_article(self, article, progress):
-        article_data = self.model.create_article_data(article)
-        self.model.bibliography.add_article(article_data)
+    def add_article(self, article_json, progress):
+        article_data = self.model.create_article_data(article_json)
         self.view.display_article(article_data, progress)
         
     def on_article_processed(self, article, ids_list, progress):
@@ -33,7 +32,7 @@ class Controller:
         self.view.display_article(article_data, progress)
 
     def search_articles(self):
-        self.processing_mode = False
+        self.model.processing_mode = False
         if self.model.search_thread.isRunning():
             QMessageBox.warning(self.view, "Search in Progress", "A search is already in progress. Please wait or stop the current search.")
             return
@@ -61,7 +60,6 @@ class Controller:
         self.view.stop_search_btn.setEnabled(False)
 
     def on_search_finished(self):
-        print("Finished.")
         self.view.prog_bar.hide()
         self.view.search_status.clear()
         self.view.stop_search_btn.setEnabled(False)
@@ -71,15 +69,15 @@ class Controller:
         article_id = item.data(Qt.UserRole)
         article = self.model.bibliography.get_article(article_id)
         
-        if self.processing_mode:
-            self.view.update_article_display_processed(article)
+        if self.model.processing_mode:
+            self.view.update_article_display(article, 'processed_tables', self.view.processedtablelistitem_factory)
         else:
-            self.view.update_article_display(article)
+            self.view.update_article_display(article, 'supp_files', self.view.suppfilelistitem_factory)
 
         for i in range(self.view.supp_files_view.count()):
             list_item = self.view.supp_files_view.item(i)
             widget = self.view.supp_files_view.itemWidget(list_item)
-            if self.processing_mode:
+            if self.model.processing_mode:
                 widget.preview_requested.connect(self.preview_processed_table)
             else:
                 widget.preview_requested.connect(self.preview_supp_file)
@@ -90,7 +88,7 @@ class Controller:
             widget = self.view.previews_layout.itemAt(i).widget()
             if widget: widget.deleteLater()
 
-        self.view.display_multisheet_table(data)
+        self.view.display_multisheet_table(data, self.model.processing_mode)
         self.view.stop_load_animation()
         self.view.previews.show()
 
@@ -104,14 +102,12 @@ class Controller:
         self.model.preview_thread.start()
         
     def preview_processed_table(self, table_id):
-        print(f"previewing processed table {table_id}")
         table_data = {"sheet": self.model.table_db_manager.get_table(table_id)}
-        print(f"preview of table (of type {type(table_data)}): {table_data}")
         self.view.start_load_animation()
         self.load_preview(table_data)
         
     def on_proceed(self):
-        self.processing_mode = True
+        self.model.processing_mode = True
         if self.model.processing_thread.isRunning():
             QMessageBox.warning(self.view, "Processing in Progress", "A parsing run is already in progress. Please wait.")
             return
@@ -125,9 +121,3 @@ class Controller:
         selected_articles = self.model.bibliography.get_selected_articles()
         self.model.processing_thread.selected_articles = selected_articles
         self.model.processing_thread.start()
-
-        # minimal debug code:
-        all_selected_data = self.model.extract_selected_articles_and_files()
-        with open('selected_articles_and_files.json', 'w') as f:
-            json.dump(all_selected_data, f, indent=4)
-        QMessageBox.information(self.view, "Saved", "Selected articles and files have been saved to selected_articles_and_files.json")

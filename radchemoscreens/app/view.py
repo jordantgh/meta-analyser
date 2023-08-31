@@ -1,8 +1,42 @@
-from PyQt5.QtGui import QFontMetrics, QStandardItemModel, QStandardItem
-from PyQt5.QtCore import Qt, pyqtSignal, QTimer
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QListWidget, \
-    QListWidgetItem, QProgressBar, QTextEdit, QCheckBox, QPushButton, QTableWidget, QTableWidgetItem, QSizePolicy, \
-    QTabWidget, QStackedWidget
+from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtCore import Qt, pyqtSignal, QTimer, QRect
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QListWidget, QListWidgetItem, QProgressBar, QTextEdit, QCheckBox, QPushButton, QTableWidget, QTableWidgetItem, QSizePolicy,QTabWidget, QStackedWidget, QHeaderView, QStyleOptionButton, QStyle
+
+
+class CheckableHeaderView(QHeaderView):
+    def __init__(self, orientation, parent=None):
+        super().__init__(orientation, parent)
+        self.setSectionsClickable(True)
+        self._checkedSections = set()
+
+    def paintSection(self, painter, rect, logicalIndex):
+        painter.save()
+        super().paintSection(painter, rect, logicalIndex)
+        painter.restore()
+
+        if logicalIndex in self._checkedSections:
+            state = QStyle.State_On
+        else:
+            state = QStyle.State_Off
+
+        option = QStyleOptionButton()
+        option.rect = QRect(rect.x() + rect.width() // 2 - 6, rect.y() + rect.height() // 2 - 6, 12, 12)
+        option.state = QStyle.State_Enabled | state
+        self.style().drawControl(QStyle.CE_CheckBox, option, painter)
+
+    def mousePressEvent(self, event):
+        index = self.logicalIndexAt(event.pos())
+        if index in self._checkedSections:
+            self._checkedSections.remove(index)
+        else:
+            self._checkedSections.add(index)
+        self.viewport().update()
+        super().mousePressEvent(event)
+        
+    def set_all_sections_checked(self):
+        self._checkedSections = set(range(self.count()))
+        self.viewport().update()
+
 
 class UIListItem(QWidget):
     def __init__(self, data, title):
@@ -36,52 +70,34 @@ class ArticleListItem(UIListItem):
         super().__init__(article_data, article_data.title)
 
 
-class SuppFileListItem(UIListItem):
+class DataListItem(UIListItem):
     preview_requested = pyqtSignal(object)
 
-    def __init__(self, main_window, file_data):
-        self.file_id = file_data.id
-        self.file_url = file_data.url
+    def __init__(self, main_window, file_data, disp_name_func):
         self.main_window = main_window
-        disp_name = self.get_disp_name(self.file_url.split('/')[-1])
+        self.file_id = file_data.id
+        disp_name = disp_name_func(file_data)
         super().__init__(file_data, disp_name)
 
-        self.preview_btn = QPushButton("Preview", self)
-        self.preview_btn.clicked.connect(self.preview_file)
-
-        layout = self.layout()
-        layout.addWidget(self.preview_btn)
-
-    def get_disp_name(self, text):
-        font_metrics = QFontMetrics(self.main_window.font())
-        available_width = self.main_window.supp_files_view.width() - 150
-        return font_metrics.elidedText(text, Qt.ElideMiddle, available_width)
-
-    def preview_file(self):
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
         self.preview_requested.emit(self.file_id)
 
-
-class ProcessedTableListItem(UIListItem):
-    preview_requested = pyqtSignal(object)
-
-    def __init__(self, main_window, file_data):
-        self.main_window = main_window
-        self.disp_name = file_data.id
-        super().__init__(file_data, self.disp_name)
-
-        self.preview_btn = QPushButton("Preview", self)
-        self.preview_btn.clicked.connect(self.preview_file)
-
-        layout = self.layout()
-        layout.addWidget(self.preview_btn)
-
     def get_disp_name(self, text):
         font_metrics = QFontMetrics(self.main_window.font())
         available_width = self.main_window.supp_files_view.width() - 150
         return font_metrics.elidedText(text, Qt.ElideMiddle, available_width)
 
-    def preview_file(self):
-        self.preview_requested.emit(self.disp_name)
+
+class SuppFileListItem(DataListItem):
+    def __init__(self, main_window, file_data):
+        super().__init__(main_window, file_data, lambda fd: self.get_disp_name(fd.url.split('/')[-1]))
+        self.file_url = file_data.url
+
+
+class ProcessedTableListItem(DataListItem):
+    def __init__(self, main_window, file_data):
+        super().__init__(main_window, file_data, lambda fd: self.get_disp_name(fd.id))
 
 
 class View(QMainWindow):
@@ -92,17 +108,10 @@ class View(QMainWindow):
         self.setCentralWidget(self.multi_page)
 
         self.search_page = QWidget(self)
-        #self.results_page = QWidget(self)
-        
         self.multi_page.addWidget(self.search_page)
-        #self.multi_page.addWidget(self.results_page) 
 
         self.init_search_ui_elements()
         self.init_search_layouts()
-
-        # self.init_results_ui_elements()
-        # self.init_results_layouts()
-
         self.init_load_animation()
 
     def init_search_ui_elements(self):
@@ -155,26 +164,6 @@ class View(QMainWindow):
         main_pane.addWidget(self.previews)
         self.search_page.setLayout(main_pane)
 
-    # def init_results_ui_elements(self):
-    #     self.article_list = QListWidget(self.results_page)
-    #     self.processed_files_view = QListWidget(self.results_page)
-    #     self.previews = QWidget(self.results_page)
-    #     self.previews_layout = QVBoxLayout(self.previews)
-    #     self.previews.setLayout(self.previews_layout)
-
-    # def init_results_layouts(self):
-    #     pane_0 = QVBoxLayout()
-    #     pane_0.addWidget(self.article_list)
-
-    #     pane_1 = QVBoxLayout()
-    #     pane_1.addWidget(self.processed_files_view)
-
-    #     main_pane = QHBoxLayout(self.results_page)
-    #     main_pane.addLayout(pane_0)
-    #     main_pane.addLayout(pane_1)
-    #     main_pane.addWidget(self.previews)
-    #     self.results_page.setLayout(main_pane)
-
     def init_load_animation(self):
         self.load_timer = QTimer(self)
         self.load_dots = 0
@@ -193,6 +182,12 @@ class View(QMainWindow):
         self.load_dots = (self.load_dots + 1) % 4
         self.loading_label.setText("Loading" + "." * self.load_dots)
 
+    def suppfilelistitem_factory(self, file_data):
+        return SuppFileListItem(self, file_data)
+      
+    def processedtablelistitem_factory(self, file_data):
+        return ProcessedTableListItem(self, file_data)
+
     def display_article(self, article_data, progress):
         item = QListWidgetItem()
         article_widget = ArticleListItem(article_data)
@@ -202,54 +197,43 @@ class View(QMainWindow):
         self.article_list.setItemWidget(item, article_widget)
         self.prog_bar.setValue(progress + 1)
 
-    def update_article_display(self, article):
+    def update_article_display(self, article, element_type, list_item_func):
         self.title_disp.setText(article.title)
         self.abstract_disp.setText(article.abstract)
 
         self.supp_files_view.clear()
-        for file_data in article.supp_files:
+        for file_data in getattr(article, element_type):
             item_container = QListWidgetItem()
-            file_item = SuppFileListItem(self, file_data)
-            file_item.checkbox.setChecked(file_data.checked)
-            item_container.setSizeHint(file_item.sizeHint())
-            item_container.setData(Qt.UserRole, file_data.id)
-            self.supp_files_view.addItem(item_container)
-            self.supp_files_view.setItemWidget(item_container, file_item)
-            
-    def update_article_display_processed(self, article):
-        print("update_article_display_processed")
-        self.title_disp.setText(article.title)
-        self.abstract_disp.setText(article.abstract)
-
-        self.supp_files_view.clear()
-        for file_data in article.processed_tables:
-            print(f"displaying processed table {file_data.id}")
-            item_container = QListWidgetItem()
-            file_item = ProcessedTableListItem(self, file_data)
+            file_item = list_item_func(file_data)
             file_item.checkbox.setChecked(file_data.checked)
             item_container.setSizeHint(file_item.sizeHint())
             item_container.setData(Qt.UserRole, file_data.id)
             self.supp_files_view.addItem(item_container)
             self.supp_files_view.setItemWidget(item_container, file_item)
 
-    def display_multisheet_table(self, df_dict):
+    def display_multisheet_table(self, df_dict, use_checkable_header):
         tab_widget = QTabWidget(self.previews)
         for sheet, df in df_dict.items():
-            table = self._create_ui_table(df)
+            table = self._create_ui_table(df, use_checkable_header)
             tab_widget.addTab(table, sheet)
         self.previews_layout.addWidget(tab_widget)
 
-    def _create_ui_table(self, data):
+    def _create_ui_table(self, data, use_checkable_header):
         table = QTableWidget()
-        table.setRowCount(len(data.index))  # <-- Add this line
+        table.setRowCount(len(data.index))
         table.setColumnCount(len(data.columns))
         table.setHorizontalHeaderLabels(data.columns.astype(str))
-        for row, data in data.iterrows():
-            table.insertRow(row)
-            for col, value in enumerate(data):
+
+        if use_checkable_header:
+            header = CheckableHeaderView(Qt.Horizontal, table)
+            table.setHorizontalHeader(header)
+            header.set_all_sections_checked()
+        else:
+            header = QHeaderView(Qt.Horizontal, table)
+            table.setHorizontalHeader(header)
+
+        for row, row_data in data.iterrows():
+            for col, value in enumerate(row_data):
                 table.setItem(row, col, QTableWidgetItem(str(value)))
 
         return table
-
-    def switch_to_results_page(self):
-        self.multi_page.setCurrentWidget(self.results_page)

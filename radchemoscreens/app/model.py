@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 import numpy as np
 from uuid import uuid4
-from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal
 
 from skimage.measure import label, regionprops
 from search_for_papers import query_pmc
@@ -36,25 +36,27 @@ class TableDatabaseManager:
         self.Session = sessionmaker(bind=self.engine)
 
     def save_table(self, file_id, table_data):
-        session = self.Session()
-        new_table = ProcessedTable(file_id=file_id, table_data=table_data)
-        session.add(new_table)
-        session.commit()
-        return new_table.id
+        with self.Session() as session:
+            new_table = ProcessedTable(file_id=file_id, table_data=table_data)
+            session.add(new_table)
+            session.commit()
+            return new_table.id
 
     def get_table(self, file_id):
-        session = self.Session()
-        table = session.query(ProcessedTable).filter_by(file_id=file_id).first()
-        if table:
-            return pickle.loads(table.table_data)
-        return None
+        with self.Session() as session:
+            table = session.query(ProcessedTable).filter_by(file_id=file_id).first()
+            if table:
+                table = pickle.loads(table.table_data)
+                table.reset_index(drop=True, inplace=True)
+                return table
+            return None
 
     def delete_table(self, table_id):
-        session = self.Session()
-        table = session.query(ProcessedTable).filter_by(id=table_id).first()
-        if table:
-            session.delete(table)
-            session.commit()
+        with self.Session() as session:
+            table = session.query(ProcessedTable).filter_by(id=table_id).first()
+            if table:
+                session.delete(table)
+                session.commit()
 
 
 def parse_tables(selected_articles, db_manager, callback=None):
@@ -64,7 +66,6 @@ def parse_tables(selected_articles, db_manager, callback=None):
     for index,  article in enumerate(selected_articles):
         processed_table_ids = []
         for file in article.supp_files:
-            print(f"Attempting to parse tables in file {file.url.split('/')[-1]} from {article.title}")
             if not file.checked: return
             
             try:
@@ -86,7 +87,7 @@ def parse_tables(selected_articles, db_manager, callback=None):
                         if any(_is_contained(bbox1, bbox2) for j, bbox2 in enumerate(region_bboxes) if i != j):
                             continue
                         region = df.iloc[minr1:maxr1, minc1:maxc1]
-                        unique_id = f"{article.pmc_id}_{file.id}_{sheetname}_{i}"
+                        unique_id = f"{os.path.splitext(fname)[0]}_{sheetname}_Table{i}"
                         save_processed_df_to_db(db_manager, unique_id, region)
                         processed_table_ids.append(unique_id)
 
@@ -237,10 +238,7 @@ class Model:
             supp_file = SupplementaryFile(article.pmc_id, file_url, uuid4())
             self.file_manager.add_file(supp_file)
             supp_files.append(supp_file)
-        
-        # this is more direct than i'd like and violates srp - shouldn't be
-        # returning directly from a method that's just updating the model
-        return supp_files
+        article.supp_files = supp_files
 
     def create_article_data(self, article_json):
         article = Article(
@@ -249,19 +247,14 @@ class Model:
             pmc_id=article_json["PMCID"]
         )
 
-        # here we would ideally use a getter method to retrieve the
-        # supplementary files from the file manager
-        article.supp_files = self.update_supp_files(article, article_json)
+        self.update_supp_files(article, article_json)
+        self.bibliography.add_article(article)
 
-        # there may be a similar concern here - i guess we should update the
-        # bibliography here and retrieve the article from the bibliography in the 
-        # controller
         return article
 
     def update_processed_tables(self, article, ids_list):
         processed_tables = []
         for table_id in ids_list:
-            print(f"Assigning table {table_id}")
             processed_table = ProcessedTableFile(article.pmc_id, table_id)
             processed_tables.append(processed_table)
 
@@ -275,15 +268,6 @@ class Model:
     def add_processed_tables(self, file_id, tables):
         file = self.file_manager.get_file(file_id)
         file.processed_tables = tables
-        # need to think more about the data model here
-        # - should the processed tables be stored in the file object?
-        # or should they be stored in the article object?
-        # - should they be added to the file manager? or should I create a new
-        # object to manage processed tables?
-        # there is also the issue that tables could potentially hog memory, so
-        # there may be a rationale to write them to disk and then retrieve them,
-        # storing only the file paths in the model
-        
         
     def extract_selected_articles_and_files(self):
         selected_articles = {}
