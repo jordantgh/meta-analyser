@@ -137,6 +137,9 @@ class View(QMainWindow):
         self.previews = QWidget(self.search_page)
         self.previews_layout = QVBoxLayout(self.previews)
         self.previews.setLayout(self.previews_layout)
+ 
+        self.query_filter_field = QLineEdit(self.search_page)
+        self.filter_btn = QPushButton("Filter", self.search_page)
 
     def init_search_layouts(self):
         pane_0 = QVBoxLayout()
@@ -148,6 +151,10 @@ class View(QMainWindow):
         pane_0.addWidget(self.search_status)
         pane_0.addWidget(self.article_list)
         pane_0.addWidget(self.proceed_btn)
+        
+        pane_0.addWidget(QLabel("Filter Query:"))
+        pane_0.addWidget(self.query_filter_field)
+        pane_0.addWidget(self.filter_btn)
 
         pane_1 = QVBoxLayout()
         pane_1.addWidget(QLabel("Title:"))
@@ -197,6 +204,11 @@ class View(QMainWindow):
         self.article_list.setItemWidget(item, article_widget)
         self.prog_bar.setValue(progress + 1)
 
+    def clear_article_list_and_files_view(self):
+        print("Clearing article list and files view...")
+        self.article_list.clear()
+        self.supp_files_view.clear()
+
     def update_article_display(self, article, element_type, list_item_func):
         self.title_disp.setText(article.title)
         self.abstract_disp.setText(article.abstract)
@@ -210,6 +222,18 @@ class View(QMainWindow):
             item_container.setData(Qt.UserRole, file_data.id)
             self.supp_files_view.addItem(item_container)
             self.supp_files_view.setItemWidget(item_container, file_item)
+
+    def populate_filtered_article_list(self, articles, list_item_func):
+        print("Populating filtered article list...")
+        for article in articles:
+            print("Adding article: " + article.pmc_id)
+            item = QListWidgetItem()
+            article_widget = ArticleListItem(article)
+            item.setSizeHint(article_widget.sizeHint())
+            item.setData(Qt.UserRole, article.pmc_id)
+            self.article_list.addItem(item)
+            self.article_list.setItemWidget(item, article_widget)
+            self.update_article_display(article, 'processed_tables', list_item_func)
 
     def display_multisheet_table(self, df_dict, use_checkable_header):
         tab_widget = QTabWidget(self.previews)

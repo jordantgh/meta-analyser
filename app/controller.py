@@ -19,8 +19,11 @@ class Controller:
 
         self.model.processing_thread.article_sig.connect(self.on_article_processed)
         self.model.processing_thread.finished_sig.connect(self.on_search_finished)
-
+        
         self.model.preview_thread.prev_ready_sig.connect(self.load_preview)
+        
+        self.view.filter_btn.clicked.connect(self.filter_tables)
+
 
     def add_article(self, article_json, progress):
         article_data = self.model.create_article_data(article_json)
@@ -104,7 +107,20 @@ class Controller:
         table_data = {"sheet": self.model.table_db_manager.get_table(table_id)}
         self.view.start_load_animation()
         self.load_preview(table_data)
-        
+
+    def filter_tables(self):
+        print("Filtering...")
+        query = self.view.query_filter_field.text()
+        if not query: return
+
+        self.model.filter_tables(query)
+        self.model.apply_filtered_articles()
+        self.view.clear_article_list_and_files_view()
+
+        filtered_articles = [self.model.bibliography.get_article(article_id) for article_id in self.model.filtered_articles.keys()]
+        self.view.populate_filtered_article_list(filtered_articles, self.view.processedtablelistitem_factory)
+        print("Filtered articles: ", filtered_articles)
+
     def on_proceed(self):
         self.model.processing_mode = True
         if self.model.processing_thread.isRunning():

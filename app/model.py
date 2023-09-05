@@ -6,6 +6,8 @@ import numpy as np
 from uuid import uuid4
 from PyQt5.QtCore import QThread, pyqtSignal
 
+import scripts.query_parser as qp
+
 from skimage.measure import label, regionprops
 from search_for_papers import query_pmc
 
@@ -224,6 +226,7 @@ class Bibliography:
 
 class Model:
     def __init__(self):
+        self.filtered_articles = {}
         self.processing_mode = False
         self.bibliography = Bibliography()
         self.file_manager = SupplementaryFileManager()
@@ -268,15 +271,22 @@ class Model:
     def add_processed_tables(self, file_id, tables):
         file = self.file_manager.get_file(file_id)
         file.processed_tables = tables
-        
-    def extract_selected_articles_and_files(self):
-        selected_articles = {}
-        for article in self.bibliography.get_selected_articles():
-            selected_files = [f.url for f in article.supp_files if f.checked]
-            if selected_files:
-                selected_articles[article.pmc_id] = {
-                    "title": article.title,
-                    "files": selected_files
-                }
 
-        return selected_articles
+    def filter_tables(self, query):
+        self.filtered_articles = {}
+        for article in self.bibliography.get_selected_articles():
+            filtered_tables = []
+            for processed_table in article.processed_tables:
+                table_data = self.table_db_manager.get_table(processed_table.id)
+                if qp.search(query, [(processed_table.id, table_data.to_string())]):
+                    filtered_tables.append(processed_table)
+            
+            if filtered_tables:
+                self.filtered_articles[article.pmc_id] = filtered_tables
+
+    def apply_filtered_articles(self):
+        for article_id, filtered_tables in self.filtered_articles.items():
+            article = self.bibliography.get_article(article_id)
+            if article:
+                article.processed_tables = filtered_tables
+
