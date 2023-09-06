@@ -184,7 +184,13 @@ class ProcessedTableFile:
         self.checked = True
         self.article_id = article_id
         self.id = id
-
+        self.checked_columns = set()
+        
+    def toggle_column_check(self, col_index):
+        if col_index in self.checked_columns:
+            self.checked_columns.remove(col_index)
+        else:
+            self.checked_columns.add(col_index)
 
 class SupplementaryFileManager:
     def __init__(self):
