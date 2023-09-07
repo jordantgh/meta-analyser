@@ -17,45 +17,49 @@ from sqlalchemy.orm import sessionmaker
 
 import pickle
 
-def save_processed_df_to_db(db_manager, unique_id, df):
+def save_processed_df_to_db(db_manager, table_id, original_file_id, df):
     serialized_df = pickle.dumps(df)
-    db_manager.save_table(unique_id, serialized_df)
+    db_manager.save_table(table_id, original_file_id, serialized_df)
 
 Base = declarative_base()
 
-class ProcessedTable(Base):
+class ProcessedTableWrapper(Base):
     __tablename__ = 'processed_tables'
     
-    id = Column(Integer, primary_key=True)
-    file_id = Column(String)
+    table_id = Column(String, primary_key=True)
+    original_file_id = Column(String)
     table_data = Column(BLOB)
 
-
-class TableDatabaseManager:
+class TableDBManager:
     def __init__(self, db_url="sqlite:///tables.db"):
         self.engine = create_engine(db_url)
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
 
-    def save_table(self, file_id, table_data):
+    def save_table(self, table_id, original_file_id, table_data):
         with self.Session() as session:
-            new_table = ProcessedTable(file_id=file_id, table_data=table_data)
+            new_table = ProcessedTableWrapper(table_id=table_id, original_file_id=original_file_id, table_data=table_data)
             session.add(new_table)
             session.commit()
-            return new_table.id
 
-    def get_table(self, file_id):
+    def get_table_data(self, table_id):
         with self.Session() as session:
-            table = session.query(ProcessedTable).filter_by(file_id=file_id).first()
+            table = session.query(ProcessedTableWrapper).filter_by(table_id=table_id).first()
             if table:
-                table = pickle.loads(table.table_data)
-                table.reset_index(drop=True, inplace=True)
-                return table
+                table_data = pickle.loads(table.table_data)
+                table_data.reset_index(drop=True, inplace=True)
+                return table_data
             return None
-
-    def delete_table(self, table_id):
+    
+    def get_table_object(self, table_id):
         with self.Session() as session:
-            table = session.query(ProcessedTable).filter_by(id=table_id).first()
+            processed_table = session.query(ProcessedTable).filter_by(table_id=table_id).first()
+            return processed_table
+
+
+    def delete_table(self, table_id):  
+        with self.Session() as session:
+            table = session.query(ProcessedTableWrapper).filter_by(table_id=table_id).first()
             if table:
                 session.delete(table)
                 session.commit()
@@ -65,7 +69,7 @@ def parse_tables(selected_articles, db_manager, callback=None):
     def _is_contained(bbox1, bbox2):
         return bbox2[0] <= bbox1[0] and bbox2[1] <= bbox1[1] and bbox2[2] >= bbox1[2] and bbox2[3] >= bbox1[3]
 
-    for index,  article in enumerate(selected_articles):
+    for index, article in enumerate(selected_articles):
         processed_table_ids = []
         for file in article.supp_files:
             if not file.checked: return
@@ -90,7 +94,8 @@ def parse_tables(selected_articles, db_manager, callback=None):
                             continue
                         region = df.iloc[minr1:maxr1, minc1:maxc1]
                         unique_id = f"{os.path.splitext(fname)[0]}_{sheetname}_Table{i}"
-                        save_processed_df_to_db(db_manager, unique_id, region)
+                        
+                        save_processed_df_to_db(db_manager, unique_id, file.id, region)  
                         processed_table_ids.append(unique_id)
 
             except Exception as e:
@@ -171,7 +176,7 @@ class FileProcessingThread(QThread):
         self.finished_sig.emit()
 
 
-class SupplementaryFile:
+class SuppFile:
     def __init__(self, article_id, url, id):
         self.checked = True
         self.article_id = article_id
@@ -179,20 +184,15 @@ class SupplementaryFile:
         self.id = id
 
 
-class ProcessedTableFile:
+class ProcessedTable:
     def __init__(self, article_id, id):
         self.checked = True
         self.article_id = article_id
         self.id = id
-        self.checked_columns = set()
-        
-    def toggle_column_check(self, col_index):
-        if col_index in self.checked_columns:
-            self.checked_columns.remove(col_index)
-        else:
-            self.checked_columns.add(col_index)
+        self.checked_columns = []
 
-class SupplementaryFileManager:
+
+class SuppFileManager:
     def __init__(self):
         self.supp_files = {}
 
@@ -235,16 +235,16 @@ class Model:
         self.filtered_articles = {}
         self.processing_mode = False
         self.bibliography = Bibliography()
-        self.file_manager = SupplementaryFileManager()
+        self.file_manager = SuppFileManager()
         self.search_thread = SearchThread()
         self.preview_thread = FilePreviewThread("")   
-        self.table_db_manager = TableDatabaseManager()
+        self.table_db_manager = TableDBManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
 
     def update_supp_files(self, article, article_json):
         supp_files = []
         for file_url in article_json["SupplementaryFiles"]:
-            supp_file = SupplementaryFile(article.pmc_id, file_url, uuid4())
+            supp_file = SuppFile(article.pmc_id, file_url, uuid4())
             self.file_manager.add_file(supp_file)
             supp_files.append(supp_file)
         article.supp_files = supp_files
@@ -264,7 +264,7 @@ class Model:
     def update_processed_tables(self, article, ids_list):
         processed_tables = []
         for table_id in ids_list:
-            processed_table = ProcessedTableFile(article.pmc_id, table_id)
+            processed_table = ProcessedTable(article.pmc_id, table_id)
             processed_tables.append(processed_table)
 
         return processed_tables
