@@ -23,7 +23,7 @@ def save_processed_df_to_db(db_manager, table_id, original_file_id, df):
 
 Base = declarative_base()
 
-class ProcessedTableWrapper(Base):
+class ProcessedTableDBEntry(Base):
     __tablename__ = 'processed_tables'
     
     table_id = Column(String, primary_key=True)
@@ -38,13 +38,17 @@ class TableDBManager:
 
     def save_table(self, table_id, original_file_id, table_data):
         with self.Session() as session:
-            new_table = ProcessedTableWrapper(table_id=table_id, original_file_id=original_file_id, table_data=table_data)
+            new_table = ProcessedTableDBEntry(
+              table_id=table_id,
+              original_file_id=str(original_file_id),
+              table_data=table_data
+            )
             session.add(new_table)
             session.commit()
 
     def get_table_data(self, table_id):
         with self.Session() as session:
-            table = session.query(ProcessedTableWrapper).filter_by(table_id=table_id).first()
+            table = session.query(ProcessedTableDBEntry).filter_by(table_id=table_id).first()
             if table:
                 table_data = pickle.loads(table.table_data)
                 table_data.reset_index(drop=True, inplace=True)
@@ -53,13 +57,13 @@ class TableDBManager:
     
     def get_table_object(self, table_id):
         with self.Session() as session:
-            processed_table = session.query(ProcessedTable).filter_by(table_id=table_id).first()
+            processed_table = session.query(ProcessedTableDBEntry).filter_by(table_id=table_id).first()
             return processed_table
 
 
     def delete_table(self, table_id):  
         with self.Session() as session:
-            table = session.query(ProcessedTableWrapper).filter_by(table_id=table_id).first()
+            table = session.query(ProcessedTableDBEntry).filter_by(table_id=table_id).first()
             if table:
                 session.delete(table)
                 session.commit()
@@ -94,8 +98,8 @@ def parse_tables(selected_articles, db_manager, callback=None):
                             continue
                         region = df.iloc[minr1:maxr1, minc1:maxc1]
                         unique_id = f"{os.path.splitext(fname)[0]}_{sheetname}_Table{i}"
-                        
-                        save_processed_df_to_db(db_manager, unique_id, file.id, region)  
+                        save_processed_df_to_db(db_manager, unique_id, file.id, region)
+
                         processed_table_ids.append(unique_id)
 
             except Exception as e:
@@ -185,11 +189,14 @@ class SuppFile:
 
 
 class ProcessedTable:
-    def __init__(self, article_id, id):
+    def __init__(self, article_id, id, num_columns=None):
         self.checked = True
         self.article_id = article_id
         self.id = id
-        self.checked_columns = []
+        if num_columns is not None:
+            self.checked_columns = list(range(num_columns))
+        else:
+            self.checked_columns = []
 
 
 class SuppFileManager:
@@ -202,6 +209,16 @@ class SuppFileManager:
     def get_file(self, file_id):
         return self.supp_files.get(file_id)
 
+
+class ProcessedTableManager:
+    def __init__(self):
+        self.processed_tables = {}
+
+    def add_processed_table(self, table):
+        self.processed_tables[table.id] = table
+
+    def get_processed_table(self, table_id):
+        return self.processed_tables.get(table_id)
 
 class Article:
     def __init__(self, title, abstract, pmc_id, supp_files=[], tables=[]):
@@ -239,6 +256,7 @@ class Model:
         self.search_thread = SearchThread()
         self.preview_thread = FilePreviewThread("")   
         self.table_db_manager = TableDBManager()
+        self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
 
     def update_supp_files(self, article, article_json):
@@ -264,9 +282,14 @@ class Model:
     def update_processed_tables(self, article, ids_list):
         processed_tables = []
         for table_id in ids_list:
-            processed_table = ProcessedTable(article.pmc_id, table_id)
+            table_data = self.table_db_manager.get_table_data(table_id)
+            if table_data is not None:
+                num_columns = len(table_data.columns)
+            else:
+                num_columns = None
+            processed_table = ProcessedTable(article.pmc_id, table_id, num_columns)
+            self.processed_table_manager.add_processed_table(processed_table)
             processed_tables.append(processed_table)
-
         return processed_tables
 
     def update_article(self, article, ids_list):
