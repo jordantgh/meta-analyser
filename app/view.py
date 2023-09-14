@@ -148,6 +148,7 @@ class View(QMainWindow):
  
         self.query_filter_field = QLineEdit(self.search_page)
         self.filter_btn = QPushButton("Filter", self.search_page)
+        self.prune_btn = QPushButton("Prune Tables and Columns", self)
 
     def init_search_layouts(self):
         pane_0 = QVBoxLayout()
@@ -172,6 +173,7 @@ class View(QMainWindow):
         pane_1.addWidget(QLabel("Supplementary Files:"))
         pane_1.addWidget(self.supp_files_view)
         pane_1.addWidget(self.loading_label)
+        pane_1.addWidget(self.prune_btn)
 
         main_pane = QHBoxLayout(self.search_page)
         main_pane.addLayout(pane_0)

@@ -31,7 +31,7 @@ class ProcessedTableDBEntry(Base):
     table_data = Column(BLOB)
 
 class TableDBManager:
-    def __init__(self, db_url="sqlite:///tables.db"):
+    def __init__(self, db_url=f"sqlite:///tables-{str(uuid4())}.db"):
         self.engine = create_engine(db_url)
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
@@ -46,6 +46,13 @@ class TableDBManager:
             session.add(new_table)
             session.commit()
 
+    def update_table(self, table_id, table_data):
+        with self.Session() as session:
+            existing_table = session.query(ProcessedTableDBEntry).filter_by(table_id=table_id).first()
+            if existing_table:
+                existing_table.table_data = table_data
+                session.commit()
+
     def get_table_data(self, table_id):
         with self.Session() as session:
             table = session.query(ProcessedTableDBEntry).filter_by(table_id=table_id).first()
@@ -59,7 +66,6 @@ class TableDBManager:
         with self.Session() as session:
             processed_table = session.query(ProcessedTableDBEntry).filter_by(table_id=table_id).first()
             return processed_table
-
 
     def delete_table(self, table_id):  
         with self.Session() as session:
@@ -300,6 +306,33 @@ class Model:
     def add_processed_tables(self, file_id, tables):
         file = self.file_manager.get_file(file_id)
         file.processed_tables = tables
+
+    def prune_tables_and_columns(self):
+        to_delete = []
+        for article in self.bibliography.get_selected_articles():
+            for table in article.processed_tables:
+                if not table.checked:
+                    to_delete.append(table.id)
+                    continue
+                
+                table_data = self.table_db_manager.get_table_data(table.id)
+                if table_data is not None and table.checked_columns is not None:
+                    table_data = table_data.iloc[:, table.checked_columns]
+                    serialized_df = pickle.dumps(table_data)
+                    self.table_db_manager.update_table(table.id, serialized_df)
+                    
+                    # Update the checked_columns attribute
+                    processed_table = self.processed_table_manager.get_processed_table(table.id)
+                    if processed_table:
+                        processed_table.checked_columns = list(range(len(table_data.columns)))
+
+        for table_id in to_delete:
+            self.table_db_manager.delete_table(table_id)
+
+    def filter_checked_articles_and_tables(self):
+        self.bibliography.articles = {k: v for k, v in self.bibliography.articles.items() if v.checked}
+        for article in self.bibliography.articles.values():
+            article.processed_tables = [table for table in article.processed_tables if table.checked]
 
     def filter_tables(self, query):
         self.filtered_articles = {}
