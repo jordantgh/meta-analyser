@@ -310,7 +310,15 @@ class Model:
     def prune_tables_and_columns(self):
         to_delete = []
         for article in self.bibliography.get_selected_articles():
+            # Check if the article is in the filtered_articles
+            filtered_tables_ids = [t.id for t in self.filtered_articles.get(article.pmc_id, [])]
+            
             for table in article.processed_tables:
+                # Check if the table is in the filtered tables for this article
+                if table.id not in filtered_tables_ids:
+                    to_delete.append(table.id)
+                    continue
+
                 if not table.checked:
                     to_delete.append(table.id)
                     continue
@@ -339,10 +347,12 @@ class Model:
         for article in self.bibliography.get_selected_articles():
             filtered_tables = []
             for processed_table in article.processed_tables:
-                table_data = self.table_db_manager.get_table(processed_table.id)
-                if qp.search(query, [(processed_table.id, table_data.to_string())]):
-                    filtered_tables.append(processed_table)
-            
+                table_data = self.table_db_manager.get_table_data(processed_table.id)
+                
+                if table_data is not None:
+                    if qp.search(query, [(processed_table.id, table_data.to_string())]):
+                        filtered_tables.append(processed_table)
+                
             if filtered_tables:
                 self.filtered_articles[article.pmc_id] = filtered_tables
 
