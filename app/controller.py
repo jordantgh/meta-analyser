@@ -48,6 +48,7 @@ class Controller:
         self.model.search_thread.query = query
         self.model.search_thread.start()
         
+        self.view.stop_search_btn.show()
         self.view.stop_search_btn.setEnabled(True)
 
     def stop_search(self):
@@ -58,11 +59,15 @@ class Controller:
             self.model.search_thread.wait()
         self.view.prog_bar.hide()
         self.view.search_status.setText("Search stopped.")
+        
+        self.view.stop_search_btn.hide()
         self.view.stop_search_btn.setEnabled(False)
 
     def on_search_finished(self):
         self.view.prog_bar.hide()
         self.view.search_status.clear()
+        
+        self.view.stop_search_btn.hide()
         self.view.stop_search_btn.setEnabled(False)
 
     def handle_article_click(self, item):

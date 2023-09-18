@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtCore import Qt, pyqtSignal, QTimer, QRect
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QListWidget, QListWidgetItem, QProgressBar, QTextEdit, QCheckBox, QPushButton, QTableWidget, QTableWidgetItem, QSizePolicy,QTabWidget, QStackedWidget, QHeaderView, QStyleOptionButton, QStyle
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QListWidget, QListWidgetItem, QProgressBar, QTextEdit, QCheckBox, QPushButton, QTableWidget, QTableWidgetItem, QSizePolicy,QTabWidget, QStackedWidget, QHeaderView, QStyleOptionButton, QStyle, QSplitter
 
 
 class CheckableHeaderView(QHeaderView):
@@ -131,6 +131,7 @@ class View(QMainWindow):
         self.prog_bar.hide()
         self.search_btn = QPushButton("Search", self.search_page)
         self.stop_search_btn = QPushButton("Stop Search", self.search_page)
+        self.stop_search_btn.hide()
         self.stop_search_btn.setEnabled(False)
         self.proceed_btn = QPushButton("Proceed", self.search_page)
         self.article_list = QListWidget(self.search_page)
@@ -160,10 +161,11 @@ class View(QMainWindow):
         pane_0.addWidget(self.search_status)
         pane_0.addWidget(self.article_list)
         pane_0.addWidget(self.proceed_btn)
-        
         pane_0.addWidget(QLabel("Filter Query:"))
         pane_0.addWidget(self.query_filter_field)
         pane_0.addWidget(self.filter_btn)
+        widget_0 = QWidget()
+        widget_0.setLayout(pane_0)
 
         pane_1 = QVBoxLayout()
         pane_1.addWidget(QLabel("Title:"))
@@ -174,11 +176,17 @@ class View(QMainWindow):
         pane_1.addWidget(self.supp_files_view)
         pane_1.addWidget(self.loading_label)
         pane_1.addWidget(self.prune_btn)
+        widget_1 = QWidget()
+        widget_1.setLayout(pane_1)
 
-        main_pane = QHBoxLayout(self.search_page)
-        main_pane.addLayout(pane_0)
-        main_pane.addLayout(pane_1)
-        main_pane.addWidget(self.previews)
+        # Use QSplitter for the main layout
+        main_splitter = QSplitter(Qt.Horizontal, self.search_page)
+        main_splitter.addWidget(widget_0)
+        main_splitter.addWidget(widget_1)
+        main_splitter.addWidget(self.previews)
+
+        main_pane = QVBoxLayout(self.search_page)
+        main_pane.addWidget(main_splitter)
         self.search_page.setLayout(main_pane)
 
     def init_load_animation(self):
