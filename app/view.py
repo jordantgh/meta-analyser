@@ -4,10 +4,13 @@ from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLin
 
 
 class CheckableHeaderView(QHeaderView):
+    columns_checked = pyqtSignal(object, list)
+
     def __init__(self, orientation, parent=None):
         super().__init__(orientation, parent)
         self.setSectionsClickable(True)
         self._checkedSections = set()
+        self.table_id = None
 
     def paintSection(self, painter, rect, logicalIndex):
         painter.save()
@@ -31,8 +34,13 @@ class CheckableHeaderView(QHeaderView):
         else:
             self._checkedSections.add(index)
         self.viewport().update()
+        self.columns_checked.emit(self.table_id, list(self._checkedSections))
         super().mousePressEvent(event)
         
+    def set_checked_sections(self, checked_sections):
+        self._checkedSections = set(checked_sections)
+        self.viewport().update()
+    
     def set_all_sections_checked(self):
         self._checkedSections = set(range(self.count()))
         self.viewport().update()
@@ -141,6 +149,7 @@ class View(QMainWindow):
  
         self.query_filter_field = QLineEdit(self.search_page)
         self.filter_btn = QPushButton("Filter", self.search_page)
+        self.prune_btn = QPushButton("Prune Tables and Columns", self)
 
     def init_search_layouts(self):
         pane_0 = QVBoxLayout()
@@ -214,14 +223,10 @@ class View(QMainWindow):
         self.prog_bar.setValue(progress + 1)
 
     def clear_article_list_and_files_view(self):
-        print("Clearing article list and files view...")
         self.article_list.clear()
         self.supp_files_view.clear()
 
     def update_article_display(self, article, element_type, list_item_func):
-        self.title_disp.setText(article.title)
-        self.abstract_disp.setText(article.abstract)
-
         self.supp_files_view.clear()
         for file_data in getattr(article, element_type):
             item_container = QListWidgetItem()
@@ -233,9 +238,7 @@ class View(QMainWindow):
             self.supp_files_view.setItemWidget(item_container, file_item)
 
     def populate_filtered_article_list(self, articles, list_item_func):
-        print("Populating filtered article list...")
         for article in articles:
-            print("Adding article: " + article.pmc_id)
             item = QListWidgetItem()
             article_widget = ArticleListItem(article)
             item.setSizeHint(article_widget.sizeHint())
@@ -244,29 +247,34 @@ class View(QMainWindow):
             self.article_list.setItemWidget(item, article_widget)
             self.update_article_display(article, 'processed_tables', list_item_func)
 
-    def display_multisheet_table(self, df_dict, use_checkable_header):
+    def display_multisheet_table(self, df_dict, use_checkable_header, table_id=None, callback=None, checked_columns=None):
         tab_widget = QTabWidget(self.previews)
         for sheet, df in df_dict.items():
-            table = self._create_ui_table(df, use_checkable_header)
+            table = self._create_ui_table(df, use_checkable_header, table_id, callback, checked_columns)
             tab_widget.addTab(table, sheet)
         self.previews_layout.addWidget(tab_widget)
 
-    def _create_ui_table(self, data, use_checkable_header):
-        table = QTableWidget()
-        table.setRowCount(len(data.index))
-        table.setColumnCount(len(data.columns))
-        table.setHorizontalHeaderLabels(data.columns.astype(str))
+    def _create_ui_table(self, data, use_checkable_header, table_id=None, callback=None, checked_columns=None):
+        ui_table = QTableWidget()
+        ui_table.setRowCount(len(data.index))
+        ui_table.setColumnCount(len(data.columns))
+        ui_table.setHorizontalHeaderLabels(data.columns.astype(str))
 
         if use_checkable_header:
-            header = CheckableHeaderView(Qt.Horizontal, table)
-            table.setHorizontalHeader(header)
-            header.set_all_sections_checked()
+            header = CheckableHeaderView(Qt.Horizontal, ui_table)
+            header.table_id = table_id
+            header.columns_checked.connect(callback)
+            ui_table.setHorizontalHeader(header)
+            if checked_columns is not None:
+                header.set_checked_sections(checked_columns)
+            else:
+                header.set_all_sections_checked()
         else:
-            header = QHeaderView(Qt.Horizontal, table)
-            table.setHorizontalHeader(header)
+            header = QHeaderView(Qt.Horizontal, ui_table)
+            ui_table.setHorizontalHeader(header)
 
         for row, row_data in data.iterrows():
             for col, value in enumerate(row_data):
-                table.setItem(row, col, QTableWidgetItem(str(value)))
+                ui_table.setItem(row, col, QTableWidgetItem(str(value)))
 
-        return table
+        return ui_table

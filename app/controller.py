@@ -12,23 +12,22 @@ class Controller:
         self.view.search_btn.clicked.connect(self.search_articles)
         self.view.article_list.itemClicked.connect(self.handle_article_click)
         self.view.stop_search_btn.clicked.connect(self.stop_search)
-        self.view.proceed_btn.clicked.connect(self.on_proceed)
 
         self.model.search_thread.article_sig.connect(self.add_article)
         self.model.search_thread.finished_sig.connect(self.on_search_finished)
 
         self.model.processing_thread.article_sig.connect(self.on_article_processed)
         self.model.processing_thread.finished_sig.connect(self.on_search_finished)
-        
         self.model.preview_thread.prev_ready_sig.connect(self.load_preview)
         
+        self.view.proceed_btn.clicked.connect(self.on_proceed)
         self.view.filter_btn.clicked.connect(self.filter_tables)
-
+        self.view.prune_btn.clicked.connect(self.prune_tables_and_columns)
 
     def add_article(self, article_json, progress):
         article_data = self.model.create_article_data(article_json)
         self.view.display_article(article_data, progress)
-        
+
     def on_article_processed(self, article, ids_list, progress):
         article_data = self.model.update_article(article, ids_list)
         self.view.display_article(article_data, progress)
@@ -89,13 +88,19 @@ class Controller:
             else:
                 widget.preview_requested.connect(self.preview_supp_file)
 
-    def load_preview(self, data):
+    def refresh_view(self):
+        self.view.clear_article_list_and_files_view()
+        for article in self.model.bibliography.get_selected_articles():
+            self.view.display_article(article, 0)
 
+    def load_preview(self, data, table_id=None, callback=None):
         for i in reversed(range(self.view.previews_layout.count())):
             widget = self.view.previews_layout.itemAt(i).widget()
             if widget: widget.deleteLater()
 
-        self.view.display_multisheet_table(data, self.model.processing_mode)
+        processed_table = self.model.processed_table_manager.get_processed_table(table_id)
+        checked_columns = processed_table.checked_columns if processed_table else None
+        self.view.display_multisheet_table(data, self.model.processing_mode, table_id, callback, checked_columns)
         self.view.stop_load_animation()
         self.view.previews.show()
 
@@ -109,12 +114,22 @@ class Controller:
         self.model.preview_thread.start()
         
     def preview_processed_table(self, table_id):
-        table_data = {"sheet": self.model.table_db_manager.get_table(table_id)}
+        table_data = {"sheet": self.model.table_db_manager.get_table_data(table_id)}
         self.view.start_load_animation()
-        self.load_preview(table_data)
+        self.load_preview(table_data, table_id, self.update_checked_columns)
+        
+    def update_checked_columns(self, table_id, checked_columns):
+        processed_table = self.model.processed_table_manager.get_processed_table(table_id)
+        
+        if processed_table:
+            processed_table.checked_columns = checked_columns
+
+    def prune_tables_and_columns(self):
+        self.model.prune_tables_and_columns()
+        self.model.filter_checked_articles_and_tables()
+        self.refresh_view()
 
     def filter_tables(self):
-        print("Filtering...")
         query = self.view.query_filter_field.text()
         if not query: return
 
@@ -124,7 +139,6 @@ class Controller:
 
         filtered_articles = [self.model.bibliography.get_article(article_id) for article_id in self.model.filtered_articles.keys()]
         self.view.populate_filtered_article_list(filtered_articles, self.view.processedtablelistitem_factory)
-        print("Filtered articles: ", filtered_articles)
 
     def on_proceed(self):
         self.model.processing_mode = True
