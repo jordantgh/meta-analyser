@@ -83,6 +83,7 @@ class DataListItem(UIListItem):
 
     def __init__(self, main_window, file_data, disp_name_func):
         self.main_window = main_window
+        self.page = main_window.active_elements
         self.file_id = file_data.id
         disp_name = disp_name_func(file_data)
         super().__init__(file_data, disp_name)
@@ -93,7 +94,7 @@ class DataListItem(UIListItem):
 
     def get_disp_name(self, text):
         font_metrics = QFontMetrics(self.main_window.font())
-        available_width = self.main_window.supp_files_view.width() - 150
+        available_width = self.page.supp_files_view.width() - 150
         return font_metrics.elidedText(text, Qt.ElideMiddle, available_width)
 
 
@@ -108,86 +109,124 @@ class ProcessedTableListItem(DataListItem):
         super().__init__(main_window, file_data, lambda fd: self.get_disp_name(fd.id))
 
 
+class CommonPageElements:
+    def __init__(self, page):
+        self.prog_bar = QProgressBar(page)
+        self.prog_bar.setRange(0, 100)
+        self.prog_bar.setValue(0)
+        self.prog_bar.hide()
+        self.article_list = QListWidget(page)
+        self.title_disp = QTextEdit(page)
+        self.title_disp.setPlaceholderText("Title will be shown here")
+        self.abstract_disp = QTextEdit(page)
+        self.abstract_disp.setPlaceholderText("Abstract will be shown here")
+        self.supp_files_view = QListWidget(page)
+        self.previews = QWidget(page)
+        self.previews_layout = QVBoxLayout(self.previews)
+        self.previews.setLayout(self.previews_layout)
+
+
+class SearchPageElements(CommonPageElements):
+    def __init__(self, page):
+        super().__init__(page)
+        self.search_status = QLabel(page)
+        self.query_field = QLineEdit(page)
+        self.search_btn = QPushButton("Search", page)
+        self.stop_search_btn = QPushButton("Stop Search", page)
+        self.stop_search_btn.hide()
+        self.stop_search_btn.setEnabled(False)
+        self.proceed_btn = QPushButton("Proceed", page)
+        self.loading_label = QLabel(page)
+        self.loading_label.setAlignment(Qt.AlignCenter)
+        
+
+class ProcessedPageElements(CommonPageElements):
+    def __init__(self, page):
+        super().__init__(page)
+        self.query_filter_field = QLineEdit(page)
+        self.filter_btn = QPushButton("Filter", page)
+        self.prune_btn = QPushButton("Prune Tables and Columns", page)        
+
+
 class View(QMainWindow):
     def __init__(self):
         super().__init__()
         self.resize(800, 600)
-        self.multi_page = QStackedWidget(self)
-        self.setCentralWidget(self.multi_page)
+        
+        self.tab_widget = QTabWidget(self)
+        self.setCentralWidget(self.tab_widget)
 
         self.search_page = QWidget(self)
-        self.multi_page.addWidget(self.search_page)
+        self.result_page = QWidget(self)  
+        
+        self.tab_widget.addTab(self.search_page, "Search Page")
+        self.tab_widget.addTab(self.result_page, "Result Page")
+        
+        self.search_components = SearchPageElements(self.search_page)
+        self.results_components = ProcessedPageElements(self.result_page)
 
-        self.init_search_ui_elements()
-        self.init_search_layouts()
+        self.init_search_layouts(self.search_components)
+        self.init_result_layouts(self.results_components)
         self.init_load_animation()
 
-    def init_search_ui_elements(self):
-        self.search_status = QLabel(self.search_page)
-        self.query_field = QLineEdit(self.search_page)
-        self.prog_bar = QProgressBar(self.search_page)
-        self.prog_bar.setRange(0, 100)
-        self.prog_bar.setValue(0)
-        self.prog_bar.hide()
-        self.search_btn = QPushButton("Search", self.search_page)
-        self.stop_search_btn = QPushButton("Stop Search", self.search_page)
-        self.stop_search_btn.hide()
-        self.stop_search_btn.setEnabled(False)
-        self.proceed_btn = QPushButton("Proceed", self.search_page)
-        self.article_list = QListWidget(self.search_page)
+    @property
+    def active_page(self):
+        return self.tab_widget.currentWidget()
 
-        self.title_disp = QTextEdit(self.search_page)
-        self.title_disp.setPlaceholderText("Title will be shown here")
-        self.abstract_disp = QTextEdit(self.search_page)
-        self.abstract_disp.setPlaceholderText("Abstract will be shown here")
-        self.supp_files_view = QListWidget(self.search_page)
-        self.loading_label = QLabel(self.search_page)
-        self.loading_label.setAlignment(Qt.AlignCenter)
-        self.previews = QWidget(self.search_page)
-        self.previews_layout = QVBoxLayout(self.previews)
-        self.previews.setLayout(self.previews_layout)
- 
-        self.query_filter_field = QLineEdit(self.search_page)
-        self.filter_btn = QPushButton("Filter", self.search_page)
-        self.prune_btn = QPushButton("Prune Tables and Columns", self)
+    @property
+    def active_elements(self):
+        return {
+            self.search_page: self.search_components,
+            self.result_page: self.results_components
+        }.get(self.active_page, None)
 
-    def init_search_layouts(self):
-        pane_0 = QVBoxLayout()
-        pane_0.addWidget(QLabel("Enter Query:"))
-        pane_0.addWidget(self.query_field)
-        pane_0.addWidget(self.prog_bar)
-        pane_0.addWidget(self.search_btn)
-        pane_0.addWidget(self.stop_search_btn)
-        pane_0.addWidget(self.search_status)
-        pane_0.addWidget(self.article_list)
-        pane_0.addWidget(self.proceed_btn)
-        pane_0.addWidget(QLabel("Filter Query:"))
-        pane_0.addWidget(self.query_filter_field)
-        pane_0.addWidget(self.filter_btn)
+    def init_search_layouts(self, components):
+        left_pane = QVBoxLayout()
+        left_pane.addWidget(QLabel("Enter Query:"))
+        left_pane.addWidget(components.query_field)
+        left_pane.addWidget(components.prog_bar)
+        left_pane.addWidget(components.search_btn)
+        left_pane.addWidget(components.stop_search_btn)
+        left_pane.addWidget(components.search_status)
+        left_pane.addWidget(components.article_list)
+        left_pane.addWidget(components.proceed_btn)
+        
+        self.init_core_layouts(self.search_page, components, left_pane)
+
+    def init_result_layouts(self, components):
+        left_pane = QVBoxLayout()
+        left_pane.addWidget(components.prog_bar)
+        left_pane.addWidget(components.article_list)
+        left_pane.addWidget(QLabel("Filter Query:"))
+        left_pane.addWidget(components.query_filter_field)
+        left_pane.addWidget(components.filter_btn)       
+        left_pane.addWidget(components.prune_btn)
+
+        self.init_core_layouts(self.result_page, components, left_pane)
+   
+    def init_core_layouts(self, page, components, left_pane):        
         widget_0 = QWidget()
-        widget_0.setLayout(pane_0)
+        widget_0.setLayout(left_pane)
 
-        pane_1 = QVBoxLayout()
-        pane_1.addWidget(QLabel("Title:"))
-        pane_1.addWidget(self.title_disp)
-        pane_1.addWidget(QLabel("Abstract:"))
-        pane_1.addWidget(self.abstract_disp)
-        pane_1.addWidget(QLabel("Supplementary Files:"))
-        pane_1.addWidget(self.supp_files_view)
-        pane_1.addWidget(self.loading_label)
-        pane_1.addWidget(self.prune_btn)
+        mid_pane = QVBoxLayout()
+        mid_pane.addWidget(QLabel("Title:"))
+        mid_pane.addWidget(components.title_disp)
+        mid_pane.addWidget(QLabel("Abstract:"))
+        mid_pane.addWidget(components.abstract_disp)
+        mid_pane.addWidget(QLabel("Supplementary Files:"))
+        mid_pane.addWidget(components.supp_files_view)
+        
         widget_1 = QWidget()
-        widget_1.setLayout(pane_1)
+        widget_1.setLayout(mid_pane)
 
-        # Use QSplitter for the main layout
-        main_splitter = QSplitter(Qt.Horizontal, self.search_page)
+        main_splitter = QSplitter(Qt.Horizontal, page)
         main_splitter.addWidget(widget_0)
         main_splitter.addWidget(widget_1)
-        main_splitter.addWidget(self.previews)
+        main_splitter.addWidget(components.previews)
 
-        main_pane = QVBoxLayout(self.search_page)
+        main_pane = QVBoxLayout(page)
         main_pane.addWidget(main_splitter)
-        self.search_page.setLayout(main_pane)
+        page.setLayout(main_pane)
 
     def init_load_animation(self):
         self.load_timer = QTimer(self)
@@ -196,16 +235,16 @@ class View(QMainWindow):
 
     def start_load_animation(self):
         self.load_dots = 0
-        self.loading_label.setText("Loading.")
+        self.active_elements.loading_label.setText("Loading.")
         self.load_timer.start(500)  # ms
 
     def stop_load_animation(self):
         self.load_timer.stop()
-        self.loading_label.clear()
+        self.active_elements.loading_label.clear()
 
     def update_load_text(self):
         self.load_dots = (self.load_dots + 1) % 4
-        self.loading_label.setText("Loading" + "." * self.load_dots)
+        self.active_elements.loading_label.setText("Loading" + "." * self.load_dots)
 
     def suppfilelistitem_factory(self, file_data):
         return SuppFileListItem(self, file_data)
@@ -218,24 +257,25 @@ class View(QMainWindow):
         article_widget = ArticleListItem(article_data)
         item.setSizeHint(article_widget.sizeHint())
         item.setData(Qt.UserRole, article_data.pmc_id)
-        self.article_list.addItem(item)
-        self.article_list.setItemWidget(item, article_widget)
-        self.prog_bar.setValue(progress + 1)
+        self.active_elements.article_list.addItem(item)
+        self.active_elements.article_list.setItemWidget(item, article_widget)
+        self.active_elements.prog_bar.setValue(progress + 1)
 
     def clear_article_list_and_files_view(self):
-        self.article_list.clear()
-        self.supp_files_view.clear()
+        self.active_elements.article_list.clear()
+        self.active_elements.supp_files_view.clear()
 
     def update_article_display(self, article, element_type, list_item_func):
-        self.supp_files_view.clear()
+        self.active_elements.supp_files_view.clear()
+        print("view.debug: " + str(getattr(article, element_type)))
         for file_data in getattr(article, element_type):
             item_container = QListWidgetItem()
             file_item = list_item_func(file_data)
             file_item.checkbox.setChecked(file_data.checked)
             item_container.setSizeHint(file_item.sizeHint())
             item_container.setData(Qt.UserRole, file_data.id)
-            self.supp_files_view.addItem(item_container)
-            self.supp_files_view.setItemWidget(item_container, file_item)
+            self.active_elements.supp_files_view.addItem(item_container)
+            self.active_elements.supp_files_view.setItemWidget(item_container, file_item)
 
     def populate_filtered_article_list(self, articles, list_item_func):
         for article in articles:
@@ -243,16 +283,16 @@ class View(QMainWindow):
             article_widget = ArticleListItem(article)
             item.setSizeHint(article_widget.sizeHint())
             item.setData(Qt.UserRole, article.pmc_id)
-            self.article_list.addItem(item)
-            self.article_list.setItemWidget(item, article_widget)
+            self.active_elements.article_list.addItem(item)
+            self.active_elements.article_list.setItemWidget(item, article_widget)
             self.update_article_display(article, 'processed_tables', list_item_func)
 
     def display_multisheet_table(self, df_dict, use_checkable_header, table_id=None, callback=None, checked_columns=None):
-        tab_widget = QTabWidget(self.previews)
+        tab_widget = QTabWidget(self.active_elements.previews)
         for sheet, df in df_dict.items():
             table = self._create_ui_table(df, use_checkable_header, table_id, callback, checked_columns)
             tab_widget.addTab(table, sheet)
-        self.previews_layout.addWidget(tab_widget)
+        self.active_elements.previews_layout.addWidget(tab_widget)
 
     def _create_ui_table(self, data, use_checkable_header, table_id=None, callback=None, checked_columns=None):
         ui_table = QTableWidget()
