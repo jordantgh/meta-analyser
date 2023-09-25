@@ -126,7 +126,7 @@ class Controller:
         self.model.preview_thread.start()
         
     def preview_processed_table(self, table_id):
-        table_data = {"sheet": self.model.table_db_manager.get_table_data(table_id)}
+        table_data = {"sheet": self.model.table_db_manager.get_processed_table_data(table_id)}
         self.view.start_load_animation()
         self.load_preview(table_data, table_id, self.update_checked_columns)
         
