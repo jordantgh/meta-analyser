@@ -124,7 +124,8 @@ class CommonPageElements:
         self.previews = QWidget(page)
         self.previews_layout = QVBoxLayout(self.previews)
         self.previews.setLayout(self.previews_layout)
-
+        self.loading_label = QLabel(page)
+        self.loading_label.setAlignment(Qt.AlignCenter)
 
 class SearchPageElements(CommonPageElements):
     def __init__(self, page):
@@ -136,8 +137,6 @@ class SearchPageElements(CommonPageElements):
         self.stop_search_btn.hide()
         self.stop_search_btn.setEnabled(False)
         self.proceed_btn = QPushButton("Proceed", page)
-        self.loading_label = QLabel(page)
-        self.loading_label.setAlignment(Qt.AlignCenter)
         
 
 class ProcessedPageElements(CommonPageElements):
@@ -267,7 +266,6 @@ class View(QMainWindow):
 
     def update_article_display(self, article, element_type, list_item_func):
         self.active_elements.supp_files_view.clear()
-        print("view.debug: " + str(getattr(article, element_type)))
         for file_data in getattr(article, element_type):
             item_container = QListWidgetItem()
             file_item = list_item_func(file_data)
