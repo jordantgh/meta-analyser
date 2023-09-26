@@ -150,7 +150,7 @@ class Controller:
         self.refresh_view()
 
     def filter_tables(self):
-        query = self.view.query_filter_field.text()
+        query = self.view_elem.query_filter_field.text()
         if not query: return
 
         self.model.filter_tables(query)
