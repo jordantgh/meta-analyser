@@ -146,7 +146,6 @@ class ProcessedPageElements(CommonPageElements):
         self.filter_btn = QPushButton("Filter", page)
         self.prune_btn = QPushButton("Prune Tables and Columns", page)        
 
-
 class View(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -156,16 +155,20 @@ class View(QMainWindow):
         self.setCentralWidget(self.tab_widget)
 
         self.search_page = QWidget(self)
-        self.result_page = QWidget(self)  
+        self.parsed_page = QWidget(self)
+        self.pruned_page = QWidget(self)
         
-        self.tab_widget.addTab(self.search_page, "Search Page")
-        self.tab_widget.addTab(self.result_page, "Result Page")
+        self.tab_widget.addTab(self.search_page, "Search")
+        self.tab_widget.addTab(self.parsed_page, "Parsing Results")
+        self.tab_widget.addTab(self.pruned_page, "Pruned Results")
         
         self.search_components = SearchPageElements(self.search_page)
-        self.results_components = ProcessedPageElements(self.result_page)
+        self.parsed_components = ProcessedPageElements(self.parsed_page)
+        self.pruned_components = ProcessedPageElements(self.pruned_page)
 
         self.init_search_layouts(self.search_components)
-        self.init_result_layouts(self.results_components)
+        self.init_processed_page_layouts(self.parsed_page, self.parsed_components)
+        self.init_processed_page_layouts(self.pruned_page, self.pruned_components)
         self.init_load_animation()
 
     @property
@@ -176,7 +179,8 @@ class View(QMainWindow):
     def active_elements(self):
         return {
             self.search_page: self.search_components,
-            self.result_page: self.results_components
+            self.parsed_page: self.parsed_components,
+            self.pruned_page: self.pruned_components
         }.get(self.active_page, None)
 
     def init_search_layouts(self, components):
@@ -192,7 +196,7 @@ class View(QMainWindow):
         
         self.init_core_layouts(self.search_page, components, left_pane)
 
-    def init_result_layouts(self, components):
+    def init_processed_page_layouts(self, page, components):
         left_pane = QVBoxLayout()
         left_pane.addWidget(components.prog_bar)
         left_pane.addWidget(components.article_list)
@@ -201,7 +205,7 @@ class View(QMainWindow):
         left_pane.addWidget(components.filter_btn)       
         left_pane.addWidget(components.prune_btn)
 
-        self.init_core_layouts(self.result_page, components, left_pane)
+        self.init_core_layouts(page, components, left_pane)
    
     def init_core_layouts(self, page, components, left_pane):        
         widget_0 = QWidget()

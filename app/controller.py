@@ -7,7 +7,8 @@ class Controller:
         self.model = model
         self.view = view
         self.search_page = self.view.search_components
-        self.result_page = self.view.results_components
+        self.parsed_page = self.view.parsed_components
+        self.pruned_page = self.view.pruned_components
         self.connect_sigs()
 
     @property
@@ -27,9 +28,13 @@ class Controller:
         self.model.processing_thread.finished_sig.connect(self.on_processing_finished)
         self.model.preview_thread.prev_ready_sig.connect(self.load_preview)
         
-        self.result_page.article_list.itemClicked.connect(self.handle_article_click)
-        self.result_page.filter_btn.clicked.connect(self.filter_tables)
-        self.result_page.prune_btn.clicked.connect(self.prune_tables_and_columns)
+        self.parsed_page.article_list.itemClicked.connect(self.handle_processed_article_click)
+        self.parsed_page.filter_btn.clicked.connect(self.filter_tables)
+        self.parsed_page.prune_btn.clicked.connect(self.prune_tables_and_columns)
+
+        self.pruned_page.article_list.itemClicked.connect(self.handle_processed_article_click)
+        self.pruned_page.filter_btn.clicked.connect(self.filter_tables)
+        self.pruned_page.prune_btn.clicked.connect(self.prune_tables_and_columns)
 
     def add_article(self, article_json, progress):
         article_data = self.model.create_article_data(article_json)
@@ -81,24 +86,28 @@ class Controller:
         self.view_elem.prog_bar.hide()  
 
     def handle_article_click(self, item):
-        print("controller.debug: article clicked")
         self.view_elem.previews.hide()
         article_id = item.data(Qt.UserRole)
         article = self.model.bibliography.get_article(article_id)
         
-        if self.model.processing_mode:
-            print("controller.debug: article clicked on RESULTS page")
-            self.view.update_article_display(article, 'processed_tables', self.view.processedtablelistitem_factory)
-        else:
-            self.view.update_article_display(article, 'supp_files', self.view.suppfilelistitem_factory)
+        self.view.update_article_display(article, 'supp_files', self.view.suppfilelistitem_factory)
 
         for i in range(self.view_elem.supp_files_view.count()):
             list_item = self.view_elem.supp_files_view.item(i)
             widget = self.view_elem.supp_files_view.itemWidget(list_item)
-            if self.model.processing_mode:
-                widget.preview_requested.connect(self.preview_processed_table)
-            else:
-                widget.preview_requested.connect(self.preview_supp_file)
+            widget.preview_requested.connect(self.preview_supp_file)
+
+    def handle_processed_article_click(self, item):
+        self.view_elem.previews.hide()
+        article_id = item.data(Qt.UserRole)
+        article = self.model.bibliography.get_article(article_id)
+        
+        self.view.update_article_display(article, 'processed_tables', self.view.processedtablelistitem_factory)
+
+        for i in range(self.view_elem.supp_files_view.count()):
+            list_item = self.view_elem.supp_files_view.item(i)
+            widget = self.view_elem.supp_files_view.itemWidget(list_item)
+            widget.preview_requested.connect(self.preview_processed_table)
 
     def refresh_view(self):
         self.view.clear_article_list_and_files_view()
