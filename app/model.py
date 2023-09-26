@@ -88,6 +88,11 @@ class TableDBManager:
                 session.delete(table)
                 session.commit()
 
+    def reset(self):
+        with self.Session() as session:
+            session.query(ProcessedTableDBEntry).delete()
+            session.query(PostPruningTableDBEntry).delete()
+            session.commit()
 
 def parse_tables(selected_articles, db_manager, callback=None):
     def _is_contained(bbox1, bbox2):
@@ -228,6 +233,9 @@ class SuppFileManager:
 
     def get_file(self, file_id):
         return self.supp_files.get(file_id)
+      
+    def reset(self):
+        self.supp_files = {}
 
 
 class ProcessedTableManager:
@@ -239,6 +247,10 @@ class ProcessedTableManager:
 
     def get_processed_table(self, table_id):
         return self.processed_tables.get(table_id)
+    
+    def reset(self):
+        self.processed_tables = {}
+
 
 class Article:
     def __init__(self, title, abstract, pmc_id, supp_files=[], tables=[]):
@@ -265,6 +277,9 @@ class Bibliography:
 
     def get_selected_articles(self):
         return [p for p in self.articles.values() if p.checked]
+      
+    def reset(self):
+        self.articles = {}
 
 
 class Model:
@@ -376,3 +391,12 @@ class Model:
             if article:
                 article.processed_tables = filtered_tables
 
+    def reset_for_searching(self):
+        self.bibliography.reset()
+        self.file_manager.reset()
+
+    def reset_for_processing(self):
+        # Reset the state of the model for processing a new set of articles
+        self.filtered_articles = {}
+        self.processed_table_manager.reset()
+        self.table_db_manager.reset()

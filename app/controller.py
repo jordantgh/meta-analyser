@@ -45,6 +45,7 @@ class Controller:
         self.view.display_article(article_data, progress)
 
     def search_articles(self):
+        self.model.reset_for_searching()
         self.view.tab_widget.setCurrentIndex(0)
         self.model.processing_mode = False
         if self.model.search_thread.isRunning():
@@ -162,6 +163,7 @@ class Controller:
         self.view.populate_filtered_article_list(filtered_articles, self.view.processedtablelistitem_factory)
 
     def on_proceed(self):
+        self.model.reset_for_processing()
         self.view.tab_widget.setCurrentIndex(1)
         self.model.processing_mode = True
         if self.model.processing_thread.isRunning():
