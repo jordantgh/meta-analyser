@@ -125,7 +125,7 @@ def parse_tables(selected_articles, db_manager, callback=None):
                         unique_id = f"{os.path.splitext(fname)[0]}_{sheetname}_Table{i}"
                         save_processed_df_to_db(db_manager, unique_id, file.id, region)
 
-                        processed_table_ids.append(unique_id)
+                        processed_table_ids.append((unique_id, file.id))
 
             except Exception as e:
                 logging.exception(f"An error occurred while processing {file.url}: {str(e)}")
@@ -214,10 +214,11 @@ class SuppFile:
 
 
 class ProcessedTable:
-    def __init__(self, article_id, id, num_columns=None):
+    def __init__(self, article_id, id, file_id, num_columns=None):
         self.checked = True
         self.article_id = article_id
         self.id = id
+        self.file_id = file_id
         if num_columns is not None:
             self.checked_columns = list(range(num_columns))
         else:
@@ -316,13 +317,13 @@ class Model:
 
     def update_processed_tables(self, article, ids_list):
         processed_tables = []
-        for table_id in ids_list:
+        for table_id, file_id in ids_list:
             table_data = self.table_db_manager.get_processed_table_data(table_id)
             if table_data is not None:
                 num_columns = len(table_data.columns)
             else:
                 num_columns = None
-            processed_table = ProcessedTable(article.pmc_id, table_id, num_columns)
+            processed_table = ProcessedTable(article.pmc_id, table_id, file_id, num_columns)
             self.processed_table_manager.add_processed_table(processed_table)
             processed_tables.append(processed_table)
         return processed_tables
@@ -337,25 +338,27 @@ class Model:
         file.processed_tables = tables
 
     def prune_tables_and_columns(self):
-        to_delete = []
         for article in self.bibliography.get_selected_articles():
-            # Check if the article is in the filtered_articles
             filtered_tables_ids = [t.id for t in self.filtered_articles.get(article.pmc_id, [])]
-            
             for table in article.processed_tables:
+                serialized_df = None  
                 table_data = self.table_db_manager.get_processed_table_data(table.id)
                 if table_data is not None and table.checked_columns is not None:
-                    table_data = table_data.iloc[:, table.checked_columns]
-                    serialized_df = pickle.dumps(table_data)
-                    self.table_db_manager.update_table(table.id, serialized_df)
-                    
-                    # Update the checked_columns attribute
-                    processed_table = self.processed_table_manager.get_processed_table(table.id)
-                    if processed_table:
-                        processed_table.checked_columns = list(range(len(table_data.columns)))
+                    filtered_table_data = table_data.iloc[:, table.checked_columns]
+                    serialized_df = pickle.dumps(filtered_table_data)
 
-        for table_id in to_delete:
-            self.table_db_manager.delete_table(table_id)
+                if table.id in filtered_tables_ids and serialized_df is not None:
+                    self.table_db_manager.save_table(PostPruningTableDBEntry, table.id, table.file_id, serialized_df)
+
+        # Update the checked_columns attribute for the post-pruned tables
+        filtered_articles_tables = [self.processed_table_manager.get_processed_table(table_id) for table_id in filtered_tables_ids if self.processed_table_manager.get_processed_table(table_id) is not None]
+
+        for table in filtered_articles_tables:
+            if table.checked_columns is not None:
+                table.checked_columns = list(range(len(pickle.loads(serialized_df))))
+              
+        # Align the Article instances with the state of databases.
+        self.filter_checked_articles_and_tables()
 
     def filter_checked_articles_and_tables(self):
         self.bibliography.articles = {k: v for k, v in self.bibliography.articles.items() if v.checked}
