@@ -317,7 +317,7 @@ class Model:
     def update_processed_tables(self, article, ids_list):
         processed_tables = []
         for table_id in ids_list:
-            table_data = self.table_db_manager.get_table_data(table_id)
+            table_data = self.table_db_manager.get_processed_table_data(table_id)
             if table_data is not None:
                 num_columns = len(table_data.columns)
             else:
@@ -343,16 +343,7 @@ class Model:
             filtered_tables_ids = [t.id for t in self.filtered_articles.get(article.pmc_id, [])]
             
             for table in article.processed_tables:
-                # Check if the table is in the filtered tables for this article
-                if table.id not in filtered_tables_ids:
-                    to_delete.append(table.id)
-                    continue
-
-                if not table.checked:
-                    to_delete.append(table.id)
-                    continue
-                
-                table_data = self.table_db_manager.get_table_data(table.id)
+                table_data = self.table_db_manager.get_processed_table_data(table.id)
                 if table_data is not None and table.checked_columns is not None:
                     table_data = table_data.iloc[:, table.checked_columns]
                     serialized_df = pickle.dumps(table_data)
@@ -376,7 +367,7 @@ class Model:
         for article in self.bibliography.get_selected_articles():
             filtered_tables = []
             for processed_table in article.processed_tables:
-                table_data = self.table_db_manager.get_table_data(processed_table.id)
+                table_data = self.table_db_manager.get_processed_table_data(processed_table.id)
                 
                 if table_data is not None:
                     if qp.search(query, [(processed_table.id, table_data.to_string())]):
