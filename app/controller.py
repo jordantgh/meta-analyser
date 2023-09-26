@@ -146,6 +146,7 @@ class Controller:
             processed_table.checked_columns = checked_columns
 
     def prune_tables_and_columns(self):
+        self.view.tab_widget.setCurrentIndex(2)
         self.model.prune_tables_and_columns()
         self.refresh_view()
 
