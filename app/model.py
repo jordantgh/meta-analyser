@@ -339,16 +339,12 @@ class Model:
 
     def prune_tables_and_columns(self):
         for article in self.bibliography.get_selected_articles():
-            filtered_tables_ids = [t.id for t in self.filtered_articles.get(article.pmc_id, [])]
-            for table in article.processed_tables:
-                serialized_df = None  
-                table_data = self.table_db_manager.get_processed_table_data(table.id)
-                if table_data is not None and table.checked_columns is not None:
-                    filtered_table_data = table_data.iloc[:, table.checked_columns]
-                    serialized_df = pickle.dumps(filtered_table_data)
-
-                if table.id in filtered_tables_ids and serialized_df is not None:
-                    self.table_db_manager.save_table(PostPruningTableDBEntry, table.id, table.file_id, serialized_df)
+                if serialized_df is not None:
+                    existing_table = self.table_db_manager.get_table_object(PostPruningTableDBEntry, table_id)
+                    if existing_table:
+                        self.table_db_manager.update_table(PostPruningTableDBEntry, table_id, serialized_df)
+                    else:
+                        self.table_db_manager.save_table(PostPruningTableDBEntry, table_id, table.file_id, serialized_df)
 
         # Update the checked_columns attribute for the post-pruned tables
         filtered_articles_tables = [self.processed_table_manager.get_processed_table(table_id) for table_id in filtered_tables_ids if self.processed_table_manager.get_processed_table(table_id) is not None]
