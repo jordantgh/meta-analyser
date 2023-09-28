@@ -11,7 +11,7 @@ import scripts.query_parser as qp
 from skimage.measure import label, regionprops
 from search_for_papers import query_pmc
 
-from sqlalchemy import create_engine, Column, Integer, String, BLOB
+from sqlalchemy import create_engine, Column, String, BLOB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -254,16 +254,20 @@ class ProcessedTableManager:
 
 
 class Article:
-    def __init__(self, title, abstract, pmc_id, supp_files=[], tables=[]):
+    def __init__(self, title, abstract, pmc_id, supp_files=[], processed_tables=[], to_prune=[]):
         self.checked = True
         self.title = title
         self.abstract = abstract
         self.pmc_id = pmc_id
         self.supp_files = supp_files
-        self.processed_tables = tables
+        self.processed_tables = processed_tables
+        self.to_prune = to_prune
 
     def get_file(self, file_id):
         return next((f for f in self.supp_files if f.id == file_id), None)
+      
+    def get_table_by_id(self, table_id):
+        return next((t for t in self.processed_tables if t.id == table_id), None)
 
 
 class Bibliography:
@@ -285,7 +289,7 @@ class Bibliography:
 
 class Model:
     def __init__(self):
-        self.filtered_articles = {}
+        self.article_list_filtered = {}
         self.processing_mode = False
         self.bibliography = Bibliography()
         self.file_manager = SuppFileManager()
@@ -339,6 +343,24 @@ class Model:
 
     def prune_tables_and_columns(self):
         for article in self.bibliography.get_selected_articles():
+            ids = [table.id for table in self.article_list_filtered.get(article.pmc_id, []) if table.checked]
+            
+            tables_to_prune = []
+
+            if article.to_prune:
+                tables_to_prune = [self.processed_table_manager.get_processed_table(table_id) for table_id in article.to_prune if self.processed_table_manager.get_processed_table(table_id).checked]
+            else:
+                tables_to_prune = [table for table in article.processed_tables if table.checked]
+
+            for table in tables_to_prune:
+                serialized_df = None
+                table_id = table.id
+                data = self.table_db_manager.get_processed_table_data(table_id)
+
+                if data is not None and table.checked_columns is not None:
+                    data = data.iloc[:, table.checked_columns]
+                    serialized_df = pickle.dumps(data)
+
                 if serialized_df is not None:
                     existing_table = self.table_db_manager.get_table_object(PostPruningTableDBEntry, table_id)
                     if existing_table:
@@ -346,47 +368,39 @@ class Model:
                     else:
                         self.table_db_manager.save_table(PostPruningTableDBEntry, table_id, table.file_id, serialized_df)
 
-        # Update the checked_columns attribute for the post-pruned tables
-        filtered_articles_tables = [self.processed_table_manager.get_processed_table(table_id) for table_id in filtered_tables_ids if self.processed_table_manager.get_processed_table(table_id) is not None]
+        
+            kept_tables = [self.processed_table_manager.get_processed_table(id) for id in ids if self.processed_table_manager.get_processed_table(id) is not None]
 
-        for table in filtered_articles_tables:
-            if table.checked_columns is not None:
-                table.checked_columns = list(range(len(pickle.loads(serialized_df))))
+            for table in kept_tables:
+                if table.checked_columns is not None:
+                    latest_data = self.table_db_manager.get_processed_table_data(table.id)
+                    if latest_data is not None:
+                        table.checked_columns = list(range(len(latest_data.columns)))
               
-        # Align the Article instances with the state of databases.
-        self.filter_checked_articles_and_tables()
-
-    def filter_checked_articles_and_tables(self):
-        self.bibliography.articles = {k: v for k, v in self.bibliography.articles.items() if v.checked}
-        for article in self.bibliography.articles.values():
-            article.processed_tables = [table for table in article.processed_tables if table.checked]
-
-    def filter_tables(self, query):
-        self.filtered_articles = {}
+    def filter_tables(self, query): 
         for article in self.bibliography.get_selected_articles():
-            filtered_tables = []
+            matched_tables = []
             for processed_table in article.processed_tables:
                 table_data = self.table_db_manager.get_processed_table_data(processed_table.id)
                 
                 if table_data is not None:
                     if qp.search(query, [(processed_table.id, table_data.to_string())]):
-                        filtered_tables.append(processed_table)
+                        matched_tables.append(processed_table)
                 
-            if filtered_tables:
-                self.filtered_articles[article.pmc_id] = filtered_tables
+            if matched_tables:
+                self.article_list_filtered[article.pmc_id] = matched_tables
 
-    def apply_filtered_articles(self):
-        for article_id, filtered_tables in self.filtered_articles.items():
+    def update_article_prune_list(self):
+        for article_id, matched_tables in self.article_list_filtered.items():
             article = self.bibliography.get_article(article_id)
             if article:
-                article.processed_tables = filtered_tables
+                article.to_prune = matched_tables
 
     def reset_for_searching(self):
         self.bibliography.reset()
         self.file_manager.reset()
 
     def reset_for_processing(self):
-        # Reset the state of the model for processing a new set of articles
-        self.filtered_articles = {}
+        self.article_list_filtered = {}
         self.processed_table_manager.reset()
         self.table_db_manager.reset()
