@@ -170,13 +170,8 @@ class Controller:
     def filter_tables(self):
         query = self.view_elem.query_filter_field.text()
         if not query: return
-
         self.model.filter_tables(query)
-        self.model.apply_filtered_articles()
-        self.view.clear_article_list_and_files_view()
-
-        filtered_articles = [self.model.bibliography.get_article(article_id) for article_id in self.model.filtered_articles.keys()]
-        self.view.populate_filtered_article_list(filtered_articles, self.view.processedtablelistitem_factory)
+        self.model.update_article_prune_list()
 
     def on_proceed(self):
         self.model.reset_for_processing()

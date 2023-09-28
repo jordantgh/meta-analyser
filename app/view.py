@@ -288,16 +288,6 @@ class View(QMainWindow):
             self.active_elements.supp_files_view.addItem(item_container)
             self.active_elements.supp_files_view.setItemWidget(item_container, file_item)
 
-    def populate_filtered_article_list(self, articles, list_item_func):
-        for article in articles:
-            item = QListWidgetItem()
-            article_widget = ArticleListItem(article)
-            item.setSizeHint(article_widget.sizeHint())
-            item.setData(Qt.UserRole, article.pmc_id)
-            self.active_elements.article_list.addItem(item)
-            self.active_elements.article_list.setItemWidget(item, article_widget)
-            self.update_article_display(article, 'processed_tables', list_item_func)
-
     def display_multisheet_table(self, df_dict, use_checkable_header, table_id=None, callback=None, checked_columns=None):
         tab_widget = QTabWidget(self.active_elements.previews)
         for sheet, df in df_dict.items():
