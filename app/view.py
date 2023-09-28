@@ -270,12 +270,21 @@ class View(QMainWindow):
 
     def update_article_display(self, article, element_type, list_item_func):
         self.active_elements.supp_files_view.clear()
-        for file_data in getattr(article, element_type):
+        
+        # This monster must be slain
+        if element_type == 'to_prune' and article.to_prune:
+            tables_to_process = [table for table in article.processed_tables if table.id in article.to_prune and table.checked]
+        elif element_type == 'supp_files':
+            tables_to_process = getattr(article, element_type)
+        else:
+            tables_to_process = [table for table in article.processed_tables if table.checked]
+
+        for data in tables_to_process:
             item_container = QListWidgetItem()
-            file_item = list_item_func(file_data)
-            file_item.checkbox.setChecked(file_data.checked)
+            file_item = list_item_func(data)
+            file_item.checkbox.setChecked(data.checked)
             item_container.setSizeHint(file_item.sizeHint())
-            item_container.setData(Qt.UserRole, file_data.id)
+            item_container.setData(Qt.UserRole, data.id)
             self.active_elements.supp_files_view.addItem(item_container)
             self.active_elements.supp_files_view.setItemWidget(item_container, file_item)
 

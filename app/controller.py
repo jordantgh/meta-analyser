@@ -32,7 +32,7 @@ class Controller:
         self.parsed_page.filter_btn.clicked.connect(self.filter_tables)
         self.parsed_page.prune_btn.clicked.connect(self.prune_tables_and_columns)
 
-        self.pruned_page.article_list.itemClicked.connect(self.handle_processed_article_click)
+        self.pruned_page.article_list.itemClicked.connect(self.handle_pruned_article_click)
         self.pruned_page.filter_btn.clicked.connect(self.filter_tables)
         self.pruned_page.prune_btn.clicked.connect(self.prune_tables_and_columns)
 
@@ -110,6 +110,17 @@ class Controller:
             widget = self.view_elem.supp_files_view.itemWidget(list_item)
             widget.preview_requested.connect(self.preview_processed_table)
 
+    def handle_pruned_article_click(self, item):
+        self.view_elem.previews.hide()
+        article_id = item.data(Qt.UserRole)
+        article = self.model.bibliography.get_article(article_id)
+        self.view.update_article_display(article, 'to_prune', self.view.processedtablelistitem_factory)
+
+        for i in range(self.view_elem.supp_files_view.count()):
+            list_item = self.view_elem.supp_files_view.item(i)
+            widget = self.view_elem.supp_files_view.itemWidget(list_item)
+            widget.preview_requested.connect(self.preview_pruned_table)
+
     def refresh_view(self):
         self.view.clear_article_list_and_files_view()
         for article in self.model.bibliography.get_selected_articles():
@@ -137,6 +148,11 @@ class Controller:
         
     def preview_processed_table(self, table_id):
         table_data = {"sheet": self.model.table_db_manager.get_processed_table_data(table_id)}
+        self.view.start_load_animation()
+        self.load_preview(table_data, table_id, self.update_checked_columns)
+
+    def preview_pruned_table(self, table_id):
+        table_data = {"sheet": self.model.table_db_manager.get_post_pruning_table_data(table_id)}
         self.view.start_load_animation()
         self.load_preview(table_data, table_id, self.update_checked_columns)
         
