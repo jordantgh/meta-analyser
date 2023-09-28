@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtCore import Qt, pyqtSignal, QTimer, QRect
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QListWidget, QListWidgetItem, QProgressBar, QTextEdit, QCheckBox, QPushButton, QTableWidget, QTableWidgetItem, QSizePolicy,QTabWidget, QStackedWidget, QHeaderView, QStyleOptionButton, QStyle, QSplitter
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton, QListWidget, QListWidgetItem, QProgressBar, QTextEdit, QCheckBox, QPushButton, QTableWidget, QTableWidgetItem, QSizePolicy,QTabWidget, QHeaderView, QStyleOptionButton, QStyle, QSplitter
 
 
 class CheckableHeaderView(QHeaderView):
