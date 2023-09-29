@@ -1,3 +1,5 @@
+codebase.md
+concat_files.sh
 .env*
 .venv
 .vscode
