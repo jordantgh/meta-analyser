@@ -8,3 +8,4 @@ mageck
 __pycache__/
 *.db
 *.log
+old/
