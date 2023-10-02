@@ -114,7 +114,7 @@ class Controller:
         self.view_elem.previews.hide()
         article_id = item.data(Qt.UserRole)
         article = self.model.bibliography.get_article(article_id)
-        self.view.update_article_display(article, 'to_prune', self.view.processedtablelistitem_factory)
+        self.view.update_article_display(article, 'pruned_article_tables', self.view.processedtablelistitem_factory)
 
         for i in range(self.view_elem.supp_files_view.count()):
             list_item = self.view_elem.supp_files_view.item(i)
