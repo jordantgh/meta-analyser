@@ -143,14 +143,15 @@ class View(QMainWindow):
         self.clear_supp_files_view()
         
         # This monster must be slain
-        if element_type == 'to_prune' and article.to_prune:
-            tables_to_process = [table for table in article.processed_tables if table.id in article.to_prune and table.checked]
+        tables_to_display = []
+        if element_type == 'pruned_article_tables': 
+            tables_to_display = [table for table in article.processed_tables if table.checked]
         elif element_type == 'supp_files':
-            tables_to_process = getattr(article, element_type)
+            tables_to_display = getattr(article, element_type)
         else:
-            tables_to_process = [table for table in article.processed_tables if table.checked]
+            tables_to_display = article.processed_tables
 
-        for data in tables_to_process:
+        for data in tables_to_display:
             item_container = QListWidgetItem()
             file_item = list_item_func(data)
             file_item.checkbox.setChecked(data.checked)

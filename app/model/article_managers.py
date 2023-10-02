@@ -81,7 +81,6 @@ class Article(BaseData):
         self.pmc_id = pmc_id
         self.supp_files = supp_files
         self.processed_tables = processed_tables
-        self.to_prune = to_prune
 
     def get_file(self, file_id):
         return next((f for f in self.supp_files if f.id == file_id), None)

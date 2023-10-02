@@ -171,7 +171,6 @@ class Controller:
         query = self.view_elem.query_filter_field.text()
         if not query: return
         self.model.filter_tables(query)
-        self.model.update_article_prune_list()
 
     def on_proceed(self):
         self.model.reset_for_processing()

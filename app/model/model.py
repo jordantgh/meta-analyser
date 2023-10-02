@@ -64,28 +64,24 @@ class Model:
         for article in self.bibliography.get_selected_articles():
             ids = [table.id for table in self.article_list_filtered.get(article.pmc_id, []) if table.checked]
             
-            tables_to_prune = []
-
-            if article.to_prune:
-                tables_to_prune = [self.processed_table_manager.get_processed_table(table_id) for table_id in article.to_prune if self.processed_table_manager.get_processed_table(table_id).checked]
-            else:
-                tables_to_prune = [table for table in article.processed_tables if table.checked]
+            # kind of an ugly way to do this
+            tables_to_prune = [table for table in article.processed_tables if table.checked]
 
             for table in tables_to_prune:
+                print(f"Pruning table {table.id}")
                 serialized_df = None
-                table_id = table.id
-                data = self.table_db_manager.get_processed_table_data(table_id)
+                data = self.table_db_manager.get_processed_table_data(table.id)
 
                 if data is not None and table.checked_columns is not None:
                     data = data.iloc[:, table.checked_columns]
                     serialized_df = pickle.dumps(data)
 
                 if serialized_df is not None:
-                    existing_table = self.table_db_manager.get_table_object(PostPruningTableDBEntry, table_id)
+                    existing_table = self.table_db_manager.get_table_object(PostPruningTableDBEntry, table.id)
                     if existing_table:
-                        self.table_db_manager.update_table(PostPruningTableDBEntry, table_id, serialized_df)
+                        self.table_db_manager.update_table(PostPruningTableDBEntry, table.id, serialized_df)
                     else:
-                        self.table_db_manager.save_table(PostPruningTableDBEntry, table_id, table.file_id, serialized_df)
+                        self.table_db_manager.save_table(PostPruningTableDBEntry, table.id, table.file_id, serialized_df)
 
         
             kept_tables = [self.processed_table_manager.get_processed_table(id) for id in ids if self.processed_table_manager.get_processed_table(id) is not None]
@@ -96,24 +92,11 @@ class Model:
                     if latest_data is not None:
                         table.checked_columns = list(range(len(latest_data.columns)))
               
-    def filter_tables(self, query): 
+    def filter_tables(self, query):
         for article in self.bibliography.get_selected_articles():
-            matched_tables = []
             for processed_table in article.processed_tables:
                 table_data = self.table_db_manager.get_processed_table_data(processed_table.id)
-                
-                if table_data is not None:
-                    if qp.search(query, [(processed_table.id, table_data.to_string())]):
-                        matched_tables.append(processed_table)
-                
-            if matched_tables:
-                self.article_list_filtered[article.pmc_id] = matched_tables
-
-    def update_article_prune_list(self):
-        for article_id, matched_tables in self.article_list_filtered.items():
-            article = self.bibliography.get_article(article_id)
-            if article:
-                article.to_prune = matched_tables
+                processed_table.set_checked(bool(qp.search(query, [(processed_table.id, table_data.to_string())])))
 
     def reset_for_searching(self):
         self.bibliography.reset()
