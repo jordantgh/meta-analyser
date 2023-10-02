@@ -123,12 +123,24 @@ class View(QMainWindow):
         self.active_elements.article_list.setItemWidget(item, article_widget)
         self.active_elements.prog_bar.setValue(progress + 1)
 
+    def clear_supp_files_view(self):
+        # here we get all the list items and deregister their observers before removing them
+        for i in range(self.active_elements.supp_files_view.count()):
+            item = self.active_elements.supp_files_view.item(i)
+
+            if item:
+                list_item = self.active_elements.supp_files_view.itemWidget(item)
+                if list_item and list_item.data.alert_observers():
+                    list_item.remove()
+        
+        self.active_elements.supp_files_view.clear()    
+
     def clear_article_list_and_files_view(self):
-        self.active_elements.article_list.clear()
-        self.active_elements.supp_files_view.clear()
+            self.active_elements.article_list.clear()
+            self.clear_supp_files_view()
 
     def update_article_display(self, article, element_type, list_item_func):
-        self.active_elements.supp_files_view.clear()
+        self.clear_supp_files_view()
         
         # This monster must be slain
         if element_type == 'to_prune' and article.to_prune:

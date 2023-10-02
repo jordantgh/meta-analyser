@@ -20,6 +20,8 @@ class UIListItem(QWidget):
 
     def checkbox_toggled(self):
         self.data.checked = self.checkbox.isChecked()
+        if self.data.alert_observers():
+            self.data.checkbox_toggled()
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
@@ -59,3 +61,14 @@ class SuppFileListItem(DataListItem):
 class ProcessedTableListItem(DataListItem):
     def __init__(self, main_window, file_data):
         super().__init__(main_window, file_data, lambda fd: self.get_disp_name(fd.id))
+
+        file_data.register_observer(self)
+
+    def remove(self):
+        self.data.remove_observer(self)
+
+    def update(self, processed_table):
+        # Disconnect the signal before updating the checkbox to avoid triggering the signal again, then reconnect it
+        self.checkbox.toggled.disconnect(self.checkbox_toggled)
+        self.checkbox.setChecked(processed_table.checked)
+        self.checkbox.toggled.connect(self.checkbox_toggled)

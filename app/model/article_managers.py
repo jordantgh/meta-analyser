@@ -1,4 +1,9 @@
-class SuppFile:
+class BaseData:
+    def alert_observers(self):
+        return False
+
+
+class SuppFile(BaseData):
     def __init__(self, article_id, url, id):
         self.checked = True
         self.article_id = article_id
@@ -6,7 +11,7 @@ class SuppFile:
         self.id = id
 
 
-class ProcessedTable:
+class ProcessedTable(BaseData):
     def __init__(self, article_id, id, file_id, num_columns=None):
         self.checked = True
         self.article_id = article_id
@@ -16,7 +21,29 @@ class ProcessedTable:
             self.checked_columns = list(range(num_columns))
         else:
             self.checked_columns = []
+        self.observers = []
 
+    def alert_observers(self):
+        return True
+     
+    def register_observer(self, observer):
+        self.observers.append(observer)
+
+    def remove_observer(self, observer):
+        self.observers.remove(observer)
+
+    def notify_observers(self):
+        for observer in self.observers:
+            observer.update(self)
+
+    def checkbox_toggled(self):
+        self.notify_observers()
+
+    def set_checked(self, state):
+        was_checked = self.checked
+        self.checked = state
+        if state != was_checked:
+            self.notify_observers()
 
 class SuppFileManager:
     def __init__(self):
@@ -46,7 +73,7 @@ class ProcessedTableManager:
         self.processed_tables = {}
 
 
-class Article:
+class Article(BaseData):
     def __init__(self, title, abstract, pmc_id, supp_files=[], processed_tables=[], to_prune=[]):
         self.checked = True
         self.title = title
