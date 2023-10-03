@@ -47,7 +47,9 @@ jobs:
 
     # Install dependencies
     - name: Install dependencies
-      run: poetry install
+      run: |
+        poetry install
+        poetry run playwright install  
 
     # Build PyQt5 app binary with PyInstaller
     - name: Build with PyInstaller
