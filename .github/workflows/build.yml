@@ -79,4 +79,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ runner.os }}-binary
-        path: "*.{tar.gz,zip}"
+        path: ${{ github.workspace }}/*.{tar.gz,zip}
