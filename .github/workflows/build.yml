@@ -89,6 +89,8 @@ jobs:
 
     - name: Download all compiled artifacts
       uses: actions/download-artifact@v2
+      with:
+        path: ./artifacts
 
     - name: Create Release
       id: create_release
@@ -109,7 +111,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./Linux-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_linux.tar.gz
+        asset_path: ./artifacts/linux-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_linux.tar.gz
         asset_name: ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_linux.tar.gz
         asset_content_type: application/gzip
 
@@ -117,6 +119,6 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./Windows-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
+        asset_path: ./artifacts/windows-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
         asset_name: ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
         asset_content_type: application/zip
