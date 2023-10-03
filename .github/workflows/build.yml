@@ -64,19 +64,9 @@ jobs:
       if: runner.os == 'Windows'
       run: Compress-Archive -Path .\dist\${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}.exe -DestinationPath .\${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
 
-    # Debug: List the full path of the generated package
-    - name: Debug - List full path of the generated package
-      run: |
-        echo "Full path of the generated package:"
-        find $(pwd) -type f -name "${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}*"
-
-    # Debug: List the contents of the directory
-    - name: Debug - List directory contents
-      run: ls -R
-
     # Upload the packaged binary as an artifact
     - name: Upload Binary as Artifact
       uses: actions/upload-artifact@v2
       with:
         name: ${{ runner.os }}-binary
-        path: '${{ github.workspace }}/*.tar.gz'
+        path: '*.{tar.gz,zip}'
