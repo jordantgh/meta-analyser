@@ -52,8 +52,7 @@ jobs:
     # Build PyQt5 app binary with PyInstaller
     - name: Build with PyInstaller
       run: |
-        pip install pyinstaller
-        pyinstaller --onefile --name ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }} app/main.py
+        poetry run pyinstaller --onefile --name ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }} app/main.py
 
     # Package the binary
     - name: Package Binary on Linux
