@@ -141,6 +141,8 @@ class View(QMainWindow):
 
     def update_article_display(self, article, element_type, list_item_func):
         self.clear_supp_files_view()
+        self.active_elements.title_disp.setText(article.title)
+        self.active_elements.abstract_disp.setText(article.abstract)
         
         # This monster must be slain
         tables_to_display = []
