@@ -47,7 +47,6 @@ class Controller:
     def search_articles(self):
         self.model.reset_for_searching()
         self.view.tab_widget.setCurrentIndex(0)
-        self.model.processing_mode = False
         if self.model.search_thread.isRunning():
             QMessageBox.warning(self.view, "Search in Progress", "A search is already in progress. Please wait or stop the current search.")
             return
@@ -127,13 +126,14 @@ class Controller:
             self.view.display_article(article, 0)
 
     def load_preview(self, data, table_id=None, callback=None):
+        use_checkable_header = self.view_elem.__class__.__name__ == 'ProcessedPageElements'
         for i in reversed(range(self.view_elem.previews_layout.count())):
             widget = self.view_elem.previews_layout.itemAt(i).widget()
             if widget: widget.deleteLater()
 
         processed_table = self.model.processed_table_manager.get_processed_table(table_id) if table_id else None
         checked_columns = processed_table.checked_columns if processed_table else None
-        self.view.display_multisheet_table(data, self.model.processing_mode, table_id, callback, checked_columns)
+        self.view.display_multisheet_table(data, use_checkable_header, table_id, callback, checked_columns)
         self.view.stop_load_animation()
         self.view_elem.previews.show()
 
@@ -175,7 +175,6 @@ class Controller:
     def on_proceed(self):
         self.model.reset_for_processing()
         self.view.tab_widget.setCurrentIndex(1)
-        self.model.processing_mode = True
         if self.model.processing_thread.isRunning():
             QMessageBox.warning(self.view, "Processing in Progress", "A parsing run is already in progress. Please wait.")
             return
