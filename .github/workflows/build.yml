@@ -54,13 +54,13 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         export PLAYWRIGHT_BROWSERS_PATH=0
-        poetry run playwright install chrome
+        poetry run playwright install chromium
     
     - name: Install Chrome for Playwright (Windows)
       if: runner.os == 'Windows'
       run: |
         $env:PLAYWRIGHT_BROWSERS_PATH="0"
-        poetry run playwright install chrome
+        poetry run playwright install chromium
 
     # Build PyQt5 app binary with PyInstaller
     - name: Build with PyInstaller
