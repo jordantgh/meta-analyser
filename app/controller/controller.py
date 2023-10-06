@@ -87,14 +87,13 @@ class Controller:
             .prune_btn.clicked \
             .connect(self.prune_tables_and_columns)
 
-
-    def add_article(self, article_json, progress):
+    def on_article_discovered(self, article_json, progress):
         article_data = self.model.create_article_data(article_json)
-        self.view.display_article(article_data, progress)
+        self.view.display_article(self.search_page, article_data, progress)
 
     def on_article_processed(self, article, ids_list, progress):
         article_data = self.model.update_article(article, ids_list)
-        self.view.display_article(article_data, progress)
+        self.view.display_article(self.parsed_page, article_data, progress)
 
     def search_articles(self):
         self.model.reset_for_searching()
@@ -108,16 +107,18 @@ class Controller:
             return
 
         self.model.search_thread.should_stop = False
-        query = self.view_elem.query_field.text()
+        query = self.search_page.query_field.text()
         if not query:
             return
         
-        # these are low level view details that should be handled by the view
-        self.view_elem.article_list.clear()
-        self.view_elem.previews.hide()
-        self.view_elem.prog_bar.setValue(0)
-        self.view_elem.prog_bar.show()
-        self.view_elem.search_status.setText("Searching...")
+        # TODO these are low level concerns that should be handled by the view
+        self.search_page.article_list.clear()
+        self.search_page.previews.hide()
+        self.search_page.prog_bar.setValue(0)
+        self.search_page.prog_bar.show()
+        self.search_page.search_status.setText("Searching...")
+        self.search_page.stop_search_btn.show()
+        self.search_page.stop_search_btn.setEnabled(True)
         
         self.model.search_thread.query = query
         self.model.search_thread.start()
@@ -143,6 +144,13 @@ class Controller:
             QCoreApplication.processEvents(QEventLoop.AllEvents, 100)
 
     def on_processing_finished(self):
+        if self.model.processing_thread.isRunning():
+            self.model.processing_thread.stop()
+            self.model.processing_thread.quit()
+            self.model.processing_thread.wait()
+
+        self.parsed_page.prog_bar.hide()
+        self.set_state(Mode.BROWSING)
 
     # TODO these three can be combined and list item type passed in or derived
     # from view_elem.__class__.__name__
