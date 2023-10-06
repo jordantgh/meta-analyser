@@ -6,7 +6,7 @@ from scripts.search_for_papers import query_pmc
 
 class SearchThread(QThread):
     article_sig = pyqtSignal(dict, int)
-    finished_sig = pyqtSignal()
+    finished_sig = pyqtSignal(object)
 
     def __init__(self):
         super().__init__()
@@ -18,8 +18,7 @@ class SearchThread(QThread):
 
     def run(self):
         query_pmc(self.query, callback=self.article_sig.emit, thread = self)
-        self.finished_sig.emit()
-
+        self.finished_sig.emit(self)
 
 class FilePreviewThread(QThread):
     prev_ready_sig = pyqtSignal(dict)
@@ -42,7 +41,16 @@ class FileProcessingThread(QThread):
         super().__init__()
         self.selected_articles = []
         self.db_manager = db_manager
+        self.should_stop = False
+
+    def stop(self):
+        self.should_stop = True
 
     def run(self):
-        parse_tables(self.selected_articles, self.db_manager, callback=self.article_sig.emit)
+        parse_tables(
+            self.selected_articles,
+            self.db_manager,
+            self.should_stop,
+            callback=self.article_sig.emit)
+        
         self.finished_sig.emit()

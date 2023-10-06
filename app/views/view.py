@@ -114,22 +114,25 @@ class View(QMainWindow):
     def processedtablelistitem_factory(self, file_data):
         return ProcessedTableListItem(self, file_data)
 
-    def display_article(self, article_data, progress):
+    def display_article(self, components, article_data, progress):
         item = QListWidgetItem()
         article_widget = ArticleListItem(article_data)
         item.setSizeHint(article_widget.sizeHint())
         item.setData(Qt.UserRole, article_data.pmc_id)
-        self.active_elements.article_list.addItem(item)
-        self.active_elements.article_list.setItemWidget(item, article_widget)
-        self.active_elements.prog_bar.setValue(progress + 1)
+        components.article_list.addItem(item)
+        components.article_list.setItemWidget(item, article_widget)
+        components.prog_bar.setValue(progress + 1)
 
     def clear_supp_files_view(self):
-        # here we get all the list items and deregister their observers before removing them
+        # here we get all the list items and deregister their observers 
+        # removing them
         for i in range(self.active_elements.supp_files_view.count()):
             item = self.active_elements.supp_files_view.item(i)
 
             if item:
-                list_item = self.active_elements.supp_files_view.itemWidget(item)
+                list_item = self.active_elements.supp_files_view.itemWidget(
+                    item)
+                
                 if list_item and list_item.data.alert_observers():
                     list_item.remove()
         
@@ -147,7 +150,9 @@ class View(QMainWindow):
         # This monster must be slain
         tables_to_display = []
         if element_type == 'pruned_article_tables': 
-            tables_to_display = [table for table in article.processed_tables if table.checked]
+            tables_to_display = [table for table in article.processed_tables
+                                 if table.checked]
+            
         elif element_type == 'supp_files':
             tables_to_display = getattr(article, element_type)
         else:
@@ -160,7 +165,8 @@ class View(QMainWindow):
             item_container.setSizeHint(file_item.sizeHint())
             item_container.setData(Qt.UserRole, data.id)
             self.active_elements.supp_files_view.addItem(item_container)
-            self.active_elements.supp_files_view.setItemWidget(item_container, file_item)
+            self.active_elements.supp_files_view.setItemWidget(
+                item_container, file_item)
 
     def display_multisheet_table(self, df_dict, use_checkable_header, table_id=None, callback=None, checked_columns=None):
         tab_widget = QTabWidget(self.active_elements.previews)
