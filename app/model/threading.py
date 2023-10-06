@@ -41,11 +41,16 @@ class FileProcessingThread(QThread):
         super().__init__()
         self.selected_articles = []
         self.db_manager = db_manager
+        self.should_stop = False
+
+    def stop(self):
+        self.should_stop = True
 
     def run(self):
         parse_tables(
             self.selected_articles,
             self.db_manager,
+            self.should_stop,
             callback=self.article_sig.emit)
         
         self.finished_sig.emit()

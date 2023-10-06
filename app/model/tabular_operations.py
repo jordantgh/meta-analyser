@@ -7,11 +7,11 @@ from model.file_io import download_supp, extract_dfs
 from model.database import processed_df_to_db
 
 # TODO heavily overdue a readability pass
-def parse_tables(selected_articles, db_manager, callback=None, thread=None):
+def parse_tables(selected_articles, db_manager, should_stop, callback=None):
     for index, article in enumerate(selected_articles):
         processed_table_ids = []
         for file in article.supp_files:
-            if thread and thread.should_stop:
+            if should_stop:
                 break
 
             if not file.checked:
@@ -26,7 +26,7 @@ def parse_tables(selected_articles, db_manager, callback=None, thread=None):
 
                 for sheetname, df in data.items():
 
-                    if thread and thread.should_stop:
+                    if should_stop:
                         break
 
                     if df.empty:
@@ -38,7 +38,7 @@ def parse_tables(selected_articles, db_manager, callback=None, thread=None):
                         region.bbox for region in regionprops(labeled)]
 
                     for i, bbox1 in enumerate(region_bboxes):
-                        if thread and thread.should_stop:
+                        if should_stop:
                             break
 
                         minr1, minc1, maxr1, maxc1 = bbox1
@@ -46,7 +46,7 @@ def parse_tables(selected_articles, db_manager, callback=None, thread=None):
                             continue
                         
                         for i, bbox1 in enumerate(region_bboxes):
-                            if thread and thread.should_stop:
+                            if should_stop:
                                 break
 
                             other_bboxes = [bbox2 for j, bbox2
