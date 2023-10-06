@@ -114,14 +114,14 @@ class View(QMainWindow):
     def processedtablelistitem_factory(self, file_data):
         return ProcessedTableListItem(self, file_data)
 
-    def display_article(self, article_data, progress):
+    def display_article(self, components, article_data, progress):
         item = QListWidgetItem()
         article_widget = ArticleListItem(article_data)
         item.setSizeHint(article_widget.sizeHint())
         item.setData(Qt.UserRole, article_data.pmc_id)
-        self.active_elements.article_list.addItem(item)
-        self.active_elements.article_list.setItemWidget(item, article_widget)
-        self.active_elements.prog_bar.setValue(progress + 1)
+        components.article_list.addItem(item)
+        components.article_list.setItemWidget(item, article_widget)
+        components.prog_bar.setValue(progress + 1)
 
     def clear_supp_files_view(self):
         # here we get all the list items and deregister their observers 
