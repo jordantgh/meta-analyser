@@ -95,7 +95,8 @@ class Controller:
         article_data = self.model.update_article(article, ids_list)
         self.view.display_article(self.parsed_page, article_data, progress)
 
-    def search_articles(self):
+    def search_for_articles(self):
+        self.set_state(Mode.SEARCHING)
         self.model.reset_for_searching()
         self.view.tab_widget.setCurrentIndex(0)
         if self.model.search_thread.isRunning():
