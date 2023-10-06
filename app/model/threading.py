@@ -44,5 +44,9 @@ class FileProcessingThread(QThread):
         self.db_manager = db_manager
 
     def run(self):
-        parse_tables(self.selected_articles, self.db_manager, callback=self.article_sig.emit)
+        parse_tables(
+            self.selected_articles,
+            self.db_manager,
+            callback=self.article_sig.emit)
+        
         self.finished_sig.emit()
