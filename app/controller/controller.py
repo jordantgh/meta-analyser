@@ -1,9 +1,16 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop
 from PyQt5.QtWidgets import QMessageBox
+from enum import Enum, auto
 
+class Mode(Enum):
+    BROWSING = 0
+    SEARCHING = auto()
+    PROCESSING = auto()
+    PRUNING = auto()
 
 class Controller:
     def __init__(self, model, view):
+        self.state = Mode.BROWSING
         self.model = model
         self.view = view
         self.search_page = self.view.search_components
@@ -11,6 +18,9 @@ class Controller:
         self.pruned_page = self.view.pruned_components
         self.connect_sigs()
 
+    def set_state(self, state):
+        self.state = state
+    
     @property
     def view_elem(self):
         return self.view.active_elements
@@ -112,26 +122,25 @@ class Controller:
         self.model.search_thread.query = query
         self.model.search_thread.start()
 
-        self.view_elem.stop_search_btn.show()
-        self.view_elem.stop_search_btn.setEnabled(True)
-
-    def stop_search(self):
-        if self.model.search_thread.isRunning():
-            self.model.search_thread.stop()
-            self.model.search_thread.quit()
-            self.view_elem.search_status.setText("Stopping search...")
-            self.model.search_thread.wait()
-        self.view_elem.prog_bar.hide()
-        self.view_elem.search_status.setText("Search stopped.")
+    def stop_search(self, search_thread):
+        search_thread.quit()
         
-        self.view_elem.stop_search_btn.hide()
-        self.view_elem.stop_search_btn.setEnabled(False)
+        # TODO these are low level concerns that should be handled by the view
+        self.search_page.search_status.setText("Stopping search...")
+        self.search_page.prog_bar.hide()        
+        self.search_page.search_status.setText("Search stopped.")
+        self.search_page.stop_search_btn.hide()
+        self.search_page.stop_search_btn.setEnabled(False)
+        
+        self.set_state(Mode.BROWSING)
+        
+    def send_search_stop(self):
+        if self.model.search_thread.isRunning():            
+            self.model.search_thread.stop()
+            self.model.search_thread.wait()
 
-    def on_search_finished(self):
-        self.view_elem.prog_bar.hide()        
-        self.view_elem.search_status.clear()
-        self.view_elem.stop_search_btn.hide()
-        self.view_elem.stop_search_btn.setEnabled(False)
+        while self.state == Mode.SEARCHING:
+            QCoreApplication.processEvents(QEventLoop.AllEvents, 100)
 
     def on_processing_finished(self):
         self.view_elem.prog_bar.hide()  
@@ -253,6 +262,20 @@ class Controller:
         self.model.filter_tables(query)
 
     def on_proceed(self):
+        if self.model.search_thread.isRunning():
+            reply = QMessageBox.question(
+                self.view,
+                "Search in Progress",
+                "A search is still in progress. "
+                "Do you want to stop the current search and proceed?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No)
+            
+            if reply == QMessageBox.Yes:
+                self.send_search_stop()
+            else:
+              return
+
         self.model.reset_for_processing()
         self.view.tab_widget.setCurrentIndex(1)
         
@@ -262,6 +285,8 @@ class Controller:
                 "Processing in Progress",
                 "A parsing run is already in progress. Please wait.")
             return
+
+        self.set_state(Mode.PROCESSING)
         self.model.processing_thread.should_stop = False
         self.view_elem.article_list.clear()
         self.view_elem.previews.hide()
