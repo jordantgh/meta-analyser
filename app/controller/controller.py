@@ -190,12 +190,6 @@ class Controller:
             widget = self.view_elem.supp_files_view.itemWidget(list_item)
             widget.preview_requested.connect(self.preview_pruned_table)
 
-    def refresh_view(self):
-        self.view.clear_article_list_and_files_view()
-        
-        for article in self.model.bibliography.get_selected_articles():
-            self.view.display_article(article, 0)
-
     def load_preview(self, data, table_id=None, callback=None):
         use_checkable_header = self.view_elem \
             .__class__.__name__ == 'ProcessedPageElements'
@@ -253,8 +247,12 @@ class Controller:
     def prune_tables_and_columns(self):
         self.view.tab_widget.setCurrentIndex(2)
         self.model.prune_tables_and_columns()
-        self.refresh_view()
-
+        self.view.clear_article_list_and_files_view()
+        
+        # display all selected articles in the pruned page
+        # TODO need to make it so articles w/ no tables dont appear here
+        for article in self.model.bibliography.get_selected_articles():
+            self.view.display_article(self.pruned_page, article, 0)
     def filter_tables(self):
         query = self.view_elem.query_filter_field.text()
         if not query:
