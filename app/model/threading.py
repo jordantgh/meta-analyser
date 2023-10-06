@@ -6,7 +6,7 @@ from scripts.search_for_papers import query_pmc
 
 class SearchThread(QThread):
     article_sig = pyqtSignal(dict, int)
-    finished_sig = pyqtSignal()
+    finished_sig = pyqtSignal(object)
 
     def __init__(self):
         super().__init__()
@@ -18,8 +18,7 @@ class SearchThread(QThread):
 
     def run(self):
         query_pmc(self.query, callback=self.article_sig.emit, thread = self)
-        self.finished_sig.emit()
-
+        self.finished_sig.emit(self)
 
 class FilePreviewThread(QThread):
     prev_ready_sig = pyqtSignal(dict)
