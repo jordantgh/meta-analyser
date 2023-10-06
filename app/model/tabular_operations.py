@@ -6,11 +6,15 @@ from skimage.measure import label, regionprops
 from model.file_io import download_supp, extract_dfs
 from model.database import processed_df_to_db
 
-def parse_tables(selected_articles, db_manager, callback=None):
+def parse_tables(selected_articles, db_manager, callback=None, thread = None):
     for index, article in enumerate(selected_articles):
+        print(article.title)
         processed_table_ids = []
         for file in article.supp_files:
-            if not file.checked: return
+            if thread and thread.should_stop:
+              break
+            
+            if not file.checked: continue
             
             try:
                 fname = download_supp(file.url)
@@ -19,12 +23,19 @@ def parse_tables(selected_articles, db_manager, callback=None):
                 data = extract_dfs(fname)
                     
                 for sheetname, df in data.items():
+
+                    if thread and thread.should_stop:
+                        break
+
                     if df.empty: continue
                     binary_rep = np.array(df.notnull().astype("int"))
                     labeled = label(binary_rep)
                     region_bboxes = [region.bbox for region in regionprops(labeled)]
 
                     for i, bbox1 in enumerate(region_bboxes):
+                        if thread and thread.should_stop:
+                            break
+
                         minr1, minc1, maxr1, maxc1 = bbox1
                         if maxr1 - minr1 <= 1 or maxc1 - minc1 <= 1:
                             continue
