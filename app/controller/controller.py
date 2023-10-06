@@ -30,22 +30,20 @@ class Controller:
         self.search_page \
             .article_list.itemClicked \
             .connect(self.handle_article_click)
-
         # Search page; buttons
         self.search_page \
             .search_btn.clicked \
-            .connect(self.search_articles)
+            .connect(self.search_for_articles)
         self.search_page \
             .stop_search_btn.clicked \
-            .connect(self.send_stop)
+            .connect(self.send_search_stop)
         self.search_page \
             .proceed_btn.clicked \
             .connect(self.on_proceed)
-
         # Search thread
         self.model \
             .search_thread.article_sig \
-            .connect(self.add_article)
+            .connect(self.on_article_discovered)
         self.model \
             .search_thread.finished_sig \
             .connect(self.stop_search)
@@ -60,12 +58,10 @@ class Controller:
         self.model \
             .preview_thread.prev_ready_sig \
             .connect(self.load_preview)
-
         # Parsed tables page; article click
         self.parsed_page \
             .article_list.itemClicked \
             .connect(self.handle_processed_article_click)
-
         # Parsed tables page; buttons
         self.parsed_page \
             .filter_btn.clicked \
@@ -78,7 +74,6 @@ class Controller:
         self.pruned_page \
             .article_list.itemClicked \
             .connect(self.handle_pruned_article_click)
-
         # Pruned tables page; buttons
         self.pruned_page \
             .filter_btn.clicked \
@@ -99,6 +94,7 @@ class Controller:
         self.set_state(Mode.SEARCHING)
         self.model.reset_for_searching()
         self.view.tab_widget.setCurrentIndex(0)
+        
         if self.model.search_thread.isRunning():
             QMessageBox.warning(
                 self.view,
@@ -267,6 +263,7 @@ class Controller:
         # TODO need to make it so articles w/ no tables dont appear here
         for article in self.model.bibliography.get_selected_articles():
             self.view.display_article(self.pruned_page, article, 0)
+            
     def filter_tables(self):
         query = self.view_elem.query_filter_field.text()
         if not query:
