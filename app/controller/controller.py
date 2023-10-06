@@ -143,8 +143,9 @@ class Controller:
             QCoreApplication.processEvents(QEventLoop.AllEvents, 100)
 
     def on_processing_finished(self):
-        self.view_elem.prog_bar.hide()  
 
+    # TODO these three can be combined and list item type passed in or derived
+    # from view_elem.__class__.__name__
     def handle_article_click(self, item):
         self.view_elem.previews.hide()
         article_id = item.data(Qt.UserRole)
@@ -154,6 +155,10 @@ class Controller:
             article,
             'supp_files',
             self.view.suppfilelistitem_factory)
+        
+        # TODO do we need to pass in the factory if the relevant class can be
+        # derived from list item type within view.update_article_display?
+        # ... could just do away with the factories altogether
 
         for i in range(self.view_elem.supp_files_view.count()):
             list_item = self.view_elem.supp_files_view.item(i)
@@ -286,6 +291,8 @@ class Controller:
 
         self.set_state(Mode.PROCESSING)
         self.model.processing_thread.should_stop = False
+        
+        # TODO these are low level concerns that should be handled by the view
         self.view_elem.article_list.clear()
         self.view_elem.previews.hide()
         self.view_elem.prog_bar.setValue(0)
