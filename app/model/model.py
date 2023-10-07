@@ -6,6 +6,7 @@ from model.database import TableDBManager, PostPruningTableDBEntry
 from model.threading import SearchThread, FilePreviewThread, FileProcessingThread
 import scripts.query_parser as qp
 
+
 class Model:
     def __init__(self):
         self.article_list_filtered = {}
@@ -13,7 +14,7 @@ class Model:
         self.bibliography = Bibliography()
         self.file_manager = SuppFileManager()
         self.search_thread = SearchThread()
-        self.preview_thread = FilePreviewThread("")   
+        self.preview_thread = FilePreviewThread("")
         self.table_db_manager = TableDBManager()
         self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
@@ -24,7 +25,7 @@ class Model:
             supp_file = SuppFile(article, file_url, uuid4())
             self.file_manager.add_file(supp_file)
             supp_files.append(supp_file)
-            
+
         article.supp_files = supp_files
 
     def create_article_data(self, article_json):
@@ -43,7 +44,7 @@ class Model:
         for table_id, file_id in ids_list:
             table_data = self.table_db_manager.get_processed_table_data(
                 table_id)
-            
+
             if table_data is not None:
                 num_columns = len(table_data.columns)
             else:
@@ -53,7 +54,7 @@ class Model:
                 table_id,
                 file_id,
                 num_columns)
-            
+
             self.processed_table_manager.add_processed_table(processed_table)
             processed_tables.append(processed_table)
         return processed_tables
@@ -110,6 +111,7 @@ class Model:
                 if latest_data is not None:
                     table.pruned_columns = list(range(len(
                         latest_data.columns)))
+
     def filter_tables(self, query):
         for article in self.bibliography.get_selected_articles('parsed'):
             for processed_table in article.processed_tables:

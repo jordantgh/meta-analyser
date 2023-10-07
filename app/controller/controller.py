@@ -2,11 +2,13 @@ from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop
 from PyQt5.QtWidgets import QMessageBox
 from enum import Enum, auto
 
+
 class Mode(Enum):
     BROWSING = 0
     SEARCHING = auto()
     PROCESSING = auto()
     PRUNING = auto()
+
 
 class Controller:
     def __init__(self, model, view):
@@ -20,7 +22,7 @@ class Controller:
 
     def set_state(self, state):
         self.state = state
-    
+
     @property
     def view_elem(self):
         return self.view.active_elements
@@ -96,12 +98,12 @@ class Controller:
         self.set_state(Mode.SEARCHING)
         self.model.reset_for_searching()
         self.view.tab_widget.setCurrentIndex(0)
-        
+
         if self.model.search_thread.isRunning():
             QMessageBox.warning(
                 self.view,
                 "Search in Progress",
-                "A search is already in progress. " 
+                "A search is already in progress. "
                 "Please wait or stop the current search.")
             return
 
@@ -109,7 +111,7 @@ class Controller:
         query = self.search_page.query_field.text()
         if not query:
             return
-        
+
         # TODO these are low level concerns that should be handled by the view
         self.search_page.article_list.clear()
         self.search_page.previews.hide()
@@ -118,24 +120,24 @@ class Controller:
         self.search_page.search_status.setText("Searching...")
         self.search_page.stop_search_btn.show()
         self.search_page.stop_search_btn.setEnabled(True)
-        
+
         self.model.search_thread.query = query
         self.model.search_thread.start()
 
     def stop_search(self, search_thread):
         search_thread.quit()
-        
+
         # TODO these are low level concerns that should be handled by the view
         self.search_page.search_status.setText("Stopping search...")
-        self.search_page.prog_bar.hide()        
+        self.search_page.prog_bar.hide()
         self.search_page.search_status.setText("Search stopped.")
         self.search_page.stop_search_btn.hide()
         self.search_page.stop_search_btn.setEnabled(False)
-        
+
         self.set_state(Mode.BROWSING)
-        
+
     def send_search_stop(self):
-        if self.model.search_thread.isRunning():            
+        if self.model.search_thread.isRunning():
             self.model.search_thread.stop()
             self.model.search_thread.wait()
 
@@ -193,7 +195,7 @@ class Controller:
         self.view_elem.previews.hide()
         article_id = item.data(Qt.UserRole)
         article = self.model.bibliography.get_article(article_id)
-        
+
         self.view.update_article_display(
             article,
             'pruned_article_tables',
@@ -205,7 +207,7 @@ class Controller:
             widget = self.view_elem.supp_files_view.itemWidget(list_item)
             widget.preview_requested.connect(self.preview_pruned_table)
 
-    def load_preview(self, data, table_id=None, callback=None):
+    def load_preview(self, data, table_id=None, callback=None, context=None):
         use_checkable_header = self.view_elem \
             .__class__.__name__ == 'ProcessedPageElements'
 
@@ -233,11 +235,11 @@ class Controller:
     def preview_supp_file(self, file_id):
         file_data = self.model.file_manager.get_file(file_id)
         self.view.start_load_animation()
-        
+
         if self.model.preview_thread.isRunning():
             self.model.preview_thread.quit()
             self.model.preview_thread.wait()
-            
+
         self.model.preview_thread.file_url = file_data.url
         self.model.preview_thread.start()
 
@@ -245,7 +247,7 @@ class Controller:
         table_data = {
             "sheet": self.model.table_db_manager.get_processed_table_data(
                 table_id)}
-        
+
         self.view.start_load_animation()
         self.load_preview(table_data, table_id,
                           self.update_checked_columns, 'parsed')
@@ -254,7 +256,7 @@ class Controller:
         table_data = {
             "sheet": self.model.table_db_manager.get_post_pruning_table_data(
                 table_id)}
-        
+
         self.view.start_load_animation()
         self.load_preview(table_data, table_id,
                           self.update_pruned_columns, 'pruned')
@@ -283,11 +285,13 @@ class Controller:
 
         self.view.tab_widget.setCurrentIndex(2)
         self.model.prune_tables_and_columns(context)
+
         self.view.clear_article_list_and_files_view()
-        
+
         # display all selected articles in the pruned page
         for article in self.model.bibliography.get_selected_articles(context):
             self.view.display_article(self.pruned_page, 'pruned', article, 0)
+
     def filter_tables(self):
         query = self.view_elem.query_filter_field.text()
         if not query:
@@ -303,15 +307,15 @@ class Controller:
                 "Do you want to stop the current search and proceed?",
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No)
-            
+
             if reply == QMessageBox.Yes:
                 self.send_search_stop()
             else:
-              return
+                return
 
         self.model.reset_for_processing()
         self.view.tab_widget.setCurrentIndex(1)
-        
+
         if self.model.processing_thread.isRunning():
             QMessageBox.warning(
                 self.view,
@@ -321,14 +325,16 @@ class Controller:
 
         self.set_state(Mode.PROCESSING)
         self.model.processing_thread.should_stop = False
-        
+
         # TODO these are low level concerns that should be handled by the view
         self.view_elem.article_list.clear()
         self.view_elem.previews.hide()
         self.view_elem.prog_bar.setValue(0)
         self.view_elem.prog_bar.show()
+
         for article in self.model.bibliography.articles.values():
             article.cascade_checked_state('search')
+
         selected_articles = self.model.bibliography.get_selected_articles(
             'search')
         self.model.processing_thread.selected_articles = selected_articles
