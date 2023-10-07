@@ -84,11 +84,13 @@ class Controller:
 
     def on_article_discovered(self, article_json, progress):
         article_data = self.model.create_article_data(article_json)
-        self.view.display_article(self.search_page, article_data, progress)
+        self.view.display_article(
+            self.search_page, 'search', article_data, progress)
 
     def on_article_processed(self, article, ids_list, progress):
         article_data = self.model.update_article(article, ids_list)
-        self.view.display_article(self.parsed_page, article_data, progress)
+        self.view.display_article(
+            self.parsed_page, 'parsed', article_data, progress)
 
     def search_for_articles(self):
         self.set_state(Mode.SEARCHING)
@@ -159,8 +161,9 @@ class Controller:
         self.view.update_article_display(
             article,
             'supp_files',
-            self.view.suppfilelistitem_factory)
-        
+            self.view.suppfilelistitem_factory,
+            'search')
+
         # TODO do we need to pass in the factory if the relevant class can be
         # derived from list item type within view.update_article_display?
         # ... could just do away with the factories altogether
@@ -178,7 +181,8 @@ class Controller:
         self.view.update_article_display(
             article,
             'processed_tables',
-            self.view.processedtablelistitem_factory)
+            self.view.processedtablelistitem_factory,
+            'parsed')
 
         for i in range(self.view_elem.supp_files_view.count()):
             list_item = self.view_elem.supp_files_view.item(i)
@@ -193,7 +197,8 @@ class Controller:
         self.view.update_article_display(
             article,
             'pruned_article_tables',
-            self.view.processedtablelistitem_factory)
+            self.view.processedtablelistitem_factory,
+            'pruned')
 
         for i in range(self.view_elem.supp_files_view.count()):
             list_item = self.view_elem.supp_files_view.item(i)
@@ -212,8 +217,13 @@ class Controller:
         processed_table = self.model.processed_table_manager \
             .get_processed_table(table_id) if table_id else None
 
-        checked_columns = processed_table \
-            .checked_columns if processed_table else None
+        checked_columns = None
+        if context == 'parsed':
+            checked_columns = processed_table \
+                .checked_columns if processed_table else None
+        elif context == 'pruned':
+            checked_columns = processed_table \
+                .pruned_columns if processed_table else None
 
         self.view.display_multisheet_table(
             data, use_checkable_header, table_id, callback, checked_columns)
@@ -237,7 +247,8 @@ class Controller:
                 table_id)}
         
         self.view.start_load_animation()
-        self.load_preview(table_data, table_id, self.update_checked_columns)
+        self.load_preview(table_data, table_id,
+                          self.update_checked_columns, 'parsed')
 
     def preview_pruned_table(self, table_id):
         table_data = {
@@ -245,7 +256,8 @@ class Controller:
                 table_id)}
         
         self.view.start_load_animation()
-        self.load_preview(table_data, table_id, self.update_checked_columns)
+        self.load_preview(table_data, table_id,
+                          self.update_pruned_columns, 'pruned')
 
     def update_checked_columns(self, table_id, checked_columns):
         processed_table = self.model.processed_table_manager \
@@ -254,16 +266,28 @@ class Controller:
         if processed_table:
             processed_table.checked_columns = checked_columns
 
+    def update_pruned_columns(self, table_id, checked_columns):
+        processed_table = self.model.processed_table_manager \
+            .get_processed_table(table_id)
+
+        if processed_table:
+            processed_table.pruned_columns = checked_columns
+
     def prune_tables_and_columns(self):
+        # get current page from view_elem (class name doesnt work!)
+        current_page = self.view.tab_widget.currentIndex()
+        if current_page == 1:
+            context = 'parsed'
+        elif current_page == 2:
+            context = 'pruned'
+
         self.view.tab_widget.setCurrentIndex(2)
-        self.model.prune_tables_and_columns()
+        self.model.prune_tables_and_columns(context)
         self.view.clear_article_list_and_files_view()
         
         # display all selected articles in the pruned page
-        # TODO need to make it so articles w/ no tables dont appear here
-        for article in self.model.bibliography.get_selected_articles():
-            self.view.display_article(self.pruned_page, article, 0)
-            
+        for article in self.model.bibliography.get_selected_articles(context):
+            self.view.display_article(self.pruned_page, 'pruned', article, 0)
     def filter_tables(self):
         query = self.view_elem.query_filter_field.text()
         if not query:
@@ -303,7 +327,9 @@ class Controller:
         self.view_elem.previews.hide()
         self.view_elem.prog_bar.setValue(0)
         self.view_elem.prog_bar.show()
-        
-        selected_articles = self.model.bibliography.get_selected_articles()
+        for article in self.model.bibliography.articles.values():
+            article.cascade_checked_state('search')
+        selected_articles = self.model.bibliography.get_selected_articles(
+            'search')
         self.model.processing_thread.selected_articles = selected_articles
         self.model.processing_thread.start()

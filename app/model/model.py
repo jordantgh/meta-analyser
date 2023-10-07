@@ -21,7 +21,7 @@ class Model:
     def update_supp_files(self, article, article_json):
         supp_files = []
         for file_url in article_json["SupplementaryFiles"]:
-            supp_file = SuppFile(article.pmc_id, file_url, uuid4())
+            supp_file = SuppFile(article, file_url, uuid4())
             self.file_manager.add_file(supp_file)
             supp_files.append(supp_file)
             
@@ -49,7 +49,7 @@ class Model:
             else:
                 num_columns = None
             processed_table = ProcessedTable(
-                article.pmc_id,
+                article,
                 table_id,
                 file_id,
                 num_columns)
@@ -68,20 +68,15 @@ class Model:
         file = self.file_manager.get_file(file_id)
         file.processed_tables = tables
 
-    def prune_tables_and_columns(self):
-        for article in self.bibliography.get_selected_articles():
-            ids = [table.id
-                   for table
-                   in self.article_list_filtered.get(article.pmc_id, [])
-                   if table.checked]
-            
-            # kind of an ugly way to do this
+    def prune_tables_and_columns(self, context):
+        for article in self.bibliography.get_selected_articles(context):
+
+            # TODO unspaghettify this
             tables_to_prune = [table
                                for table
                                in article.processed_tables if table.checked]
 
             for table in tables_to_prune:
-                print(f"Pruning table {table.id}")
                 serialized_df = None
                 data = self.table_db_manager.get_processed_table_data(table.id)
 
@@ -93,7 +88,7 @@ class Model:
                     existing_table = self.table_db_manager.get_table_object(
                         PostPruningTableDBEntry,
                         table.id)
-                    
+
                     if existing_table:
                         self.table_db_manager.update_table(
                             PostPruningTableDBEntry,
@@ -106,30 +101,25 @@ class Model:
                             table.file_id,
                             serialized_df)
 
-        
-            kept_tables = [self.processed_table_manager.get_processed_table(id)
-                           for id in ids
-                           if
-                           self.processed_table_manager.get_processed_table(id)
-                           is not None]
+            article.pruned_tables = tables_to_prune
 
-            for table in kept_tables:
-                if table.checked_columns is not None:
-                    latest_data = self.table_db_manager \
-                        .get_processed_table_data(table.id)
-                        
-                    if latest_data is not None:
-                        table.checked_columns = list(range(len(
-                            latest_data.columns)))
-              
+            for table in tables_to_prune:
+                latest_data = self.table_db_manager \
+                    .get_post_pruning_table_data(table.id)
+
+                if latest_data is not None:
+                    table.pruned_columns = list(range(len(
+                        latest_data.columns)))
     def filter_tables(self, query):
-        for article in self.bibliography.get_selected_articles():
+        for article in self.bibliography.get_selected_articles('parsed'):
             for processed_table in article.processed_tables:
                 table_data = self.table_db_manager.get_processed_table_data(
                     processed_table.id)
-                
+
                 processed_table.set_checked(bool(qp.search(
-                    query, [(processed_table.id, table_data.to_string())])))
+                    query,
+                    [(processed_table.id, table_data.to_string())])),
+                    'parsed')
 
     def reset_for_searching(self):
         self.bibliography.reset()

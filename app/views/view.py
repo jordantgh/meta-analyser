@@ -112,15 +112,18 @@ class View(QMainWindow):
         self.active_elements.loading_label.setText(
             "Loading" + "." * self.load_dots)
 
-    def suppfilelistitem_factory(self, file_data):
-        return SuppFileListItem(self, file_data)
-      
-    def processedtablelistitem_factory(self, file_data):
-        return ProcessedTableListItem(self, file_data)
+    # the context argument is only used as a dummy in this specific function
+    # because the it's used in the update_article_display function later
+    # TODO is to harmonise this so we arent passing around dummy arguments
+    def suppfilelistitem_factory(self, file_data, context):
+        return SuppFileListItem(self, file_data, context)
 
-    def display_article(self, components, article_data, progress):
+    def processedtablelistitem_factory(self, file_data, context):
+        return ProcessedTableListItem(self, file_data, context)
+
+    def display_article(self, components, context, article_data, progress):
         item = QListWidgetItem()
-        article_widget = ArticleListItem(article_data)
+        article_widget = ArticleListItem(article_data, context)
         item.setSizeHint(article_widget.sizeHint())
         item.setData(Qt.UserRole, article_data.pmc_id)
         components.article_list.addItem(item)
@@ -151,8 +154,10 @@ class View(QMainWindow):
         self.active_elements.title_disp.setText(article.title)
         self.active_elements.abstract_disp.setText(article.abstract)
 
-        # This monster must be slain
+        # TODO this monster must be slain
         tables_to_display = []
+        if element_type == 'pruned_article_tables':
+            tables_to_display = article.pruned_tables
 
         elif element_type == 'supp_files':
             tables_to_display = getattr(article, element_type)
@@ -161,7 +166,7 @@ class View(QMainWindow):
 
         for data in tables_to_display:
             item_container = QListWidgetItem()
-            file_item = list_item_func(data)
+            file_item = list_item_func(data, context)
             file_item.checkbox.setChecked(data.checked)
             item_container.setSizeHint(file_item.sizeHint())
             item_container.setData(Qt.UserRole, data.id)

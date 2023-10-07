@@ -2,12 +2,15 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QCheckBox, QSizePolicy
 from PyQt5.QtGui import QFontMetrics
 
+
 class UIListItem(QWidget):
-    def __init__(self, data, title):
+    def __init__(self, data, title, skip_checkbox=False):
         super().__init__()
         self.data = data
         self.checkbox = QCheckBox()
-        self.checkbox.setChecked(self.data.checked)
+        # hack for now, setChecked wants a boolean which Article.checked is not
+        if not skip_checkbox:
+            self.checkbox.setChecked(self.data.checked)
         self.checkbox.toggled.connect(self.checkbox_toggled)
 
         label = QLabel(title)
@@ -20,7 +23,7 @@ class UIListItem(QWidget):
 
     def checkbox_toggled(self):
         self.data.checked = self.checkbox.isChecked()
-        if self.data.alert_observers():
+        if self.data.checkbox_togglable:
             self.data.checkbox_toggled()
 
     def mousePressEvent(self, event):
@@ -29,10 +32,30 @@ class UIListItem(QWidget):
         list_item = list_widget.itemAt(self.parent().mapToParent(event.pos()))
         list_widget.setCurrentItem(list_item)
 
+
 class ArticleListItem(UIListItem):
-    def __init__(self, article_data):
-        self.article_id = article_data.pmc_id
-        super().__init__(article_data, article_data.title)
+    def __init__(self, article, context):
+        self.article = article
+        self.article_id = article.pmc_id
+        self.context = context
+        self.article.register_observer(self, context)
+        super().__init__(article, article.title, skip_checkbox=True)
+        self.load_checked_state()
+
+    def load_checked_state(self):
+        checked_state = getattr(self.article.checked, self.context)
+        self.checkbox.setChecked(checked_state)
+
+    def checkbox_toggled(self):
+        setattr(self.article.checked, self.context, self.checkbox.isChecked())
+        self.article.notify_observers(self.context)
+
+    def update(self, article):
+        new_checked_state = getattr(article.checked, self.context)
+        self.checkbox.toggled.disconnect(self.checkbox_toggled)
+        self.checkbox.setChecked(new_checked_state)
+        self.checkbox.toggled.connect(self.checkbox_toggled)
+
 
 class DataListItem(UIListItem):
     preview_requested = pyqtSignal(object)
@@ -53,19 +76,37 @@ class DataListItem(UIListItem):
         available_width = self.page.supp_files_view.width() - 150
         return font_metrics.elidedText(text, Qt.ElideMiddle, available_width)
 
+
 class SuppFileListItem(DataListItem):
-    def __init__(self, main_window, file_data):
-        super().__init__(main_window, file_data, lambda fd: self.get_disp_name(fd.url.split('/')[-1]))
+    def __init__(self, main_window, file_data, context):
+        super().__init__(
+            main_window,
+            file_data,
+            lambda fd: self.get_disp_name(fd.url.split('/')[-1]))
+        self.context = context  # does nothing for now, will always be search
         self.file_url = file_data.url
-
-class ProcessedTableListItem(DataListItem):
-    def __init__(self, main_window, file_data):
-        super().__init__(main_window, file_data, lambda fd: self.get_disp_name(fd.id))
-
-        file_data.register_observer(self)
 
     def remove(self):
         self.data.remove_observer(self)
+
+
+class ProcessedTableListItem(DataListItem):
+    def __init__(self, main_window, file_data, context):
+        super().__init__(
+            main_window,
+            file_data,
+            lambda fd: self.get_disp_name(fd.id))
+
+        self.context = context
+        file_data.register_observer(self, context)
+
+    def checkbox_toggled(self):
+        self.data.checked = self.checkbox.isChecked()
+        if self.data.checkbox_togglable:
+            self.data.checkbox_toggled(self.context)
+
+    def remove(self):
+        self.data.remove_observer(self.context)
 
     def update(self, processed_table):
         # Disconnect the signal before updating the checkbox to avoid triggering the signal again, then reconnect it
