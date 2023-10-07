@@ -5,29 +5,32 @@ from views.custom_components import CheckableHeaderView
 from views.list import ArticleListItem, SuppFileListItem, ProcessedTableListItem
 from views.page import SearchPageElements, ProcessedPageElements
 
+
 class View(QMainWindow):
     def __init__(self):
         super().__init__()
         self.resize(800, 600)
-        
+
         self.tab_widget = QTabWidget(self)
         self.setCentralWidget(self.tab_widget)
 
         self.search_page = QWidget(self)
         self.parsed_page = QWidget(self)
         self.pruned_page = QWidget(self)
-        
+
         self.tab_widget.addTab(self.search_page, "Search")
         self.tab_widget.addTab(self.parsed_page, "Parsing Results")
         self.tab_widget.addTab(self.pruned_page, "Pruned Results")
-        
+
         self.search_components = SearchPageElements(self.search_page)
         self.parsed_components = ProcessedPageElements(self.parsed_page)
         self.pruned_components = ProcessedPageElements(self.pruned_page)
 
         self.init_search_layouts(self.search_components)
-        self.init_processed_page_layouts(self.parsed_page, self.parsed_components)
-        self.init_processed_page_layouts(self.pruned_page, self.pruned_components)
+        self.init_processed_page_layouts(
+            self.parsed_page, self.parsed_components)
+        self.init_processed_page_layouts(
+            self.pruned_page, self.pruned_components)
         self.init_load_animation()
 
     @property
@@ -52,7 +55,7 @@ class View(QMainWindow):
         left_pane.addWidget(components.search_status)
         left_pane.addWidget(components.article_list)
         left_pane.addWidget(components.proceed_btn)
-        
+
         self.init_core_layouts(self.search_page, components, left_pane)
 
     def init_processed_page_layouts(self, page, components):
@@ -61,12 +64,12 @@ class View(QMainWindow):
         left_pane.addWidget(components.article_list)
         left_pane.addWidget(QLabel("Filter Query:"))
         left_pane.addWidget(components.query_filter_field)
-        left_pane.addWidget(components.filter_btn)       
+        left_pane.addWidget(components.filter_btn)
         left_pane.addWidget(components.prune_btn)
 
         self.init_core_layouts(page, components, left_pane)
-   
-    def init_core_layouts(self, page, components, left_pane):        
+
+    def init_core_layouts(self, page, components, left_pane):
         widget_0 = QWidget()
         widget_0.setLayout(left_pane)
 
@@ -77,7 +80,7 @@ class View(QMainWindow):
         mid_pane.addWidget(components.abstract_disp)
         mid_pane.addWidget(QLabel("Supplementary Files:"))
         mid_pane.addWidget(components.supp_files_view)
-        
+
         widget_1 = QWidget()
         widget_1.setLayout(mid_pane)
 
@@ -106,7 +109,8 @@ class View(QMainWindow):
 
     def update_load_text(self):
         self.load_dots = (self.load_dots + 1) % 4
-        self.active_elements.loading_label.setText("Loading" + "." * self.load_dots)
+        self.active_elements.loading_label.setText(
+            "Loading" + "." * self.load_dots)
 
     def suppfilelistitem_factory(self, file_data):
         return SuppFileListItem(self, file_data)
@@ -124,7 +128,7 @@ class View(QMainWindow):
         components.prog_bar.setValue(progress + 1)
 
     def clear_supp_files_view(self):
-        # here we get all the list items and deregister their observers 
+        # here we get all the list items and deregister their observers
         # removing them
         for i in range(self.active_elements.supp_files_view.count()):
             item = self.active_elements.supp_files_view.item(i)
@@ -132,27 +136,24 @@ class View(QMainWindow):
             if item:
                 list_item = self.active_elements.supp_files_view.itemWidget(
                     item)
-                
+
                 if list_item and list_item.data.alert_observers():
                     list_item.remove()
-        
-        self.active_elements.supp_files_view.clear()    
+
+        self.active_elements.supp_files_view.clear()
 
     def clear_article_list_and_files_view(self):
-            self.active_elements.article_list.clear()
-            self.clear_supp_files_view()
+        self.active_elements.article_list.clear()
+        self.clear_supp_files_view()
 
-    def update_article_display(self, article, element_type, list_item_func):
+    def update_article_display(self, article, element_type, list_item_func, context):
         self.clear_supp_files_view()
         self.active_elements.title_disp.setText(article.title)
         self.active_elements.abstract_disp.setText(article.abstract)
-        
+
         # This monster must be slain
         tables_to_display = []
-        if element_type == 'pruned_article_tables': 
-            tables_to_display = [table for table in article.processed_tables
-                                 if table.checked]
-            
+
         elif element_type == 'supp_files':
             tables_to_display = getattr(article, element_type)
         else:
@@ -171,7 +172,8 @@ class View(QMainWindow):
     def display_multisheet_table(self, df_dict, use_checkable_header, table_id=None, callback=None, checked_columns=None):
         tab_widget = QTabWidget(self.active_elements.previews)
         for sheet, df in df_dict.items():
-            table = self._create_ui_table(df, use_checkable_header, table_id, callback, checked_columns)
+            table = self._create_ui_table(
+                df, use_checkable_header, table_id, callback, checked_columns)
             tab_widget.addTab(table, sheet)
         self.active_elements.previews_layout.addWidget(tab_widget)
 
