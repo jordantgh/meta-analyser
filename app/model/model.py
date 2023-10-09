@@ -79,10 +79,18 @@ class Model:
 
             for table in tables_to_prune:
                 serialized_df = None
-                data = self.table_db_manager.get_processed_table_data(table.id)
 
-                if data is not None and table.checked_columns is not None:
-                    data = data.iloc[:, table.checked_columns]
+                if context == 'parsed':
+                    columns_vector = table.checked_columns
+                    data = self.table_db_manager.get_processed_table_data(
+                        table.id)
+                elif context == 'pruned':
+                    columns_vector = table.pruned_columns
+                    data = self.table_db_manager.get_post_pruning_table_data(
+                        table.id)
+
+                if data is not None and columns_vector is not None:
+                    data = data.iloc[:, columns_vector]
                     serialized_df = pickle.dumps(data)
 
                 if serialized_df is not None:

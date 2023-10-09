@@ -283,6 +283,9 @@ class Controller:
         elif current_page == 2:
             context = 'pruned'
 
+        for article in self.model.bibliography.articles.values():
+            article.cascade_checked_state(context)
+
         self.view.tab_widget.setCurrentIndex(2)
         self.model.prune_tables_and_columns(context)
 
