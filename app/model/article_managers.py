@@ -40,18 +40,14 @@ class ProcessedTable(BaseData):
     def remove_observer(self, context):
         del self.observers[context]
 
-    def notify_observers(self):
-        for observer in self.observers.values():
-            observer.update(self)
+    def notify_observers(self, context):
+        self.observers[context].update(self)
             
     def alert_observers(self):
         return True
 
     def checkbox_toggled(self, context):
-        self.notify_observers()
-        if context == 'pruned':
-            return
-        
+        self.notify_observers(context)
         self.article.update_based_on_elements(context)
  
     def set_checked(self, state, context):
@@ -59,7 +55,7 @@ class ProcessedTable(BaseData):
         self.checked = state
         if state != was_checked:
             self.article.update_based_on_elements(context)
-            self.notify_observers()
+            self.notify_observers(context)
 
 
 class SuppFileManager:
