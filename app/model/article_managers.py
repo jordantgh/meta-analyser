@@ -55,7 +55,11 @@ class ProcessedTable(BaseData):
         self.checked = state
         if state != was_checked:
             self.article.update_based_on_elements(context)
-            self.notify_observers(context)
+            # first check if observers are registered yet
+            # (checking/unchecking can happen before the table is displayed
+            # via the filter method)
+            if context in self.observers:
+                self.notify_observers(context)
 
 
 class SuppFileManager:
