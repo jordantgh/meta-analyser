@@ -149,6 +149,8 @@ class Article(BaseData):
             return any(f.checked for f in self.supp_files)
         elif context == 'parsed':
             return any(t.checked for t in self.processed_tables)
+        elif context == 'pruned':
+            return any(t.checked for t in self.pruned_tables)
 
     def get_file(self, file_id):
         return next((f for f in self.supp_files if f.id == file_id), None)
