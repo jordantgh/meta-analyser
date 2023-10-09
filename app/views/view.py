@@ -158,9 +158,8 @@ class View(QMainWindow):
         tables_to_display = []
         if element_type == 'pruned_article_tables':
             tables_to_display = article.pruned_tables
-
         elif element_type == 'supp_files':
-            tables_to_display = getattr(article, element_type)
+            tables_to_display = article.supp_files
         else:
             tables_to_display = article.processed_tables
 
