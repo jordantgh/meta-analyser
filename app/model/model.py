@@ -1,5 +1,4 @@
 from uuid import uuid4
-import pickle
 
 from model.article_managers import Bibliography, Article, SuppFile, SuppFileManager, ProcessedTable, ProcessedTableManager
 from model.database import TableDBManager, PostPruningTableDBEntry
@@ -78,7 +77,7 @@ class Model:
                                in article.processed_tables if table.checked]
 
             for table in tables_to_prune:
-                serialized_df = None
+                pruned_df = None
 
                 if context == 'parsed':
                     columns_vector = table.checked_columns
@@ -90,10 +89,9 @@ class Model:
                         table.id)
 
                 if data is not None and columns_vector is not None:
-                    data = data.iloc[:, columns_vector]
-                    serialized_df = pickle.dumps(data)
+                    pruned_df = data.iloc[:, columns_vector]
 
-                if serialized_df is not None:
+                if pruned_df is not None:
                     existing_table = self.table_db_manager.get_table_object(
                         PostPruningTableDBEntry,
                         table.id)
@@ -102,13 +100,13 @@ class Model:
                         self.table_db_manager.update_table(
                             PostPruningTableDBEntry,
                             table.id,
-                            serialized_df)
+                            pruned_df)
                     else:
                         self.table_db_manager.save_table(
                             PostPruningTableDBEntry,
                             table.id,
                             table.file_id,
-                            serialized_df)
+                            pruned_df)
 
             article.pruned_tables = tables_to_prune
 
