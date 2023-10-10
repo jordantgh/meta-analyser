@@ -41,7 +41,11 @@ def create_query_parser():
     AND = Keyword("AND")
     OR = Keyword("OR")
     NOT = Keyword("NOT")
-    term = (Word(alphanums) | QuotedString("'")).setParseAction(QueryTerm)
+
+    special_chars = "-_."
+    alphanumeric_and_special = alphanums + special_chars
+
+    term = (Word(alphanumeric_and_special) | QuotedString("'") | QuotedString('"')).setParseAction(QueryTerm)
     
     query_expr = infixNotation(term,
         [
