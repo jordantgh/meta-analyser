@@ -3,12 +3,14 @@ import argparse
 import os
 import shutil
 
+import re
+
 class QueryTerm:
     def __init__(self, term):
-        self.term = term[0]
+        self.term = re.compile(re.escape(term[0]), re.IGNORECASE)
 
     def match(self, doc):
-        return self.term in doc
+        return bool(self.term.search(doc))
 
 class QueryAnd:
     def __init__(self, tokens):
