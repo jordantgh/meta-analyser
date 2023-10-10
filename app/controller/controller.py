@@ -246,7 +246,7 @@ class Controller:
     def preview_processed_table(self, table_id):
         table_data = {
             "sheet": self.model.table_db_manager.get_processed_table_data(
-                table_id)}
+                table_id).head(100)}
 
         self.view.start_load_animation()
         self.load_preview(table_data, table_id,
@@ -255,7 +255,7 @@ class Controller:
     def preview_pruned_table(self, table_id):
         table_data = {
             "sheet": self.model.table_db_manager.get_post_pruning_table_data(
-                table_id)}
+                table_id).head(100)}
 
         self.view.start_load_animation()
         self.load_preview(table_data, table_id,
