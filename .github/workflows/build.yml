@@ -111,7 +111,6 @@ jobs:
       with:
         path: ./artifacts
 
-    # Create release in public repo
     - name: Create Public Release
       run: |
         RESPONSE=$(curl -s -X POST \
@@ -119,12 +118,13 @@ jobs:
         -d '{
           "tag_name": "v${{ env.PACKAGE_VERSION }}",
           "target_commitish": "${{ github.sha }}",
-          "name": "Release ${{ github.ref }}",
-          "body": "First public release. Very basic!",
+          "name": "Release v${{ env.PACKAGE_VERSION }}",
+          "body": "Changes in this Release",
           "draft": true,
           "prerelease": true
         }' \
         https://api.github.com/repos/jordantgh/meta-analyser-rc/releases)
+        echo "Full API Response: $RESPONSE"
         echo "RESPONSE=$RESPONSE" >> $GITHUB_ENV
 
     # Upload assets to the public repo
