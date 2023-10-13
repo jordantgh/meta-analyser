@@ -102,8 +102,6 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -113,31 +111,43 @@ jobs:
       with:
         path: ./artifacts
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          Changes in this Release
-          - First release
-          - Not feature complete! Just a basic scaffold
-        draft: true
-        prerelease: true
+    # Create release in public repo
+    - name: Create Public Release
+      run: |
+        RESPONSE=$(curl -s -X POST \
+        -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+        -d '{
+          "tag_name": "v${{ env.PACKAGE_VERSION }}",
+          "target_commitish": "${{ github.sha }}",
+          "name": "Release ${{ github.ref }}",
+          "body": "First public release. Very basic!",
+          "draft": true,
+          "prerelease": true
+        }' \
+        https://api.github.com/repos/jordantgh/meta-analyser-rc/releases)
+        echo "RESPONSE=$RESPONSE" >> $GITHUB_ENV
 
-    - name: Upload Release Asset for Mac/Linux
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/${{ runner.os }}-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_${{ runner.os }}.tar.gz
-        asset_name: ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_${{ runner.os }}.tar.gz
-        asset_content_type: application/gzip
+    # Upload assets to the public repo
+    - name: Upload Public Release Asset for Linux
+      run: |
+        UPLOAD_URL=$(echo $RESPONSE | jq -r '.upload_url')
+        curl -s -X POST "$UPLOAD_URL?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz" \
+        -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+        -H "Content-Type: application/gzip" \
+        --data-binary @./artifacts/Linux-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz
 
-    - name: Upload Release Asset for Windows
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/windows-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
-        asset_name: ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
-        asset_content_type: application/zip
+    - name: Upload Public Release Asset for Mac
+      run: |
+        UPLOAD_URL=$(echo $RESPONSE | jq -r '.upload_url')
+        curl -s -X POST "$UPLOAD_URL?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz" \
+        -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+        -H "Content-Type: application/gzip" \
+        --data-binary @./artifacts/macOS-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz
+
+    - name: Upload Public Release Asset for Windows
+      run: |
+        UPLOAD_URL=$(echo $RESPONSE | jq -r '.upload_url')
+        curl -s -X POST "$UPLOAD_URL?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip" \
+        -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+        -H "Content-Type: application/zip" \
+        --data-binary @./artifacts/windows-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
