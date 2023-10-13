@@ -56,8 +56,9 @@ jobs:
       run: |
         poetry install
 
-    - name: Install Chrome for Playwright (Linux)
-      if: runner.os == 'Linux'
+    # Install Chrome for Playwright (Mac/Linux)
+    - name: Install Chrome for Playwright (Mac/Linux)
+      if: runner.os != 'Windows'
       run: |
         export PLAYWRIGHT_BROWSERS_PATH=0
         poetry run playwright install chromium
