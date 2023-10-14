@@ -132,7 +132,7 @@ jobs:
     - name: Upload Public Release Asset for Linux
       run: |
         UPLOAD_URL=$(echo $RESPONSE | jq -r '.upload_url')
-        curl -s -X POST "$UPLOAD_URL?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz" \
+        curl -s -X POST "${UPLOAD_URL/\{?name,label\}/?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz" \
         -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
         -H "Content-Type: application/gzip" \
         --data-binary @./artifacts/Linux-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz
@@ -140,7 +140,7 @@ jobs:
     - name: Upload Public Release Asset for Mac
       run: |
         UPLOAD_URL=$(echo $RESPONSE | jq -r '.upload_url')
-        curl -s -X POST "$UPLOAD_URL?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz" \
+        curl -s -X POST "${UPLOAD_URL/\{?name,label\}/?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz" \
         -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
         -H "Content-Type: application/gzip" \
         --data-binary @./artifacts/macOS-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz
@@ -148,7 +148,7 @@ jobs:
     - name: Upload Public Release Asset for Windows
       run: |
         UPLOAD_URL=$(echo $RESPONSE | jq -r '.upload_url')
-        curl -s -X POST "$UPLOAD_URL?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip" \
+        curl -s -X POST "${UPLOAD_URL/\{?name,label\}/?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip" \
         -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
         -H "Content-Type: application/zip" \
         --data-binary @./artifacts/windows-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
