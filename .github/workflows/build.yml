@@ -133,8 +133,8 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_local_release.outputs.upload_url }}
-        asset_path: ./artifacts/linux-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_linux.tar.gz
-        asset_name: ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_linux.tar.gz
+        asset_path: ./artifacts/Linux-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz
+        asset_name: ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz
         asset_content_type: application/gzip
 
     # Add this for Mac
