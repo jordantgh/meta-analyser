@@ -102,6 +102,9 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -110,6 +113,46 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         path: ./artifacts
+
+    # Create Local Release
+    - name: Create Local Release
+      id: create_local_release
+      uses: actions/create-release@v1
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          Changes in this Release
+          - First release
+          - Not feature complete! Just a basic scaffold
+        draft: true
+        prerelease: true
+
+    # Upload Assets to Local Release
+    - name: Upload Local Release Asset for Linux
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_local_release.outputs.upload_url }}
+        asset_path: ./artifacts/linux-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_linux.tar.gz
+        asset_name: ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_linux.tar.gz
+        asset_content_type: application/gzip
+
+    # Add this for Mac
+    - name: Upload Local Release Asset for Mac
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_local_release.outputs.upload_url }}
+        asset_path: ./artifacts/macOS-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz
+        asset_name: ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz
+        asset_content_type: application/gzip
+
+    - name: Upload Local Release Asset for Windows
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_local_release.outputs.upload_url }}
+        asset_path: ./artifacts/windows-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
+        asset_name: ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
+        asset_content_type: application/zip
 
     - name: Create Public Release
       run: |
