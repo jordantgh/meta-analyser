@@ -147,7 +147,7 @@ jobs:
 
     - name: Upload Public Release Asset for Windows
       run: |
-        UPLOAD_URL="${UPLOAD_URL/\{?name,label\}/?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.tar.gz}"
+        UPLOAD_URL="${UPLOAD_URL/\{?name,label\}/?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip}"
         curl -s -X POST "$UPLOAD_URL" \
         -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
         -H "Content-Type: application/zip" \
