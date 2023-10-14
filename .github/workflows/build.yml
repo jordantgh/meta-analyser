@@ -119,13 +119,14 @@ jobs:
           "tag_name": "v${{ env.PACKAGE_VERSION }}",
           "target_commitish": "main",
           "name": "Release v${{ env.PACKAGE_VERSION }}",
-          "body": "Changes in this Release",
+          "body": "First public release.",
           "draft": true,
           "prerelease": true
         }' \
         https://api.github.com/repos/jordantgh/meta-analyser-rc/releases)
         echo "Full API Response: $RESPONSE"
-        echo "RESPONSE=$RESPONSE" >> $GITHUB_ENV
+        UPLOAD_URL=$(echo "$RESPONSE" | jq -r '.upload_url')
+        echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
 
     # Upload assets to the public repo
     - name: Upload Public Release Asset for Linux
