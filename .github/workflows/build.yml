@@ -117,7 +117,7 @@ jobs:
         -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
         -d '{
           "tag_name": "v${{ env.PACKAGE_VERSION }}",
-          "target_commitish": "${{ github.sha }}",
+          "target_commitish": "main",
           "name": "Release v${{ env.PACKAGE_VERSION }}",
           "body": "Changes in this Release",
           "draft": true,
