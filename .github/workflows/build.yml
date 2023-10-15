@@ -7,7 +7,7 @@ on:
 env:
   POETRY_VERSION: 1.4.1
   PACKAGE_NAME: metaanalyser
-  PACKAGE_VERSION: 0.1.0
+  PACKAGE_VERSION: 0.1.1
 
 jobs:
   build:
@@ -72,7 +72,7 @@ jobs:
     # Build PyQt5 app binary with PyInstaller
     - name: Build with PyInstaller
       run: |
-        poetry run pyinstaller --onefile --name ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }} app/main.py
+        poetry run pyinstaller --onefile --noconsole --name ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }} app/main.py
 
     # Package the binary
     - name: Package Binary on Mac/Linux
@@ -114,46 +114,6 @@ jobs:
       with:
         path: ./artifacts
 
-    # Create Local Release
-    - name: Create Local Release
-      id: create_local_release
-      uses: actions/create-release@v1
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          Changes in this Release
-          - First release
-          - Not feature complete! Just a basic scaffold
-        draft: true
-        prerelease: true
-
-    # Upload Assets to Local Release
-    - name: Upload Local Release Asset for Linux
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_local_release.outputs.upload_url }}
-        asset_path: ./artifacts/Linux-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz
-        asset_name: ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz
-        asset_content_type: application/gzip
-
-    # Add this for Mac
-    - name: Upload Local Release Asset for Mac
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_local_release.outputs.upload_url }}
-        asset_path: ./artifacts/macOS-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz
-        asset_name: ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz
-        asset_content_type: application/gzip
-
-    - name: Upload Local Release Asset for Windows
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_local_release.outputs.upload_url }}
-        asset_path: ./artifacts/windows-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
-        asset_name: ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
-        asset_content_type: application/zip
-
     - name: Create Public Release
       run: |
         RESPONSE=$(curl -s -X POST \
@@ -162,7 +122,7 @@ jobs:
           "tag_name": "v${{ env.PACKAGE_VERSION }}",
           "target_commitish": "main",
           "name": "Release v${{ env.PACKAGE_VERSION }}",
-          "body": "First public release.",
+          "body": "First public release!",
           "draft": true,
           "prerelease": true
         }' \
@@ -178,7 +138,7 @@ jobs:
         curl -s -X POST "$UPLOAD_URL" \
         -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
         -H "Content-Type: application/gzip" \
-        -F "file=@./artifacts/Linux-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz"
+        --data-binary  "@./artifacts/Linux-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz"
 
 
     - name: Upload Public Release Asset for Mac
@@ -187,7 +147,7 @@ jobs:
         curl -s -X POST "$UPLOAD_URL" \
         -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
         -H "Content-Type: application/gzip" \
-        -F "file=@./artifacts/macOS-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz"
+        --data-binary  "@./artifacts/macOS-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz"
 
     - name: Upload Public Release Asset for Windows
       run: |
