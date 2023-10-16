@@ -25,7 +25,6 @@ def parse_tables(selected_articles, db_manager, should_stop, callback=None):
                 data = extract_dfs(fname)
 
                 for sheetname, df in data.items():
-
                     if should_stop:
                         break
 
@@ -37,30 +36,26 @@ def parse_tables(selected_articles, db_manager, should_stop, callback=None):
                     region_bboxes = [
                         region.bbox for region in regionprops(labeled)]
 
-                    for i, bbox1 in enumerate(region_bboxes):
+                    for i, box in enumerate(region_bboxes):
                         if should_stop:
                             break
 
-                        minr1, minc1, maxr1, maxc1 = bbox1
-                        if maxr1 - minr1 <= 1 or maxc1 - minc1 <= 1:
+                        minr, minc, maxr, maxc = box
+                        if maxr - minr <= 1 or maxc - minc <= 1:
                             continue
                         
-                        for i, bbox1 in enumerate(region_bboxes):
-                            if should_stop:
-                                break
-
-                            other_bboxes = [bbox2 for j, bbox2
-                                            in enumerate(region_bboxes)
-                                            if i != j]
-                            
-                            is_contained = any(
-                                _is_contained(bbox1, bbox2)
-                                for bbox2 in other_bboxes)
-
-                            if is_contained:
-                                continue
+                        other_bboxes = [o_box for j, o_box
+                                        in enumerate(region_bboxes)
+                                        if i != j]
                         
-                        region = df.iloc[minr1:maxr1, minc1:maxc1]
+                        is_contained = any(
+                            _is_contained(box, o_box)
+                            for o_box in other_bboxes)
+
+                        if is_contained:
+                            continue
+                        
+                        region = df.iloc[minr:maxr, minc:maxc]
                         base_name = os.path.splitext(fname)[0]
                         unique_id = f"{base_name}_{sheetname}_Table{i}"
                         processed_df_to_db(
@@ -77,8 +72,8 @@ def parse_tables(selected_articles, db_manager, should_stop, callback=None):
             callback(article, processed_table_ids, progress)
 
 
-def _is_contained(bbox1, bbox2):
-    return (bbox2[0] <= bbox1[0] and
-            bbox2[1] <= bbox1[1] and
-            bbox2[2] >= bbox1[2] and
-            bbox2[3] >= bbox1[3])
+def _is_contained(box, o_box):
+    return (o_box[0] <= box[0] and
+            o_box[1] <= box[1] and
+            o_box[2] >= box[2] and
+            o_box[3] >= box[3])
