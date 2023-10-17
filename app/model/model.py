@@ -1,15 +1,23 @@
 from uuid import uuid4
+import pickle
+from enum import Enum, auto
+import copy
 
-from model.article_managers import Bibliography, Article, SuppFile, SuppFileManager, ProcessedTable, ProcessedTableManager
+from model.article_managers import Bibliography, Article, SuppFile, SuppFileManager, ProcessedTable, ProcessedTableManager, stash_all_observers, restore_all_observers
 from model.database import TableDBManager, PostPruningTableDBEntry
 from model.threading import SearchThread, FilePreviewThread, FileProcessingThread
 import scripts.query_parser as qp
 
 
 class Model:
+    class Mode(Enum):
+        BROWSING = 0
+        SEARCHING = auto()
+        PROCESSING = auto()
+        PRUNING = auto()
+
     def __init__(self):
-        self.article_list_filtered = {}
-        self.processing_mode = False
+        self._state = Model.Mode.BROWSING
         self.bibliography = Bibliography()
         self.file_manager = SuppFileManager()
         self.search_thread = SearchThread()
@@ -17,7 +25,27 @@ class Model:
         self.table_db_manager = TableDBManager()
         self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
+        
+        # Flags to keep track of whether we've ever parsed/pruned for when we
+        # load a model from a file; need to know to decide whether to populate
+        # the parsed/pruned pages
+        self.ever_parsed = False
+        self.ever_pruned = False
 
+
+    @property
+    def state(self):
+        return self._state
+    
+    def set_state(self, state):
+        self._state = state
+        
+        # TODO: change these to counters instead of flags, at least for pruned
+        if state == Model.Mode.PROCESSING:
+            self.ever_parsed = True
+        elif state == Model.Mode.PRUNING:
+            self.ever_pruned = True
+    
     def update_supp_files(self, article, article_json):
         supp_files = []
         for file_url in article_json["SupplementaryFiles"]:
@@ -140,6 +168,48 @@ class Model:
         self.file_manager.reset()
 
     def reset_for_processing(self):
-        self.article_list_filtered = {}
         self.processed_table_manager.reset()
         self.table_db_manager.reset()
+
+
+    def save(self, filename):
+        # stash observers so we can pickle the model
+        global_stash = {}
+        # since articles refer to suppfiles/tables and vice versa, we need to
+        # keep track of visited objects to avoid infinite recursion
+        visited_objects = set()
+        
+        stash_all_observers(self.bibliography, global_stash, visited_objects)
+        save_object = {
+            'state': self.state,
+            'bibliography': self.bibliography,
+            'file_manager': self.file_manager,
+            'table_db_manager_db_url': self.table_db_manager.db_url,
+            'processed_table_manager': self.processed_table_manager,
+            'ever_parsed': self.ever_parsed,
+            'ever_pruned': self.ever_pruned
+        }
+
+        # Serialize the dictionary and save it to a file
+        with open(filename, 'wb') as f:
+            pickle.dump(save_object, f)
+
+        visited_objects.clear()
+        restore_all_observers(self.bibliography, global_stash, visited_objects)
+            
+    def load(self, filename):
+        # Load File
+        with open(filename, 'rb') as f:
+            save_object = pickle.load(f)
+
+        self.bibliography = save_object['bibliography']
+        self.file_manager = save_object['file_manager']
+        self.table_db_manager = TableDBManager(
+            save_object['table_db_manager_db_url'])
+        self.processed_table_manager = save_object['processed_table_manager']
+        self.search_thread = SearchThread()
+        self.preview_thread = FilePreviewThread("")
+        self.processing_thread = FileProcessingThread(self.table_db_manager)
+        
+        self.ever_parsed = save_object.get('ever_parsed', False)
+        self.ever_pruned = save_object.get('ever_pruned', False)

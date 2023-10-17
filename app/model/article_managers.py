@@ -7,6 +7,17 @@ class BaseData:
 
     def checkbox_togglable(self):
         return True
+    
+    def stash_observers(self, global_stash):
+        if hasattr(self, 'observers'):
+            global_stash[id(self)] = self.observers
+            self.observers = {}
+
+    def restore_observers(self, global_stash):
+        if id(self) in global_stash:
+            self.observers = global_stash[id(self)]
+            del global_stash[id(self)]
+
 
 class SuppFile(BaseData):
     def __init__(self, article, url, id):
@@ -181,3 +192,44 @@ class Bibliography:
 
     def reset(self):
         self.articles = {}
+
+
+def stash_all_observers(root_object, global_stash, visited_objects):
+    object_id = id(root_object)
+    if object_id in visited_objects:
+        return
+    visited_objects.add(object_id)
+
+    if hasattr(root_object, 'stash_observers'):
+        root_object.stash_observers(global_stash)
+
+    for attr_name in dir(root_object):
+        attr = getattr(root_object, attr_name)
+        if isinstance(attr, list):
+            for item in attr:
+                stash_all_observers(item, global_stash, visited_objects)
+        elif isinstance(attr, dict):
+            for item in attr.values():
+                stash_all_observers(item, global_stash, visited_objects)
+        elif isinstance(attr, BaseData):
+            stash_all_observers(attr, global_stash, visited_objects)
+
+def restore_all_observers(root_object, global_stash, visited_objects):
+    object_id = id(root_object)
+    if object_id in visited_objects:
+        return
+    visited_objects.add(object_id)
+
+    if hasattr(root_object, 'restore_observers'):
+        root_object.restore_observers(global_stash)
+
+    for attr_name in dir(root_object):
+        attr = getattr(root_object, attr_name)
+        if isinstance(attr, list):
+            for item in attr:
+                restore_all_observers(item, global_stash, visited_objects)
+        elif isinstance(attr, dict):
+            for item in attr.values():
+                restore_all_observers(item, global_stash, visited_objects)
+        elif isinstance(attr, BaseData):
+            restore_all_observers(attr, global_stash, visited_objects)

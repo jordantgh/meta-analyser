@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QListWidgetItem, QTableWidget, QTableWidgetItem, QTabWidget, QHeaderView, QSplitter
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QListWidgetItem, QTableWidget, QTableWidgetItem, QTabWidget, QHeaderView, QSplitter, QAction, QMenu
 
 from views.custom_components import CustomTabBar, CheckableHeaderView
 from views.list import ArticleListItem, SuppFileListItem, ProcessedTableListItem
@@ -12,6 +12,14 @@ class View(QMainWindow):
         with open("app/views/styles.qss", "r") as f:
             self.setStyleSheet(f.read())
         self.resize(1024, 768)
+        
+        self.menu_bar = self.menuBar()
+        self.file_menu = QMenu("File", self)
+        self.save_action = QAction("Save", self)
+        self.load_action = QAction("Load", self)
+        self.file_menu.addAction(self.save_action)
+        self.file_menu.addAction(self.load_action)
+        self.menu_bar.addMenu(self.file_menu)
 
         self.tab_widget = QTabWidget(self)
         self.tab_widget.setTabBar(CustomTabBar())

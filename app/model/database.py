@@ -25,6 +25,7 @@ class PostPruningTableDBEntry(Base):
 
 class TableDBManager:
     def __init__(self, db_url=f"sqlite:///tables-{str(uuid4())}.db"):
+        self.db_url = db_url
         self.engine = create_engine(db_url)
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
