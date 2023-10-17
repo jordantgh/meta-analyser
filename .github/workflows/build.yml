@@ -2,7 +2,7 @@ name: Build PyQt5 App
 
 on:
   push:
-    branches: [ main ]
+    branches: [ deploy ]
 
 env:
   POETRY_VERSION: 1.4.1
