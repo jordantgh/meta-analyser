@@ -35,12 +35,13 @@ class CommonPageElements:
         self.article_list = QListWidget(page)
         self.supp_files_view = QListWidget(page)
         
-        # self.title_disp = QTextEdit(page)
-        # self.title_disp.setPlaceholderText("Title will be shown here")
         self.title_abstract_disp = QTextBrowser(page)
         self.title_abstract_disp.setMinimumHeight(100)
-        self.title_abstract_disp.setPlaceholderText("Title/abstract will be shown here")
+        self.title_abstract_disp \
+            .setPlaceholderText("Title/abstract will be shown here")
         self.title_abstract_disp.setOpenExternalLinks(True)
+        self.title_abstract_disp \
+            .setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         self.title_abstract_disp.setFocusPolicy(Qt.NoFocus)
         
         self.previews = QTabWidget(page)
