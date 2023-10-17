@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QListWidgetItem, QTableWidget, QTableWidgetItem, QTabWidget, QHeaderView, QSplitter
 
-from views.custom_components import CheckableHeaderView
+from views.custom_components import CustomTabBar, CheckableHeaderView
 from views.list import ArticleListItem, SuppFileListItem, ProcessedTableListItem
 from views.page import SearchPageElements, ProcessedPageElements
 
@@ -9,9 +9,12 @@ from views.page import SearchPageElements, ProcessedPageElements
 class View(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.resize(800, 600)
+        with open("app/views/styles.qss", "r") as f:
+            self.setStyleSheet(f.read())
+        self.resize(1024, 768)
 
         self.tab_widget = QTabWidget(self)
+        self.tab_widget.setTabBar(CustomTabBar())
         self.setCentralWidget(self.tab_widget)
 
         self.search_page = QWidget(self)
@@ -33,6 +36,13 @@ class View(QMainWindow):
             self.pruned_page, self.pruned_components)
         self.init_load_animation()
 
+        self.search_components.query_field.setFocus()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.focusWidget().clearFocus()            
+            
+    # getters for active page
     @property
     def active_page(self):
         return self.tab_widget.currentWidget()
@@ -54,7 +64,12 @@ class View(QMainWindow):
         left_pane.addWidget(components.stop_search_btn)
         left_pane.addWidget(components.search_status)
         left_pane.addWidget(components.article_list)
+        left_pane.addWidget(QLabel("Associated Data:"))
+        left_pane.addWidget(components.supp_files_view)
         left_pane.addWidget(components.proceed_btn)
+        
+        left_pane.setStretchFactor(components.article_list, 3)
+        left_pane.setStretchFactor(components.supp_files_view, 1) 
 
         self.init_core_layouts(self.search_page, components, left_pane)
 
@@ -62,11 +77,16 @@ class View(QMainWindow):
         left_pane = QVBoxLayout()
         left_pane.addWidget(components.prog_bar)
         left_pane.addWidget(components.article_list)
+        left_pane.addWidget(QLabel("Associated Data:"))
+        left_pane.addWidget(components.supp_files_view)
         left_pane.addWidget(QLabel("Filter Query:"))
         left_pane.addWidget(components.query_filter_field)
         left_pane.addWidget(components.filter_btn)
         left_pane.addWidget(components.prune_btn)
-
+        
+        left_pane.setStretchFactor(components.article_list, 3)
+        left_pane.setStretchFactor(components.supp_files_view, 1)
+        
         self.init_core_layouts(page, components, left_pane)
 
     def init_core_layouts(self, page, components, left_pane):
@@ -74,20 +94,37 @@ class View(QMainWindow):
         widget_0.setLayout(left_pane)
 
         mid_pane = QVBoxLayout()
-        mid_pane.addWidget(QLabel("Title:"))
-        mid_pane.addWidget(components.title_disp)
-        mid_pane.addWidget(QLabel("Abstract:"))
-        mid_pane.addWidget(components.abstract_disp)
-        mid_pane.addWidget(QLabel("Supplementary Files:"))
-        mid_pane.addWidget(components.supp_files_view)
+        textbox_label = QLabel("Title/Abstract:")
+        mid_pane.addWidget(textbox_label)
+        mid_pane.addWidget(components.title_abstract_disp)
+        mid_pane.setStretchFactor(textbox_label, 0)
+        mid_pane.setStretchFactor(components.title_abstract_disp, 1)
+        mid_widget = QWidget()
+        mid_widget.setLayout(mid_pane)
 
-        widget_1 = QWidget()
-        widget_1.setLayout(mid_pane)
+        # Create a container for previews
+        preview_pane = QVBoxLayout()
+        preview_label = QLabel("Data Preview:")
+        preview_pane.addWidget(preview_label)
+        preview_pane.addWidget(components.previews)
+        preview_pane.addWidget(components.loading_label)
+        preview_pane.setStretchFactor(preview_label, 0)
+        preview_pane.setStretchFactor(components.previews, 1)
+        preview_pane.setStretchFactor(components.loading_label, 0)
+        preview_widget = QWidget()
+        preview_widget.setLayout(preview_pane)
+
+        # Create a QSplitter for the title/abstract and previews
+        mid_splitter = QSplitter(Qt.Vertical)
+        mid_splitter.addWidget(mid_widget)
+        mid_splitter.addWidget(preview_widget) 
+
+        # Set initial proportions (2:1 in favour of previews)
+        mid_splitter.setSizes([2, 5])
 
         main_splitter = QSplitter(Qt.Horizontal, page)
         main_splitter.addWidget(widget_0)
-        main_splitter.addWidget(widget_1)
-        main_splitter.addWidget(components.previews)
+        main_splitter.addWidget(mid_splitter)
 
         main_pane = QVBoxLayout(page)
         main_pane.addWidget(main_splitter)
@@ -113,7 +150,7 @@ class View(QMainWindow):
             "Loading" + "." * self.load_dots)
 
     # the context argument is only used as a dummy in this specific function
-    # because the it's used in the update_article_display function later
+    # because it's used in the update_article_display function later
     # TODO is to harmonise this so we arent passing around dummy arguments
     def suppfilelistitem_factory(self, file_data, context):
         return SuppFileListItem(self, file_data, context)
@@ -151,8 +188,8 @@ class View(QMainWindow):
 
     def update_article_display(self, article, element_type, list_item_func, context):
         self.clear_supp_files_view()
-        self.active_elements.title_disp.setText(article.title)
-        self.active_elements.abstract_disp.setText(article.abstract)
+        itext = f"<a href='{article.url}'><b>{article.title}</b></a><br><br>{article.abstract}"
+        self.active_elements.title_abstract_disp.setHtml(itext)
 
         # TODO this monster must be slain
         tables_to_display = []
@@ -174,12 +211,13 @@ class View(QMainWindow):
                 item_container, file_item)
 
     def display_multisheet_table(self, df_dict, use_checkable_header, table_id=None, callback=None, checked_columns=None):
-        tab_widget = QTabWidget(self.active_elements.previews)
+        tab_widget = self.active_elements.previews
+        tab_widget.clear()
+
         for sheet, df in df_dict.items():
             table = self._create_ui_table(
                 df, use_checkable_header, table_id, callback, checked_columns)
             tab_widget.addTab(table, sheet)
-        self.active_elements.previews_layout.addWidget(tab_widget)
 
     def _create_ui_table(self, data, use_checkable_header, table_id=None, callback=None, checked_columns=None):
         ui_table = QTableWidget()

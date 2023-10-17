@@ -100,11 +100,13 @@ class CheckedForContext:
 
 class Article(BaseData):
     def __init__(
-        self, title, abstract, pmc_id, supp_files=[], processed_tables=[]):
+        self, title, authors, abstract, pmc_id, url, supp_files=[], processed_tables=[]):
         self.checked = CheckedForContext(parent=self)
         self.title = title
+        self.authors = authors
         self.abstract = abstract
         self.pmc_id = pmc_id
+        self.url = url
         self.supp_files = supp_files
         self.processed_tables = processed_tables
         self.pruned_tables = []

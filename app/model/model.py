@@ -30,8 +30,10 @@ class Model:
     def create_article_data(self, article_json):
         article = Article(
             title=article_json["Title"],
+            authors=article_json["Authors"],
             abstract=article_json["Abstract"],
-            pmc_id=article_json["PMCID"])
+            pmc_id=article_json["PMCID"],
+            url=article_json["URL"])
 
         self.update_supp_files(article, article_json)
         self.bibliography.add_article(article)
@@ -130,6 +132,10 @@ class Model:
                     'parsed')
 
     def reset_for_searching(self):
+        # TODO / BUG currently seems to be a problem where previously processed
+        # articles are not being reset properly, or at least we don't see the
+        # tables anymore when we click on them in the GUI after a second round
+        # of searching/processing
         self.bibliography.reset()
         self.file_manager.reset()
 
