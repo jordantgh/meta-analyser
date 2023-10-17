@@ -1,6 +1,6 @@
 /* General Styles */
 QWidget {
-    font-family: "Segoe UI";
+    font-family: "Segoe UI", "Ubuntu", "Helvetica Neue", "Lucida Grande", "Arial", sans-serif;
     font-size: 11pt;
 }
 
