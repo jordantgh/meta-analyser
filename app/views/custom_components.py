@@ -1,5 +1,15 @@
-from PyQt5.QtCore import pyqtSignal, QRect
-from PyQt5.QtWidgets import QStyleOptionButton, QHeaderView, QStyle
+from PyQt5.QtGui import QFocusEvent
+from PyQt5.QtCore import Qt, pyqtSignal, QRect
+from PyQt5.QtWidgets import QStyleOptionButton, QHeaderView, QStyle, QTabBar
+
+
+class CustomTabBar(QTabBar):
+    def focusInEvent(self, event: QFocusEvent):
+        if event.reason() == Qt.TabFocusReason:
+            event.ignore()
+        else:
+            super().focusInEvent(event)
+
 
 class CheckableHeaderView(QHeaderView):
     columns_checked = pyqtSignal(object, list)

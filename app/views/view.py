@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QListWidgetItem, QTableWidget, QTableWidgetItem, QTabWidget, QHeaderView, QSplitter, QSizePolicy
 
-from views.custom_components import CheckableHeaderView
+from views.custom_components import CustomTabBar, CheckableHeaderView
 from views.list import ArticleListItem, SuppFileListItem, ProcessedTableListItem
 from views.page import SearchPageElements, ProcessedPageElements
 
@@ -14,6 +14,7 @@ class View(QMainWindow):
         self.resize(1024, 768)
 
         self.tab_widget = QTabWidget(self)
+        self.tab_widget.setTabBar(CustomTabBar())
         self.setCentralWidget(self.tab_widget)
 
         self.search_page = QWidget(self)
@@ -35,6 +36,11 @@ class View(QMainWindow):
             self.pruned_page, self.pruned_components)
         self.init_load_animation()
 
+        self.search_components.query_field.setFocus()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.focusWidget().clearFocus()            
     @property
     def active_page(self):
         return self.tab_widget.currentWidget()
