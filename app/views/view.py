@@ -41,6 +41,8 @@ class View(QMainWindow):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             self.focusWidget().clearFocus()            
+            
+    # getters for active page
     @property
     def active_page(self):
         return self.tab_widget.currentWidget()
