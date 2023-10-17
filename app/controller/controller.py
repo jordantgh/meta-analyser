@@ -114,7 +114,7 @@ class Controller:
 
         # TODO these are low level concerns that should be handled by the view
         self.search_page.article_list.clear()
-        self.search_page.previews.hide()
+        #self.search_page.previews.hide()
         self.search_page.prog_bar.setValue(0)
         self.search_page.prog_bar.show()
         self.search_page.search_status.setText("Searching...")
@@ -156,7 +156,7 @@ class Controller:
     # TODO these three can be combined and list item type passed in or derived
     # from view_elem.__class__.__name__
     def handle_article_click(self, item):
-        self.view_elem.previews.hide()
+        #self.view_elem.previews.hide()
         article_id = item.data(Qt.UserRole)
         article = self.model.bibliography.get_article(article_id)
 
@@ -176,7 +176,7 @@ class Controller:
             widget.preview_requested.connect(self.preview_supp_file)
 
     def handle_processed_article_click(self, item):
-        self.view_elem.previews.hide()
+        #self.view_elem.previews.hide()
         article_id = item.data(Qt.UserRole)
         article = self.model.bibliography.get_article(article_id)
 
@@ -192,7 +192,7 @@ class Controller:
             widget.preview_requested.connect(self.preview_processed_table)
 
     def handle_pruned_article_click(self, item):
-        self.view_elem.previews.hide()
+        #self.view_elem.previews.hide()
         article_id = item.data(Qt.UserRole)
         article = self.model.bibliography.get_article(article_id)
 
@@ -211,10 +211,10 @@ class Controller:
         use_checkable_header = self.view_elem \
             .__class__.__name__ == 'ProcessedPageElements'
 
-        for i in reversed(range(self.view_elem.previews_layout.count())):
-            widget = self.view_elem.previews_layout.itemAt(i).widget()
-            if widget:
-                widget.deleteLater()
+        # for i in reversed(range(self.view_elem.previews_layout.count())):
+        #     widget = self.view_elem.previews_layout.itemAt(i).widget()
+        #     if widget:
+        #         widget.deleteLater()
 
         processed_table = self.model.processed_table_manager \
             .get_processed_table(table_id) if table_id else None
@@ -331,7 +331,7 @@ class Controller:
 
         # TODO these are low level concerns that should be handled by the view
         self.view_elem.article_list.clear()
-        self.view_elem.previews.hide()
+        #self.view_elem.previews.hide()
         self.view_elem.prog_bar.setValue(0)
         self.view_elem.prog_bar.show()
 

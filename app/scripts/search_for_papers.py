@@ -99,6 +99,7 @@ def query_pmc(query, callback=None, thread = None):
                     "PMID": pmid,
                     "PMCID": pmcid,
                     "Abstract": abstract_text,
+                    "URL": f"https://www.ncbi.nlm.nih.gov/pmc/articles/{pmcid}/",
                     "SupplementaryFiles": supplementary_files
                 }
 
@@ -124,11 +125,11 @@ def main(query_file):
         articles.extend(query_pmc(query))
 
     # Save to structured JSON
-    with open("output_articles_5.json", 'w') as out:
+    with open("output_articles_6.json", 'w') as out:
         json.dump(articles, out, indent=4)
 
     print(f"Found {len(articles)} articles. Saved to output_articles.json.")
 
 if __name__ == "__main__":
-    query_file = "../pmc_searches.txt"
+    query_file = "../queries/pmc_searches.txt"
     main(query_file)

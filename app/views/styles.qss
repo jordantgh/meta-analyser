@@ -1,0 +1,78 @@
+/* General Styles */
+QWidget {
+    font-family: "Segoe UI";
+    font-size: 11pt;
+}
+
+/* Push Buttons */
+QPushButton {
+    background-color: #50ac95;
+    color: white;
+    border-radius: 3px;
+    border: none;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+}
+
+QPushButton:hover {
+    background-color: #45a049;
+}
+
+QPushButton:pressed {
+    background-color: #389438;
+}
+
+/* Line Edit */
+QLineEdit {
+    padding: 5px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Progress Bar */
+QProgressBar {
+    border: 2px solid grey;
+    border-radius: 5px;
+    text-align: center;
+}
+
+QProgressBar::chunk {
+    background-color: #05B8CC;
+    width: 20px;
+}
+
+/* List Widgets */
+
+QListWidget {
+    border: 1px solid gray;
+    spacing: 4px; /* Increased spacing between items */
+}
+
+QListWidget::item:selected {
+    background-color: #7e81b4;
+}
+
+/* Tab Widget */
+QTabWidget::pane {
+    border: 1px solid #C4C4C3;
+}
+
+QTabWidget::tab-bar {
+    alignment: left;
+}
+
+QTabBar::tab {
+    border: 1px solid #C4C4C3;
+    color: #333;
+    background: #FFFFFF;
+    padding: 5px;
+    margin-top: 2px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+    background: #F0F0F0;
+    border-bottom-color: transparent; /* Removes bottom border for active tab */
+}
