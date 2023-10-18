@@ -183,7 +183,8 @@ class Model:
             'state': self.state,
             'bibliography': self.bibliography,
             'file_manager': self.file_manager,
-            'table_db_manager_db_url': self.table_db_manager.db_url,
+            'table_db_manager_processed_db_url': self.table_db_manager.processed_db_url,
+            'table_db_manager_post_pruning_db_url': self.table_db_manager.post_pruning_db_url,
             'processed_table_manager': self.processed_table_manager,
             'ever_parsed': self.ever_parsed,
             'ever_pruned': self.ever_pruned
@@ -204,7 +205,8 @@ class Model:
         self.bibliography = save_object['bibliography']
         self.file_manager = save_object['file_manager']
         self.table_db_manager = TableDBManager(
-            save_object['table_db_manager_db_url'])
+            save_object['table_db_manager_processed_db_url'],
+            save_object['table_db_manager_post_pruning_db_url'])
         self.processed_table_manager = save_object['processed_table_manager']
         self.search_thread = SearchThread()
         self.preview_thread = FilePreviewThread("")

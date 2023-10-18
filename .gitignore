@@ -11,3 +11,6 @@ __pycache__/
 *.db
 *.log
 old/
+*.md
+*.r
+.here
