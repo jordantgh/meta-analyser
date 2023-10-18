@@ -262,6 +262,7 @@ class Controller:
             processed_table.pruned_columns = checked_columns
 
     def prune_tables_and_columns(self):
+        self.set_state(self.model.Mode.PRUNING)
         # get current page from view_elem (class name doesnt work!)
         current_page = self.view.tab_widget.currentIndex()
         if current_page == 1:
@@ -281,6 +282,8 @@ class Controller:
         for article in self.model.bibliography.get_selected_articles(context):
             self.view.display_article(self.pruned_page, 'pruned', article, 0)
 
+        self.set_state(self.model.Mode.BROWSING)
+        
     def filter_tables(self):
         query = self.view_elem.query_filter_field.text()
         if not query:
@@ -396,6 +399,7 @@ class Controller:
         # TODO: the current implementation wont handle it if there was >1
         # prune run in the loaded model. If pruned >1 times, we should get
         # selected articles from the pruned page and not the parsed page
+        print(self.model.ever_pruned)
         if not self.model.ever_pruned:
             return
         
