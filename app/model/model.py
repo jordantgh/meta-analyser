@@ -199,7 +199,6 @@ class Model:
         restore_all_observers(self.bibliography, global_stash, visited_objects)
             
     def load(self, filename):
-        # BUG: pruned articles/tables currently not showing up after loading!
         # Load File
         with open(filename, 'rb') as f:
             save_object = pickle.load(f)
