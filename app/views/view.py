@@ -188,7 +188,7 @@ class View(QMainWindow):
                 if list_item and list_item.data.alert_observers():
                     list_item.remove()
 
-        self.clear_list_and_observers(self.active_elements.supp_files_view)
+        self.active_elements.supp_files_view.clear()
 
     def clear_article_list_and_files_view(self):
         self.clear_list_and_observers(self.active_elements.article_list)
