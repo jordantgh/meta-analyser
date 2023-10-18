@@ -395,10 +395,6 @@ class Controller:
             self.view.display_article(self.parsed_page, 'parsed', article, 0)
             
         ## populate pruned page
-        
-        # BUG: the current implementation wont handle it if there was >1
-        # prune run in the loaded model. If pruned >1 times, we should get
-        # selected articles from the pruned page and not the parsed page
         print(self.model.ever_pruned)
         if not self.model.ever_pruned:
             return
