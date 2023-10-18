@@ -28,8 +28,8 @@ class Model:
         # Flags to keep track of whether we've ever parsed/pruned for when we
         # load a model from a file; need to know to decide whether to populate
         # the parsed/pruned pages
-        self.ever_parsed = False
-        self.ever_pruned = False
+        self.ever_parsed = 0
+        self.ever_pruned = 0
 
 
     @property
@@ -39,11 +39,11 @@ class Model:
     def set_state(self, state):
         self._state = state
         
-        # TODO: change these to counters instead of flags, at least for pruned
+        # TODO: Reset this when we start a new search
         if state == Model.Mode.PROCESSING:
-            self.ever_parsed = True
+            self.ever_parsed += 1
         elif state == Model.Mode.PRUNING:
-            self.ever_pruned = True
+            self.ever_pruned += 1
     
     def update_supp_files(self, article, article_json):
         supp_files = []
