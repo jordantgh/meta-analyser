@@ -188,11 +188,22 @@ class View(QMainWindow):
                 if list_item and list_item.data.alert_observers():
                     list_item.remove()
 
-        self.active_elements.supp_files_view.clear()
+        self.clear_list_and_observers(self.active_elements.supp_files_view)
 
     def clear_article_list_and_files_view(self):
-        self.active_elements.article_list.clear()
+        self.clear_list_and_observers(self.active_elements.article_list)
         self.clear_supp_files_view()
+
+    # when clearing a list, if references to the UI items in data objects
+    # (i.e. the 'observers' dict) are not removed, later attempts to handle the
+    # data objects can fail e.g. during saving when we have to 'stash'/'restore'
+    # observers that may have been garbage collected
+    def clear_list_and_observers(self, list_widget):
+        for index in range(list_widget.count()):
+            item = list_widget.item(index)
+            widget = list_widget.itemWidget(item)
+            widget.remove()
+        list_widget.clear()
 
     def update_article_display(self, article, element_type, list_item_func, context):
         self.clear_supp_files_view()

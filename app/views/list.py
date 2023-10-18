@@ -50,6 +50,9 @@ class ArticleListItem(UIListItem):
         setattr(self.article.checked, self.context, self.checkbox.isChecked())
         self.article.notify_observers(self.context)
 
+    def remove(self):
+        self.data.remove_observer(self.context)
+
     def update(self, article):
         new_checked_state = getattr(article.checked, self.context)
         self.checkbox.toggled.disconnect(self.checkbox_toggled)
@@ -87,7 +90,7 @@ class SuppFileListItem(DataListItem):
         self.file_url = file_data.url
 
     def remove(self):
-        self.data.remove_observer(self)
+        self.data.remove_observer(self.context)
 
 
 class ProcessedTableListItem(DataListItem):

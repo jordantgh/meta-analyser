@@ -108,7 +108,7 @@ class Controller:
             return
 
         # TODO these are low level concerns that should be handled by the view
-        self.search_page.article_list.clear()
+        self.view.clear_list_and_observers(self.search_page.article_list)
         self.search_page.prog_bar.setValue(0)
         self.search_page.prog_bar.show()
         self.search_page.search_status.setText("Searching...")
@@ -319,7 +319,7 @@ class Controller:
         self.model.processing_thread.should_stop = False
 
         # TODO these are low level concerns that should be handled by the view
-        self.view_elem.article_list.clear()
+        self.view.clear_list_and_observers(self.view_elem.article_list)
         self.view_elem.prog_bar.setValue(0)
         self.view_elem.prog_bar.show()
 
@@ -370,7 +370,7 @@ class Controller:
         # repopulate the GUI
         ## clear all pages
         for page in [self.search_page, self.parsed_page, self.pruned_page]:
-            page.article_list.clear()
+            self.view.clear_list_and_observers(page.article_list)
             page.supp_files_view.clear()
             page.title_abstract_disp.clear()
             page.previews.clear()
@@ -396,15 +396,19 @@ class Controller:
             
         ## populate pruned page
         
-        # TODO: the current implementation wont handle it if there was >1
+        # BUG: the current implementation wont handle it if there was >1
         # prune run in the loaded model. If pruned >1 times, we should get
         # selected articles from the pruned page and not the parsed page
         print(self.model.ever_pruned)
         if not self.model.ever_pruned:
             return
         
-        selected_articles = self.model.bibliography \
-            .get_selected_articles('parsed')
-            
+        if self.model.ever_pruned == 1:
+            selected_articles = self.model.bibliography \
+                .get_selected_articles('parsed')
+        else:
+            selected_articles = self.model.bibliography \
+                .get_selected_articles('pruned')
+
         for article in selected_articles:
             self.view.display_article(self.pruned_page, 'pruned', article, 0)

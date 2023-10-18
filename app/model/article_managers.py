@@ -7,7 +7,10 @@ class BaseData:
 
     def checkbox_togglable(self):
         return True
-    
+
+    def remove_observer(self, context):
+        del self.observers[context]
+
     def stash_observers(self, global_stash):
         if hasattr(self, 'observers'):
             global_stash[id(self)] = self.observers
@@ -47,9 +50,6 @@ class ProcessedTable(BaseData):
 
     def register_observer(self, observer, context):
         self.observers[context] = observer
-        
-    def remove_observer(self, context):
-        del self.observers[context]
 
     def notify_observers(self, context):
         self.observers[context].update(self)
