@@ -4,9 +4,10 @@ from PyQt5.QtGui import QFontMetrics
 
 
 class UIListItem(QWidget):
-    def __init__(self, data, title, skip_checkbox=False):
+    def __init__(self, data, title, context, skip_checkbox=False):
         super().__init__()
         self.data = data
+        self.context = context
         self.checkbox = QCheckBox()
         # hack for now, setChecked wants a boolean which Article.checked is not
         if not skip_checkbox:
@@ -26,6 +27,12 @@ class UIListItem(QWidget):
         if self.data.checkbox_togglable:
             self.data.checkbox_toggled()
 
+    def register_observer(self, context):
+        self.data.register_observer(self, context)
+
+    def remove(self):
+        self.data.remove_observer(self.context)
+
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
         list_widget = self.parent().parent()
@@ -35,81 +42,72 @@ class UIListItem(QWidget):
 
 class ArticleListItem(UIListItem):
     def __init__(self, article, context):
-        self.article = article
-        self.article_id = article.pmc_id
-        self.context = context
-        self.article.register_observer(self, context)
-        super().__init__(article, article.title, skip_checkbox=True)
+        super().__init__(article, article.title, context, skip_checkbox=True)
+        self.register_observer(context)
         self.load_checked_state()
 
     def load_checked_state(self):
-        checked_state = getattr(self.article.checked, self.context)
+        checked_state = self.data.checked[self.context]
         self.checkbox.setChecked(checked_state)
 
     def checkbox_toggled(self):
-        setattr(self.article.checked, self.context, self.checkbox.isChecked())
-        self.article.notify_observers(self.context)
-
-    def remove(self):
-        self.data.remove_observer(self.context)
+        self.data.checked[self.context] = self.checkbox.isChecked()
+        self.data.notify_observers(self.context)
 
     def update(self, article):
-        new_checked_state = getattr(article.checked, self.context)
+        new_checked_state = article.checked[self.context]
         self.checkbox.toggled.disconnect(self.checkbox_toggled)
         self.checkbox.setChecked(new_checked_state)
         self.checkbox.toggled.connect(self.checkbox_toggled)
 
 
 class DataListItem(UIListItem):
-    preview_requested = pyqtSignal(object)
+    preview_requested = pyqtSignal(object, object)
 
-    def __init__(self, main_window, file_data, disp_name_func):
+    def __init__(self, main_window, file_data, disp_name_func, context):
         self.main_window = main_window
         self.page = main_window.active_elements
         self.file_id = file_data.id
         disp_name = disp_name_func(file_data)
-        super().__init__(file_data, disp_name)
+        super().__init__(file_data, disp_name, context)
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
-        self.preview_requested.emit(self.file_id)
+        self.preview_requested.emit(self.file_id, self.context)
 
     def get_disp_name(self, text):
         font_metrics = QFontMetrics(self.main_window.font())
-        available_width = self.page.supp_files_view.width() - 150
+        available_width = self.page.data_list_view.width() - 150
         return font_metrics.elidedText(text, Qt.ElideMiddle, available_width)
 
 
 class SuppFileListItem(DataListItem):
-    def __init__(self, main_window, file_data, context):
+    def __init__(self, main_window, data, context):
         super().__init__(
             main_window,
-            file_data,
-            lambda fd: self.get_disp_name(fd.url.split('/')[-1]))
-        self.context = context  # does nothing for now, will always be search
-        self.file_url = file_data.url
+            data,
+            lambda fd: self.get_disp_name(fd.url.split('/')[-1]),
+            context
+        )
 
-    def remove(self):
-        self.data.remove_observer(self.context)
+        self.file_url = data.url
 
 
 class ProcessedTableListItem(DataListItem):
-    def __init__(self, main_window, file_data, context):
+    def __init__(self, main_window, data, context):
         super().__init__(
             main_window,
-            file_data,
-            lambda fd: self.get_disp_name(fd.id))
+            data,
+            lambda fd: self.get_disp_name(fd.id),
+            context
+        )
 
-        self.context = context
-        file_data.register_observer(self, context)
+        self.register_observer(context)
 
     def checkbox_toggled(self):
         self.data.checked = self.checkbox.isChecked()
         if self.data.checkbox_togglable:
             self.data.checkbox_toggled(self.context)
-
-    def remove(self):
-        self.data.remove_observer(self.context)
 
     def update(self, processed_table):
         # Disconnect the signal before updating the checkbox to avoid triggering the signal again, then reconnect it
