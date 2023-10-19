@@ -152,119 +152,80 @@ class Controller:
         self.parsed_page.prog_bar.hide()
         self.set_state(self.model.Mode.BROWSING)
 
-    # TODO these three can be combined and list item type passed in or derived
-    # from view_elem.__class__.__name__
     def handle_article_click(self, item):
         article_id = item.data(Qt.UserRole)
         article = self.model.bibliography.get_article(article_id)
 
-        self.view.update_article_display(
-            article,
-            'supp_files',
-            self.view.suppfilelistitem_factory,
-            'search')
+        components = self.view_elem
+        
+        if components.page_identity == PageIdentity.SEARCH:
+            data_set = article.supp_files
+        elif components.page_identity == PageIdentity.PARSED:
+            data_set = article.processed_tables
+        elif components.page_identity == PageIdentity.PRUNED:
+            data_set = article.pruned_tables        
+        
+        self.view.update_article_display(article, components, data_set)
 
-        # TODO do we need to pass in the factory if the relevant class can be
-        # derived from list item type within view.update_article_display?
-        # ... could just do away with the factories altogether
+        for i in range(components.data_list_view.count()):
+            list_item = components.data_list_view.item(i)
+            widget = components.data_list_view.itemWidget(list_item)
+            if components.page_identity == PageIdentity.SEARCH:
+                widget.preview_requested.connect(self.request_suppfile_preview)
+            else:
+                widget.preview_requested.connect(self.preview_processed_table)
 
-        for i in range(self.view_elem.supp_files_view.count()):
-            list_item = self.view_elem.supp_files_view.item(i)
-            widget = self.view_elem.supp_files_view.itemWidget(list_item)
-            widget.preview_requested.connect(self.preview_supp_file)
+    def load_preview(self, data, table_id=None, callback=None):
 
-    def handle_processed_article_click(self, item):
-        article_id = item.data(Qt.UserRole)
-        article = self.model.bibliography.get_article(article_id)
-
-        self.view.update_article_display(
-            article,
-            'processed_tables',
-            self.view.processedtablelistitem_factory,
-            'parsed')
-
-        for i in range(self.view_elem.supp_files_view.count()):
-            list_item = self.view_elem.supp_files_view.item(i)
-            widget = self.view_elem.supp_files_view.itemWidget(list_item)
-            widget.preview_requested.connect(self.preview_processed_table)
-
-    def handle_pruned_article_click(self, item):
-        article_id = item.data(Qt.UserRole)
-        article = self.model.bibliography.get_article(article_id)
-
-        self.view.update_article_display(
-            article,
-            'pruned_article_tables',
-            self.view.processedtablelistitem_factory,
-            'pruned')
-
-        for i in range(self.view_elem.supp_files_view.count()):
-            list_item = self.view_elem.supp_files_view.item(i)
-            widget = self.view_elem.supp_files_view.itemWidget(list_item)
-            widget.preview_requested.connect(self.preview_pruned_table)
-
-    def load_preview(self, data, table_id=None, callback=None, context=None):
-        use_checkable_header = self.view_elem \
-            .__class__.__name__ == 'ProcessedPageElements'
+        context = self.view_elem.page_identity
+        use_checkable_header = context != PageIdentity.SEARCH
 
         processed_table = self.model.processed_table_manager \
             .get_processed_table(table_id) if table_id else None
 
-        checked_columns = None
-        if context == 'parsed':
-            checked_columns = processed_table \
+        cols = None
+        if context == PageIdentity.PARSED:
+            cols = processed_table \
                 .checked_columns if processed_table else None
-        elif context == 'pruned':
-            checked_columns = processed_table \
+        elif context == PageIdentity.PRUNED:
+            cols = processed_table \
                 .pruned_columns if processed_table else None
 
         self.view.display_multisheet_table(
-            data, use_checkable_header, table_id, callback, checked_columns)
-        self.view.stop_load_animation()
-        self.view_elem.previews.show()
+            data, use_checkable_header, table_id, callback, cols
+        )
 
-    def preview_supp_file(self, file_id):
+        self.view.stop_load_animation()
+
+    def request_suppfile_preview(self, file_id):
         file_data = self.model.file_manager.get_file(file_id)
         self.view.start_load_animation()
 
-        if self.model.preview_thread.isRunning():
-            self.model.preview_thread.quit()
-            self.model.preview_thread.wait()
+        if self.model.search_preview_thread.isRunning():
+            self.model.search_preview_thread.quit()
+            self.model.search_preview_thread.wait()
 
-        self.model.preview_thread.file_url = file_data.url
-        self.model.preview_thread.start()
+        self.model.search_preview_thread.file_url = file_data.url
+        self.model.search_preview_thread.start()
 
-    def preview_processed_table(self, table_id):
+    def preview_processed_table(self, table_id, context):
         table_data = {
-            "sheet": self.model.table_db_manager.get_processed_table_data(
-                table_id).head(100)}
+            "sheet": self.model.table_db_manager
+            .get_processed_table_data(table_id, context).head(100)
+        }
 
         self.view.start_load_animation()
-        self.load_preview(table_data, table_id,
-                          self.update_checked_columns, 'parsed')
-
-    def preview_pruned_table(self, table_id):
-        table_data = {
-            "sheet": self.model.table_db_manager.get_post_pruning_table_data(
-                table_id).head(100)}
-
-        self.view.start_load_animation()
-        self.load_preview(table_data, table_id,
-                          self.update_pruned_columns, 'pruned')
+        self.load_preview(table_data, table_id, self.update_checked_columns)
 
     def update_checked_columns(self, table_id, checked_columns):
         processed_table = self.model.processed_table_manager \
             .get_processed_table(table_id)
 
         if processed_table:
-            processed_table.checked_columns = checked_columns
-
-    def update_pruned_columns(self, table_id, checked_columns):
-        processed_table = self.model.processed_table_manager \
-            .get_processed_table(table_id)
-
-        if processed_table:
-            processed_table.pruned_columns = checked_columns
+            if self.view_elem.page_identity == PageIdentity.PARSED:
+                processed_table.checked_columns = checked_columns
+            elif self.view_elem.page_identity == PageIdentity.PRUNED:
+                processed_table.pruned_columns = checked_columns
 
     def prune_tables_and_columns(self):
         self.set_state(self.model.Mode.PRUNING)
