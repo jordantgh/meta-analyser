@@ -85,30 +85,30 @@ class View(QMainWindow):
         left_pane.addWidget(components.search_btn)
         left_pane.addWidget(components.stop_search_btn)
         left_pane.addWidget(components.search_status)
-        left_pane.addWidget(components.article_list)
+        left_pane.addWidget(components.article_list_view)
         left_pane.addWidget(QLabel("Associated Data:"))
-        left_pane.addWidget(components.supp_files_view)
+        left_pane.addWidget(components.data_list_view)
         left_pane.addWidget(components.proceed_btn)
-        
-        left_pane.setStretchFactor(components.article_list, 3)
-        left_pane.setStretchFactor(components.supp_files_view, 1) 
 
-        self.init_core_layouts(self.search_page, components, left_pane)
+        left_pane.setStretchFactor(components.article_list_view, 3)
+        left_pane.setStretchFactor(components.data_list_view, 1)
+
+        self.init_core_layouts(self.search_tab, components, left_pane)
 
     def init_processed_page_layouts(self, page, components):
         left_pane = QVBoxLayout()
         left_pane.addWidget(components.prog_bar)
-        left_pane.addWidget(components.article_list)
+        left_pane.addWidget(components.article_list_view)
         left_pane.addWidget(QLabel("Associated Data:"))
-        left_pane.addWidget(components.supp_files_view)
+        left_pane.addWidget(components.data_list_view)
         left_pane.addWidget(QLabel("Filter Query:"))
         left_pane.addWidget(components.query_filter_field)
         left_pane.addWidget(components.filter_btn)
         left_pane.addWidget(components.prune_btn)
-        
-        left_pane.setStretchFactor(components.article_list, 3)
-        left_pane.setStretchFactor(components.supp_files_view, 1)
-        
+
+        left_pane.setStretchFactor(components.article_list_view, 3)
+        left_pane.setStretchFactor(components.data_list_view, 1)
+
         self.init_core_layouts(page, components, left_pane)
 
     def init_core_layouts(self, page, components, left_pane):
@@ -139,10 +139,10 @@ class View(QMainWindow):
         # Create a QSplitter for the title/abstract and previews
         mid_splitter = QSplitter(Qt.Vertical)
         mid_splitter.addWidget(mid_widget)
-        mid_splitter.addWidget(preview_widget) 
+        mid_splitter.addWidget(preview_widget)
 
         # Set initial proportions (2:1 in favour of previews)
-        mid_splitter.setSizes([2, 5])
+        mid_splitter.setSizes([1, 2])
 
         main_splitter = QSplitter(Qt.Horizontal, page)
         main_splitter.addWidget(widget_0)
@@ -169,6 +169,9 @@ class View(QMainWindow):
     def update_load_text(self):
         self.load_dots = (self.load_dots + 1) % 4
         self.active_elements.loading_label.setText(
+            "LOADING" + "." * self.load_dots
+        )
+
     def to_list(self, list_widget, item_widget, id):
         item = QListWidgetItem()
         item.setSizeHint(item_widget.sizeHint())
@@ -214,15 +217,31 @@ class View(QMainWindow):
         else:
             return ProcessedTableListItem(self, file_data, context)
 
+    def display_multisheet_table(
+        self,
+        df_dict,
+        use_checkable_header,
+        table_id=None,
+        callback=None,
+        checked_columns=None
+    ):
         tab_widget = self.active_elements.previews
         tab_widget.clear()
 
         for sheet, df in df_dict.items():
             table = self._create_ui_table(
-                df, use_checkable_header, table_id, callback, checked_columns)
+                df, use_checkable_header, table_id, callback, checked_columns
+            )
             tab_widget.addTab(table, sheet)
 
-    def _create_ui_table(self, data, use_checkable_header, table_id=None, callback=None, checked_columns=None):
+    def _create_ui_table(
+        self,
+        data,
+        use_checkable_header,
+        table_id=None,
+        callback=None,
+        checked_columns=None
+    ):
         ui_table = QTableWidget()
         ui_table.setRowCount(len(data.index))
         ui_table.setColumnCount(len(data.columns))
