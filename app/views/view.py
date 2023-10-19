@@ -160,40 +160,30 @@ class View(QMainWindow):
     def update_load_text(self):
         self.load_dots = (self.load_dots + 1) % 4
         self.active_elements.loading_label.setText(
-            "Loading" + "." * self.load_dots)
-
-    # the context argument is only used as a dummy in this specific function
-    # because it's used in the update_article_display function later
-    # TODO is to harmonise this so we arent passing around dummy arguments
-    def suppfilelistitem_factory(self, file_data, context):
-        return SuppFileListItem(self, file_data, context)
-
-    def processedtablelistitem_factory(self, file_data, context):
-        return ProcessedTableListItem(self, file_data, context)
-
-    def display_article(self, components, context, article_data, progress):
+    def to_list(self, list_widget, item_widget, id):
         item = QListWidgetItem()
-        article_widget = ArticleListItem(article_data, context)
-        item.setSizeHint(article_widget.sizeHint())
-        item.setData(Qt.UserRole, article_data.pmc_id)
-        components.article_list.addItem(item)
-        components.article_list.setItemWidget(item, article_widget)
+        item.setSizeHint(item_widget.sizeHint())
+        item.setData(Qt.UserRole, id)
+        list_widget.addItem(item)
+        list_widget.setItemWidget(item, item_widget)
+
+    def display_article(self, components, article, progress):
+        article_item = ArticleListItem(article, components.page_identity)
+        self.to_list(components.article_list_view, article_item, article.pmc_id)
         components.prog_bar.setValue(progress + 1)
 
-    def clear_supp_files_view(self):
-        # here we get all the list items and deregister their observers
-        # removing them
-        for i in range(self.active_elements.supp_files_view.count()):
-            item = self.active_elements.supp_files_view.item(i)
+    def update_article_display(self, article, components, data_set):
+        self.clear_list_and_observers(components.data_list_view)
+        components.title_abstract_disp.setHtml(
+            f"<a href='{article.url}'>"
+            f"<b>{article.title}</b></a>"
+            f"<br><br>{article.abstract}"
+        )
 
-            if item:
-                list_item = self.active_elements.supp_files_view.itemWidget(
-                    item)
-
-                if list_item and list_item.data.alert_observers():
-                    list_item.remove()
-
-        self.clear_list_and_observers(self.active_elements.supp_files_view)
+        for data in data_set:
+            data_item = self.list_item_factory(data, components.page_identity)
+            data_item.checkbox.setChecked(data.checked)
+            self.to_list(components.data_list_view, data_item, data.id)
 
     def clear_article_list_and_files_view(self):
         self.clear_list_and_observers(self.active_elements.article_list)
