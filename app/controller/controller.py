@@ -30,7 +30,7 @@ class Controller:
 
         # Search page; article click
         self.search_page \
-            .article_list.itemClicked \
+            .article_list_view.itemClicked \
             .connect(self.handle_article_click)
         # Search page; buttons
         self.search_page \
@@ -50,6 +50,11 @@ class Controller:
             .search_thread.finished_sig \
             .connect(self.stop_search)
 
+        # Search result preview thread
+        self.model \
+            .search_preview_thread.prev_ready_sig \
+            .connect(self.load_preview)
+
         # Processing thread
         self.model \
             .processing_thread.article_sig \
@@ -57,13 +62,11 @@ class Controller:
         self.model \
             .processing_thread.finished_sig \
             .connect(self.on_processing_finished)
-        self.model \
-            .preview_thread.prev_ready_sig \
-            .connect(self.load_preview)
+
         # Parsed tables page; article click
         self.parsed_page \
-            .article_list.itemClicked \
-            .connect(self.handle_processed_article_click)
+            .article_list_view.itemClicked \
+            .connect(self.handle_article_click)
         # Parsed tables page; buttons
         self.parsed_page \
             .filter_btn.clicked \
@@ -74,8 +77,8 @@ class Controller:
 
         # Pruned tables page; article click
         self.pruned_page \
-            .article_list.itemClicked \
-            .connect(self.handle_pruned_article_click)
+            .article_list_view.itemClicked \
+            .connect(self.handle_article_click)
         # Pruned tables page; buttons
         self.pruned_page \
             .filter_btn.clicked \
@@ -87,15 +90,21 @@ class Controller:
     def on_article_discovered(self, article_json, progress):
         article_data = self.model.create_article_data(article_json)
         self.view.display_article(
-            self.search_page, 'search', article_data, progress)
+            self.search_page,
+            article_data,
+            progress
+        )
 
     def on_article_processed(self, article, ids_list, progress):
         article_data = self.model.update_article(article, ids_list)
         self.view.display_article(
-            self.parsed_page, 'parsed', article_data, progress)
+            self.parsed_page,
+            article_data,
+            progress
+        )
 
     def search_for_articles(self):
-        self.set_state(self.model.Mode.SEARCHING)
+        self.set_state(Mode.SEARCHING)
         self.model.reset_for_searching()
         self.view.tab_widget.setCurrentIndex(0)
 
@@ -113,7 +122,7 @@ class Controller:
             return
 
         # TODO these are low level concerns that should be handled by the view
-        self.view.clear_list_and_observers(self.search_page.article_list)
+        self.view.clear_list_and_observers(self.search_page.article_list_view)
         self.search_page.prog_bar.setValue(0)
         self.search_page.prog_bar.show()
         self.search_page.search_status.setText("Searching...")
@@ -133,14 +142,14 @@ class Controller:
         self.search_page.stop_search_btn.hide()
         self.search_page.stop_search_btn.setEnabled(False)
 
-        self.set_state(self.model.Mode.BROWSING)
+        self.set_state(Mode.BROWSING)
 
     def send_search_stop(self):
         if self.model.search_thread.isRunning():
             self.model.search_thread.stop()
             self.model.search_thread.wait()
 
-        while self.model.state == self.model.Mode.SEARCHING:
+        while self.model.state == Mode.SEARCHING:
             QCoreApplication.processEvents(QEventLoop.AllEvents, 100)
 
     def on_processing_finished(self):
@@ -150,7 +159,7 @@ class Controller:
             self.model.processing_thread.wait()
 
         self.parsed_page.prog_bar.hide()
-        self.set_state(self.model.Mode.BROWSING)
+        self.set_state(Mode.BROWSING)
 
     def handle_article_click(self, item):
         article_id = item.data(Qt.UserRole)
@@ -228,28 +237,22 @@ class Controller:
                 processed_table.pruned_columns = checked_columns
 
     def prune_tables_and_columns(self):
-        self.set_state(self.model.Mode.PRUNING)
-        # get current page from view_elem (class name doesnt work!)
-        current_page = self.view.tab_widget.currentIndex()
-        if current_page == 1:
-            context = 'parsed'
-        elif current_page == 2:
-            context = 'pruned'
+        self.set_state(Mode.PRUNING)
+
+        context = self.view_elem.page_identity
 
         for article in self.model.bibliography.articles.values():
             article.cascade_checked_state(context)
 
-        self.view.tab_widget.setCurrentIndex(2)
+        self.view.set_active_tab(PageIdentity.PRUNED)
         self.model.prune_tables_and_columns(context)
+        self.view.clear_page_lists()
 
-        self.view.clear_article_list_and_files_view()
-
-        # display all selected articles in the pruned page
         for article in self.model.bibliography.get_selected_articles(context):
-            self.view.display_article(self.pruned_page, 'pruned', article, 0)
+            self.view.display_article(self.pruned_page, article, 0)
 
-        self.set_state(self.model.Mode.BROWSING)
-        
+        self.set_state(Mode.BROWSING)
+
     def filter_tables(self):
         query = self.view_elem.query_filter_field.text()
         if not query:
@@ -264,7 +267,8 @@ class Controller:
                 "A search is still in progress. "
                 "Do you want to stop the current search and proceed?",
                 QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No)
+                QMessageBox.No
+            )
 
             if reply == QMessageBox.Yes:
                 self.send_search_stop()
@@ -272,109 +276,124 @@ class Controller:
                 return
 
         self.model.reset_for_processing()
-        self.view.tab_widget.setCurrentIndex(1)
+        self.view.set_active_tab(PageIdentity.PARSED)
 
         if self.model.processing_thread.isRunning():
             QMessageBox.warning(
                 self.view,
                 "Processing in Progress",
-                "A parsing run is already in progress. Please wait.")
+                "A parsing run is already in progress. Please wait."
+            )
             return
 
-        self.set_state(self.model.Mode.PROCESSING)
+        self.set_state(Mode.PROCESSING)
         self.model.processing_thread.should_stop = False
 
         # TODO these are low level concerns that should be handled by the view
-        self.view.clear_list_and_observers(self.view_elem.article_list)
+        self.view.clear_list_and_observers(self.view_elem.article_list_view)
         self.view_elem.prog_bar.setValue(0)
         self.view_elem.prog_bar.show()
 
         for article in self.model.bibliography.articles.values():
-            article.cascade_checked_state('search')
+            article.cascade_checked_state(PageIdentity.SEARCH)
 
         selected_articles = self.model.bibliography.get_selected_articles(
-            'search')
+            PageIdentity.SEARCH
+        )
+
         self.model.processing_thread.selected_articles = selected_articles
         self.model.processing_thread.start()
 
     def save(self):
         # check if the app is in a state where it can be saved
-        if self.model.state != self.model.Mode.BROWSING:
+        if self.model.state != Mode.BROWSING:
             QMessageBox.warning(
                 self.view,
                 "Cannot Save",
-                "The application can only be saved in the browsing state.")
+                "The application can only be saved in the browsing state."
+            )
             return
 
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         filename, _ = QFileDialog.getSaveFileName(
-            self.view, "Save As", "", "All Files (*);;Text Files (*.txt)", options=options)
+            self.view,
+            "Save As",
+            "",
+            "All Files (*);;Text Files (*.txt)",
+            options=options
+        )
 
         if filename:
             self.model.save(filename)
-            
-    def load(self):        
-        if self.model.state != self.model.Mode.BROWSING:
+
+    def load(self):
+        if self.model.state != Mode.BROWSING:
             QMessageBox.warning(
                 self.view,
                 "Cannot Save",
-                "The application can only be saved in the browsing state.")
+                "The application can only be saved in the browsing state."
+            )
             return
 
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
         filename, _ = QFileDialog.getOpenFileName(
-            self.view, "Load File", "", "Pickle Files (*.pkl);;All Files (*)", options=options
+            self.view,
+            "Load File",
+            "",
+            "Pickle Files (*.pkl);;All Files (*)",
+            options=options
         )
 
         if not filename:
             return
 
         self.model.load(filename)
-        
+
         # repopulate the GUI
-        ## clear all pages
+        # clear all pages
         for page in [self.search_page, self.parsed_page, self.pruned_page]:
-            self.view.clear_list_and_observers(page.article_list)
-            page.supp_files_view.clear()
+            self.view.clear_list_and_observers(page.article_list_view)
+            page.data_list_view.clear()
             page.title_abstract_disp.clear()
             page.previews.clear()
-            
-        # re-init 
+
+        # re-init
         self.__init__(self.model, self.view)
-        
-        ## populate search page
+
+        # populate search page
         selected_articles = self.model.bibliography.articles.values()
-        
-        for article in selected_articles:
-            self.view.display_article(self.search_page, 'search', article, 0)
-        
-        ## populate parsed page
-        if not self.model.ever_parsed:
-            return
-        
-        selected_articles = self.model.bibliography \
-            .get_selected_articles('search')
-            
-        for article in selected_articles:
-            self.view.display_article(self.parsed_page, 'parsed', article, 0)
-            
-        ## populate pruned page
-        
-        # BUG: the current implementation wont handle it if there was >1
-        # prune run in the loaded model. If pruned >1 times, we should get
-        # selected articles from the pruned page and not the parsed page
-        print(self.model.ever_pruned)
-        if not self.model.ever_pruned:
-            return
-        
-        if self.model.ever_pruned == 1:
-            selected_articles = self.model.bibliography \
-                .get_selected_articles('parsed')
-        else:
-            selected_articles = self.model.bibliography \
-                .get_selected_articles('pruned')
 
         for article in selected_articles:
-            self.view.display_article(self.pruned_page, 'pruned', article, 0)
+            self.view.display_article(self.search_page, article, 0)
+
+        # populate parsed page
+        if not self.model.ever_parsed:
+            return
+
+        selected_articles = self.model.bibliography.get_selected_articles(
+            PageIdentity.SEARCH
+        )
+
+        for article in selected_articles:
+            self.view.display_article(self.parsed_page, article, 0)
+
+        # populate pruned page
+        if not self.model.ever_pruned:
+            return
+
+        if self.model.ever_pruned == 1:
+            selected_articles = self.model.bibliography.get_selected_articles(
+                PageIdentity.PARSED
+            )
+
+        else:
+            selected_articles = self.model.bibliography.get_selected_articles(
+                PageIdentity.PRUNED
+            )
+
+        for article in selected_articles:
+            self.view.display_article(
+                self.pruned_page, article, 0
+            )
