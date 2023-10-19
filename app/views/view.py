@@ -1,18 +1,20 @@
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QListWidgetItem, QTableWidget, QTableWidgetItem, QTabWidget, QHeaderView, QSplitter, QAction, QMenu
 
-from views.custom_components import CustomTabBar, CheckableHeaderView
+from views.custom_components import CustomTabBar, TabPage, CheckableHeaderView
 from views.list import ArticleListItem, SuppFileListItem, ProcessedTableListItem
 from views.page import SearchPageElements, ProcessedPageElements
+
+from utils.constants import PageIdentity
 
 
 class View(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.resize(1024, 768)
         with open("app/views/styles.qss", "r") as f:
             self.setStyleSheet(f.read())
-        self.resize(1024, 768)
-        
+
         self.menu_bar = self.menuBar()
         self.file_menu = QMenu("File", self)
         self.save_action = QAction("Save", self)
@@ -25,31 +27,34 @@ class View(QMainWindow):
         self.tab_widget.setTabBar(CustomTabBar())
         self.setCentralWidget(self.tab_widget)
 
-        self.search_page = QWidget(self)
-        self.parsed_page = QWidget(self)
-        self.pruned_page = QWidget(self)
+        self.search_tab = TabPage(self, PageIdentity.SEARCH)
+        self.parsed_tab = TabPage(self, PageIdentity.PARSED)
+        self.pruned_tab = TabPage(self, PageIdentity.PRUNED)
 
-        self.tab_widget.addTab(self.search_page, "Search")
-        self.tab_widget.addTab(self.parsed_page, "Parsing Results")
-        self.tab_widget.addTab(self.pruned_page, "Pruned Results")
+        self.tab_widget.addTab(self.search_tab, "Search")
+        self.tab_widget.addTab(self.parsed_tab, "Parsing Results")
+        self.tab_widget.addTab(self.pruned_tab, "Pruned Results")
 
-        self.search_components = SearchPageElements(self.search_page)
-        self.parsed_components = ProcessedPageElements(self.parsed_page)
-        self.pruned_components = ProcessedPageElements(self.pruned_page)
+        self.search_components = SearchPageElements(self.search_tab)
+        self.parsed_components = ProcessedPageElements(self.parsed_tab)
+        self.pruned_components = ProcessedPageElements(self.pruned_tab)
 
         self.init_search_layouts(self.search_components)
         self.init_processed_page_layouts(
-            self.parsed_page, self.parsed_components)
+            self.parsed_tab, self.parsed_components
+        )
+
         self.init_processed_page_layouts(
-            self.pruned_page, self.pruned_components)
-        self.init_load_animation()
+            self.pruned_tab, self.pruned_components
+        )
 
         self.search_components.query_field.setFocus()
+        self.init_load_animation()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
-            self.focusWidget().clearFocus()            
-            
+            self.focusWidget().clearFocus()
+
     # getters for active page
     @property
     def active_page(self):
