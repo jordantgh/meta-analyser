@@ -5,16 +5,12 @@ from enum import Enum, auto
 from model.article_managers import Bibliography, Article, SuppFile, SuppFileManager, ProcessedTable, ProcessedTableManager, stash_all_observers, restore_all_observers
 from model.database import TableDBManager, PostPruningTableDBEntry
 from model.threading import SearchThread, FilePreviewThread, FileProcessingThread
+
+from utils.constants import PageIdentity, Mode
 import scripts.query_parser as qp
 
 
 class Model:
-    class Mode(Enum):
-        BROWSING = 0
-        SEARCHING = auto()
-        PROCESSING = auto()
-        PRUNING = auto()
-
     def __init__(self):
         self._state = Model.Mode.BROWSING
         self.bibliography = Bibliography()
