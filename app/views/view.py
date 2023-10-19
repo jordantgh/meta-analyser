@@ -185,46 +185,26 @@ class View(QMainWindow):
             data_item.checkbox.setChecked(data.checked)
             self.to_list(components.data_list_view, data_item, data.id)
 
-    def clear_article_list_and_files_view(self):
-        self.clear_list_and_observers(self.active_elements.article_list)
-        self.clear_supp_files_view()
+    def clear_page_lists(self):
+        self.clear_list_and_observers(self.active_elements.article_list_view)
+        self.clear_list_and_observers(self.active_elements.data_list_view)
 
-    # when clearing a list, if references to the UI items in data objects
-    # (i.e. the 'observers' dict) are not removed, later attempts to handle the
-    # data objects can fail e.g. during saving when we have to 'stash'/'restore'
-    # observers that may have been garbage collected
     def clear_list_and_observers(self, list_widget):
         for index in range(list_widget.count()):
             item = list_widget.item(index)
-            widget = list_widget.itemWidget(item)
-            widget.remove()
+            if item:
+                widget = list_widget.itemWidget(item)
+                if widget and widget.data.alert_observers():
+                    widget.remove()
+
         list_widget.clear()
 
-    def update_article_display(self, article, element_type, list_item_func, context):
-        self.clear_supp_files_view()
-        itext = f"<a href='{article.url}'><b>{article.title}</b></a><br><br>{article.abstract}"
-        self.active_elements.title_abstract_disp.setHtml(itext)
-
-        # TODO this monster must be slain
-        tables_to_display = []
-        if element_type == 'pruned_article_tables':
-            tables_to_display = article.pruned_tables
-        elif element_type == 'supp_files':
-            tables_to_display = article.supp_files
+    def list_item_factory(self, file_data, context):
+        if context == PageIdentity.SEARCH:
+            return SuppFileListItem(self, file_data, context)
         else:
-            tables_to_display = article.processed_tables
+            return ProcessedTableListItem(self, file_data, context)
 
-        for data in tables_to_display:
-            item_container = QListWidgetItem()
-            file_item = list_item_func(data, context)
-            file_item.checkbox.setChecked(data.checked)
-            item_container.setSizeHint(file_item.sizeHint())
-            item_container.setData(Qt.UserRole, data.id)
-            self.active_elements.supp_files_view.addItem(item_container)
-            self.active_elements.supp_files_view.setItemWidget(
-                item_container, file_item)
-
-    def display_multisheet_table(self, df_dict, use_checkable_header, table_id=None, callback=None, checked_columns=None):
         tab_widget = self.active_elements.previews
         tab_widget.clear()
 
