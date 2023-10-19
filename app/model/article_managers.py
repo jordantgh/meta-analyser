@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import Any
+from utils.constants import PageIdentity
+
 
 class BaseData:
     def alert_observers(self):
@@ -29,9 +29,9 @@ class SuppFile(BaseData):
         self.article_id = article.pmc_id
         self.url = url
         self.id = id
-    
+
     def checkbox_toggled(self):
-        self.article.update_based_on_elements('search')
+        self.article.update_based_on_elements(PageIdentity.SEARCH)
 
 
 class ProcessedTable(BaseData):
@@ -53,14 +53,14 @@ class ProcessedTable(BaseData):
 
     def notify_observers(self, context):
         self.observers[context].update(self)
-            
+
     def alert_observers(self):
         return True
 
     def checkbox_toggled(self, context):
         self.notify_observers(context)
         self.article.update_based_on_elements(context)
- 
+
     def set_checked(self, state, context):
         was_checked = self.checked
         self.checked = state
@@ -101,18 +101,18 @@ class ProcessedTableManager:
         self.processed_tables = {}
 
 
-@dataclass
-class CheckedForContext:
-    search: bool = True
-    parsed: bool = True
-    pruned: bool = True
-    parent: Any = None
-
-
 class Article(BaseData):
     def __init__(
-        self, title, authors, abstract, pmc_id, url, supp_files=[], processed_tables=[]):
-        self.checked = CheckedForContext(parent=self)
+            self,
+            title,
+            authors,
+            abstract,
+            pmc_id,
+            url,
+            supp_files=[],
+            processed_tables=[]
+    ):
+        self.checked = {context: True for context in PageIdentity}
         self.title = title
         self.authors = authors
         self.abstract = abstract
@@ -125,16 +125,16 @@ class Article(BaseData):
 
     def cascade_checked_state(self, context, is_checked=None):
         if is_checked is None:
-            is_checked = getattr(self.checked, context)
-        
-        hierarchy = ["search", "parsed", "pruned"]
+            is_checked = self.checked[context]
+
+        hierarchy = [context for context in PageIdentity]
 
         # Find the position of the current context in the hierarchy
         index = hierarchy.index(context)
 
         # Update the checked state of the parent context (preserves initial
         # state for the initially called context)
-        setattr(self.checked, context, is_checked)
+        self.checked[context] = is_checked
 
         # Stop recursion if we're at the last element in the hierarchy
         if index == len(hierarchy) - 1:
@@ -154,15 +154,15 @@ class Article(BaseData):
 
     def update_based_on_elements(self, context):
         has_checked = self.has_checked_elements(context)
-        setattr(self.checked, context, has_checked)
+        self.checked[context] = has_checked
         self.notify_observers(context)
 
     def has_checked_elements(self, context):
-        if context == 'search':
+        if context == PageIdentity.SEARCH:
             return any(f.checked for f in self.supp_files)
-        elif context == 'parsed':
+        elif context == PageIdentity.PARSED:
             return any(t.checked for t in self.processed_tables)
-        elif context == 'pruned':
+        elif context == PageIdentity.PRUNED:
             return any(t.checked for t in self.pruned_tables)
 
     def get_file(self, file_id):
@@ -185,7 +185,7 @@ class Bibliography:
     def get_selected_articles(self, context):
         selected = []
         for article in self.articles.values():
-            if getattr(article.checked, context):
+            if article.checked[context]:
                 selected.append(article)
 
         return selected
@@ -213,6 +213,7 @@ def stash_all_observers(root_object, global_stash, visited_objects):
                 stash_all_observers(item, global_stash, visited_objects)
         elif isinstance(attr, BaseData):
             stash_all_observers(attr, global_stash, visited_objects)
+
 
 def restore_all_observers(root_object, global_stash, visited_objects):
     object_id = id(root_object)
