@@ -57,16 +57,25 @@ class View(QMainWindow):
 
     # getters for active page
     @property
-    def active_page(self):
+    def active_tab(self):
         return self.tab_widget.currentWidget()
 
     @property
     def active_elements(self):
         return {
-            self.search_page: self.search_components,
-            self.parsed_page: self.parsed_components,
-            self.pruned_page: self.pruned_components
-        }.get(self.active_page, None)
+            self.search_tab: self.search_components,
+            self.parsed_tab: self.parsed_components,
+            self.pruned_tab: self.pruned_components
+        }.get(self.active_tab, None)
+
+    # set active page
+    def set_active_tab(self, page_identity):
+        if page_identity == PageIdentity.SEARCH:
+            self.tab_widget.setCurrentWidget(self.search_tab)
+        elif page_identity == PageIdentity.PARSED:
+            self.tab_widget.setCurrentWidget(self.parsed_tab)
+        elif page_identity == PageIdentity.PRUNED:
+            self.tab_widget.setCurrentWidget(self.pruned_tab)
 
     def init_search_layouts(self, components):
         left_pane = QVBoxLayout()
