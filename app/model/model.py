@@ -104,44 +104,48 @@ class Model:
             for table in tables_to_prune:
                 pruned_df = None
 
-                if context == 'parsed':
-                    columns_vector = table.checked_columns
-                    data = self.table_db_manager.get_processed_table_data(
-                        table.id)
-                elif context == 'pruned':
-                    columns_vector = table.pruned_columns
-                    data = self.table_db_manager.get_post_pruning_table_data(
-                        table.id)
+                data = self.table_db_manager.get_processed_table_data(
+                    table.id, context
+                )
 
-                if data is not None and columns_vector is not None:
-                    pruned_df = data.iloc[:, columns_vector]
+                if context == PageIdentity.PARSED:
+                    cols = table.checked_columns
+                elif context == PageIdentity.PRUNED:
+                    cols = table.pruned_columns
+
+                if data is not None and cols is not None:
+                    pruned_df = data.iloc[:, cols]
 
                 if pruned_df is not None:
                     existing_table = self.table_db_manager.get_table_object(
                         PostPruningTableDBEntry,
-                        table.id)
+                        table.id
+                    )
 
                     if existing_table:
                         self.table_db_manager.update_table(
                             PostPruningTableDBEntry,
                             table.id,
-                            pruned_df)
+                            pruned_df
+                        )
+
                     else:
                         self.table_db_manager.save_table(
                             PostPruningTableDBEntry,
                             table.id,
                             table.file_id,
-                            pruned_df)
+                            pruned_df
+                        )
 
             article.pruned_tables = tables_to_prune
 
             for table in tables_to_prune:
-                latest_data = self.table_db_manager \
-                    .get_post_pruning_table_data(table.id)
+                new_data = self.table_db_manager.get_processed_table_data(
+                    table.id, context
+                )
 
-                if latest_data is not None:
-                    table.pruned_columns = list(range(len(
-                        latest_data.columns)))
+                if new_data is not None:
+                    table.pruned_columns = list(range(len(new_data.columns)))
 
     def filter_tables(self, query):
         for article in self.bibliography.get_selected_articles('parsed'):
