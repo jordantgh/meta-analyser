@@ -1,9 +1,14 @@
 from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
+from model.model import Model
+from views.view import View
+
+from utils.constants import PageIdentity, Mode
+
 
 class Controller:
-    def __init__(self, model, view):
+    def __init__(self, model: Model, view: View):
         self.model = model
         self.view = view
         self.search_page = self.view.search_components
