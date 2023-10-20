@@ -1,9 +1,15 @@
 from uuid import uuid4
 import pickle
 
-from model.article_managers import Bibliography, Article, SuppFile, SuppFileManager, ProcessedTable, ProcessedTableManager, stash_all_observers, restore_all_observers
+from model.article_managers import (
+    Bibliography, Article, SuppFile, SuppFileManager, ProcessedTable,
+    ProcessedTableManager, stash_all_observers, restore_all_observers
+)
+
 from model.database import TableDBManager, PostPruningTableDBEntry
-from model.threading import SearchThread, FilePreviewThread, FileProcessingThread
+from model.threading import (
+    SearchThread, FilePreviewThread, FileProcessingThread
+)
 
 from utils.constants import PageIdentity, Mode
 import scripts.query_parser as qp
