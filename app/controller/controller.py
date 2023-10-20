@@ -11,9 +11,9 @@ class Controller:
     def __init__(self, model: Model, view: View):
         self.model = model
         self.view = view
-        self.search_elems = self.view.search_elements
-        self.parsed_elems = self.view.parsed_elements
-        self.pruned_elems = self.view.pruned_elements
+        self.search_elems = self.view.search_elems
+        self.parsed_elems = self.view.parsed_elems
+        self.pruned_elems = self.view.pruned_elems
         self.connect_sigs()
 
     def set_state(self, state):
