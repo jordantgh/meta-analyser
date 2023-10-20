@@ -95,10 +95,6 @@ class Model:
 
         return article
 
-    def add_processed_tables(self, file_id, tables):
-        file = self.file_manager.get_file(file_id)
-        file.processed_tables = tables
-
     def prune_tables_and_columns(self, context):
         for article in self.bibliography.get_selected_articles(context):
 
