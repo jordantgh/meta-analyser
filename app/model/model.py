@@ -150,13 +150,14 @@ class Model:
                     table.pruned_columns = list(range(len(new_data.columns)))
 
     # TODO filtering is slow and needs its own thread; gui hangs up too long
-    def filter_tables(self, query):
+    def filter_tables(self, query, context):
         for article in self.bibliography.get_selected_articles(
             PageIdentity.PARSED
         ):
             for processed_table in article.processed_tables:
                 table_data = self.table_db_manager.get_processed_table_data(
-                    processed_table.id
+                    processed_table.id,
+                    context
                 )
 
                 processed_table.set_checked(bool(qp.search(
