@@ -23,6 +23,15 @@ class Controller:
     def view_elem(self):
         return self.view.active_elements
 
+    @property
+    def output_page(self):
+        mode = self.model.state
+        return {
+            Mode.SEARCHING: self.search_elems,
+            Mode.PROCESSING: self.parsed_elems,
+            Mode.PRUNING: self.pruned_elems
+        }.get(mode)
+
     def connect_sigs(self):
         # Menu bar
         self.view.save_action.triggered.connect(self.save)
@@ -55,53 +64,14 @@ class Controller:
             .search_preview_thread.prev_ready_sig \
             .connect(self.load_preview)
 
-        # Processing thread
-        self.model \
-            .processing_thread.article_sig \
-            .connect(self.on_article_processed)
-        self.model \
-            .processing_thread.finished_sig \
-            .connect(self.on_processing_finished)
 
-        # Parsed tables page; article click
-        self.parsed_page \
-            .article_list_view.itemClicked \
-            .connect(self.handle_article_click)
-        # Parsed tables page; buttons
-        self.parsed_page \
-            .filter_btn.clicked \
-            .connect(self.filter_tables)
-        self.parsed_page \
-            .prune_btn.clicked \
-            .connect(self.prune_tables_and_columns)
+    def display_article(self, article, progress, ids_list=None):
+        if self.model.state == Mode.SEARCHING:
+            article_data = self.model.create_article_data(article)
+        elif self.model.state == Mode.PROCESSING:
+            article_data = self.model.update_article(article, ids_list)
 
-        # Pruned tables page; article click
-        self.pruned_page \
-            .article_list_view.itemClicked \
-            .connect(self.handle_article_click)
-        # Pruned tables page; buttons
-        self.pruned_page \
-            .filter_btn.clicked \
-            .connect(self.filter_tables)
-        self.pruned_page \
-            .prune_btn.clicked \
-            .connect(self.prune_tables_and_columns)
-
-    def on_article_discovered(self, article_json, progress):
-        article_data = self.model.create_article_data(article_json)
-        self.view.display_article(
-            self.search_page,
-            article_data,
-            progress
-        )
-
-    def on_article_processed(self, article, ids_list, progress):
-        article_data = self.model.update_article(article, ids_list)
-        self.view.display_article(
-            self.parsed_page,
-            article_data,
-            progress
-        )
+        self.view.display_article(self.output_page, article_data, progress)
 
     def search_for_articles(self):
         self.set_state(Mode.SEARCHING)
