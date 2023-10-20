@@ -33,37 +33,38 @@ class Controller:
         }.get(mode)
 
     def connect_sigs(self):
-        # Menu bar
-        self.view.save_action.triggered.connect(self.save)
-        self.view.load_action.triggered.connect(self.load)
+        signals_map = {
+            self.view.save_action.triggered: self.save,
+            self.view.load_action.triggered: self.load,
 
-        # Search page; article click
-        self.search_page \
-            .article_list_view.itemClicked \
-            .connect(self.handle_article_click)
-        # Search page; buttons
-        self.search_page \
-            .search_btn.clicked \
-            .connect(self.search_for_articles)
-        self.search_page \
-            .stop_search_btn.clicked \
-            .connect(self.send_search_stop)
-        self.search_page \
-            .proceed_btn.clicked \
-            .connect(self.on_proceed)
-        # Search thread
-        self.model \
-            .search_thread.article_sig \
-            .connect(self.on_article_discovered)
-        self.model \
-            .search_thread.finished_sig \
-            .connect(self.stop_search)
+            # Search page
+            self.search_elems.article_list_view.itemClicked: self.click_article,
+            self.search_elems.search_btn.clicked: self.search_articles,
+            self.search_elems.stop_search_btn.clicked: self.send_search_stop,
+            self.search_elems.proceed_btn.clicked: self.on_proceed,
 
-        # Search result preview thread
-        self.model \
-            .search_preview_thread.prev_ready_sig \
-            .connect(self.load_preview)
+            # Search threads
+            self.model.search_thread.article_sig: self.display_article,
+            self.model.search_thread.finished_sig: self.stop_search,
+            self.model.search_preview_thread.prev_ready_sig: self.load_preview,
 
+            # Processing thread
+            self.model.processing_thread.article_sig: self.display_article,
+            self.model.processing_thread.finished_sig: self.stop_processing,
+
+            # Parsed page
+            self.parsed_elems.article_list_view.itemClicked: self.click_article,
+            self.parsed_elems.filter_btn.clicked: self.filter_tables,
+            self.parsed_elems.prune_btn.clicked: self.prune_tables_and_columns,
+
+            # Pruned page
+            self.pruned_elems.article_list_view.itemClicked: self.click_article,
+            self.pruned_elems.filter_btn.clicked: self.filter_tables,
+            self.pruned_elems.prune_btn.clicked: self.prune_tables_and_columns
+        }
+
+        for signal, slot in signals_map.items():
+            signal.connect(slot)
 
     def display_article(self, article, progress, ids_list=None):
         if self.model.state == Mode.SEARCHING:
