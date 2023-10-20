@@ -168,6 +168,9 @@ class Model:
     def reset_for_searching(self):
         self.bibliography.reset()
         self.file_manager.reset()
+        
+        self.n_parse_runs = 0
+        self.n_prunes = 0
 
     def reset_for_processing(self):
         self.processed_table_manager.reset()
