@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt, QTimer, QObject, pyqtSignal
 from PyQt5.QtWidgets import QLabel, QProgressBar, QPushButton, QListWidget, QTabWidget, QTextBrowser, QLineEdit, QSizePolicy
 
 
@@ -17,6 +17,7 @@ class QPushButton(QPushButton):
     def simulateClick(self):
         self.click()
         self.setDown(False)
+
 
 class QListWidget(QListWidget):
     def __init__(self, *args, **kwargs):
@@ -38,24 +39,30 @@ class PageElements(QObject): # QObject needed for signalling
         self.prog_bar.hide()
         self.article_list_view = QListWidget(parent_tab)
         self.data_list_view = QListWidget(parent_tab)
-        
+
         self.title_abstract_disp = QTextBrowser(parent_tab)
         self.title_abstract_disp.setMinimumHeight(100)
-        self.title_abstract_disp \
-            .setPlaceholderText("Title/abstract will be shown here")
+        self.title_abstract_disp.setPlaceholderText(
+            "Title/abstract will be shown here"
+        )
+
         self.title_abstract_disp.setOpenExternalLinks(True)
-        self.title_abstract_disp \
-            .setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        self.title_abstract_disp.setSizePolicy(
+            QSizePolicy.Expanding, QSizePolicy.Preferred
+        )
+
         self.title_abstract_disp.setFocusPolicy(Qt.NoFocus)
-        
+
         self.previews = QTabWidget(parent_tab)
         self.previews.setMinimumHeight(200)
-        self.previews.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        self.previews.setSizePolicy(
+            QSizePolicy.Expanding, QSizePolicy.Preferred)
 
         self.loading_label = QLabel(parent_tab)
         self.loading_label.setAlignment(Qt.AlignCenter)
 
-class SearchPageElements(CommonPageElements):
+
+class SearchPageElements(PageElements):
     def __init__(self, parent_tab):
         super().__init__(parent_tab)
         self.search_status = QLabel(parent_tab)
@@ -66,7 +73,7 @@ class SearchPageElements(CommonPageElements):
         self.stop_search_btn.hide()
         self.stop_search_btn.setEnabled(False)
         self.proceed_btn = QPushButton("Proceed", parent_tab)
-        
+
 
 class ProcessedPageElements(PageElements):
     filter_sig = pyqtSignal(object)
