@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QCheckBox, QSizePolicy
 from PyQt5.QtGui import QFontMetrics
 
 
-class UIListItem(QWidget):
+class ListItem(QWidget):
     def __init__(self, data, title, context, skip_checkbox=False):
         super().__init__()
         self.data = data
@@ -40,7 +40,7 @@ class UIListItem(QWidget):
         list_widget.setCurrentItem(list_item)
 
 
-class ArticleListItem(UIListItem):
+class ArticleListItem(ListItem):
     def __init__(self, article, context):
         super().__init__(article, article.title, context, skip_checkbox=True)
         self.register_observer(context)
@@ -61,7 +61,7 @@ class ArticleListItem(UIListItem):
         self.checkbox.toggled.connect(self.checkbox_toggled)
 
 
-class DataListItem(UIListItem):
+class DataListItem(ListItem):
     preview_requested = pyqtSignal(object, object)
 
     def __init__(self, main_window, file_data, disp_name_func, context):
