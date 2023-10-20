@@ -35,9 +35,9 @@ class View(QMainWindow):
         self.tab_widget.addTab(self.parsed_tab, "Parsing Results")
         self.tab_widget.addTab(self.pruned_tab, "Pruned Results")
 
-        self.search_elements = SearchPageElements(self.search_tab)
-        self.parsed_elements = ProcessedPageElements(self.parsed_tab)
-        self.pruned_elements = ProcessedPageElements(self.pruned_tab)
+        self.search_elems = SearchPageElements(self.search_tab)
+        self.parsed_elems = ProcessedPageElements(self.parsed_tab)
+        self.pruned_elems = ProcessedPageElements(self.pruned_tab)
 
         self.init_search_layouts(self.search_elements)
         self.init_processed_page_layouts(self.parsed_tab, self.parsed_elements)
