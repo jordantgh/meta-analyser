@@ -172,6 +172,21 @@ class View(QMainWindow):
             "LOADING" + "." * self.load_dots
         )
 
+    def show_searching_view(self):
+        self.search_elements.prog_bar.setValue(0)
+        self.search_elements.prog_bar.show()
+        self.search_elements.search_status.setText("Searching...")
+        self.search_elements.search_status.show()
+        self.search_elements.stop_search_btn.show()
+        self.search_elements.stop_search_btn.setEnabled(True)
+        
+    def hide_searching_view(self):
+        self.search_elements.search_status.setText("Stopping search...")
+        self.search_elements.prog_bar.hide()
+        self.search_elements.search_status.setText("Search stopped.")
+        self.search_elements.stop_search_btn.hide()
+        self.search_elements.stop_search_btn.setEnabled(False)
+
     def to_list(self, list_widget, item_widget, id):
         item = QListWidgetItem()
         item.setSizeHint(item_widget.sizeHint())

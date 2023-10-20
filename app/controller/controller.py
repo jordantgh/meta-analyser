@@ -92,27 +92,14 @@ class Controller:
         if not query:
             return
 
-        # TODO these are low level concerns that should be handled by the view
-        self.view.clear_list_and_observers(self.search_page.article_list_view)
-        self.search_page.prog_bar.setValue(0)
-        self.search_page.prog_bar.show()
-        self.search_page.search_status.setText("Searching...")
-        self.search_page.stop_search_btn.show()
-        self.search_page.stop_search_btn.setEnabled(True)
+        self.view.show_searching_view()
 
         self.model.search_thread.query = query
         self.model.search_thread.start()
 
     def stop_search(self, search_thread):
         search_thread.quit()
-
-        # TODO these are low level concerns that should be handled by the view
-        self.search_page.search_status.setText("Stopping search...")
-        self.search_page.prog_bar.hide()
-        self.search_page.search_status.setText("Search stopped.")
-        self.search_page.stop_search_btn.hide()
-        self.search_page.stop_search_btn.setEnabled(False)
-
+        self.view.hide_searching_view()
         self.set_state(Mode.BROWSING)
 
     def send_search_stop(self):
