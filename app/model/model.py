@@ -37,13 +37,12 @@ class Model:
     def set_state(self, state):
         self._state = state
 
-        # TODO: Reset this when we start a new search
         if state == Mode.PROCESSING:
             self.n_parse_runs += 1
         elif state == Mode.PRUNING:
             self.n_prunes += 1
 
-    def update_supp_files(self, article, article_json):
+    def _update_supp_files(self, article, article_json):
         supp_files = []
         for file_url in article_json["SupplementaryFiles"]:
             supp_file = SuppFile(article, file_url, uuid4())
@@ -61,12 +60,12 @@ class Model:
             url=article_json["URL"]
         )
 
-        self.update_supp_files(article, article_json)
+        self._update_supp_files(article, article_json)
         self.bibliography.add_article(article)
 
         return article
 
-    def update_processed_tables(self, article, ids_list):
+    def _update_processed_tables(self, article, ids_list):
         processed_tables = []
         for table_id, file_id in ids_list:
             table_data = self.table_db_manager.get_processed_table_data(
@@ -89,7 +88,7 @@ class Model:
         return processed_tables
 
     def update_article(self, article, ids_list):
-        article.processed_tables = self.update_processed_tables(
+        article.processed_tables = self._update_processed_tables(
             article, ids_list
         )
 
