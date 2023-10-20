@@ -140,13 +140,13 @@ class View(QMainWindow):
         mid_splitter = QSplitter(Qt.Vertical)
         mid_splitter.addWidget(mid_widget)
         mid_splitter.addWidget(preview_widget)
+        mid_splitter.setStretchFactor(1,10)
 
-        # Set initial proportions (2:1 in favour of previews)
-        mid_splitter.setSizes([1, 2])
 
         main_splitter = QSplitter(Qt.Horizontal, page)
         main_splitter.addWidget(widget_0)
         main_splitter.addWidget(mid_splitter)
+        main_splitter.setSizes([400, 600])
 
         main_pane = QVBoxLayout(page)
         main_pane.addWidget(main_splitter)
