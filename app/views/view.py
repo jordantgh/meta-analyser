@@ -212,9 +212,9 @@ class View(QMainWindow):
             data_item.checkbox.setChecked(data.checked)
             self.to_list(components.data_list_view, data_item, data.id)
 
-    def clear_page_lists(self):
-        self.clear_list_and_observers(self.active_elements.article_list_view)
-        self.clear_list_and_observers(self.active_elements.data_list_view)
+    def clear_page_lists(self, elements):
+        self.clear_list_and_observers(elements.article_list_view)
+        self.clear_list_and_observers(elements.data_list_view)
 
     def clear_list_and_observers(self, list_widget):
         for index in range(list_widget.count()):
