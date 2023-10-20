@@ -20,11 +20,9 @@ class Model:
         self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
 
-        # Flags to keep track of whether we've ever parsed/pruned for when we
-        # load a model from a file; need to know to decide whether to populate
-        # the parsed/pruned pages
-        self.ever_parsed = 0
-        self.ever_pruned = 0
+        # Flags to track whether we've ever parsed/pruned for when we load
+        self.n_parse_runs = 0
+        self.n_prunes = 0
 
     @property
     def state(self):
@@ -35,9 +33,9 @@ class Model:
 
         # TODO: Reset this when we start a new search
         if state == Mode.PROCESSING:
-            self.ever_parsed += 1
+            self.n_parse_runs += 1
         elif state == Mode.PRUNING:
-            self.ever_pruned += 1
+            self.n_prunes += 1
 
     def update_supp_files(self, article, article_json):
         supp_files = []
@@ -188,8 +186,8 @@ class Model:
             'processed_db_url': self.table_db_manager.processed_db_url,
             'post_pruning_db_url': self.table_db_manager.post_pruning_db_url,
             'processed_table_manager': self.processed_table_manager,
-            'ever_parsed': self.ever_parsed,
-            'ever_pruned': self.ever_pruned
+            'n_parse_runs': self.n_parse_runs,
+            'n_prunes': self.n_prunes
         }
 
         # Serialize the dictionary and save it to a file
@@ -214,5 +212,5 @@ class Model:
         self.search_preview_thread = FilePreviewThread("")
         self.processing_thread = FileProcessingThread(self.table_db_manager)
 
-        self.ever_parsed = save_object.get('ever_parsed', False)
-        self.ever_pruned = save_object.get('ever_pruned', False)
+        self.n_parse_runs = save_object.get('n_parse_runs', False)
+        self.n_prunes = save_object.get('n_prunes', False)
