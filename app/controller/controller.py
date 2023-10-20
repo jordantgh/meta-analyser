@@ -14,9 +14,9 @@ class Controller:
         self.search_elems = self.view.search_elems
         self.parsed_elems = self.view.parsed_elems
         self.pruned_elems = self.view.pruned_elems
-        self.connect_sigs()
+        self._connect_sigs()
 
-    def set_state(self, state):
+    def _set_state(self, state):
         self.model.set_state(state)
 
     @property
@@ -32,7 +32,7 @@ class Controller:
             Mode.PRUNING: self.pruned_elems
         }.get(mode)
 
-    def connect_sigs(self):
+    def _connect_sigs(self):
         signals_map = {
             self.view.save_action.triggered: self.save,
             self.view.load_action.triggered: self.load,
@@ -75,7 +75,7 @@ class Controller:
         self.view.display_article(self.output_page, article_data, progress)
 
     def search_articles(self):
-        self.set_state(Mode.SEARCHING)
+        self._set_state(Mode.SEARCHING)
         self.model.reset_for_searching()
         self.view.tab_widget.setCurrentIndex(0)
 
@@ -101,7 +101,7 @@ class Controller:
     def stop_search(self, search_thread):
         search_thread.quit()
         self.view.hide_searching_view()
-        self.set_state(Mode.BROWSING)
+        self._set_state(Mode.BROWSING)
 
     def send_search_stop(self):
         if self.model.search_thread.isRunning():
@@ -118,7 +118,7 @@ class Controller:
             self.model.processing_thread.wait()
 
         self.parsed_elems.prog_bar.hide()
-        self.set_state(Mode.BROWSING)
+        self._set_state(Mode.BROWSING)
 
     def click_article(self, item):
         article_id = item.data(Qt.UserRole)
@@ -241,10 +241,9 @@ class Controller:
             )
             return
 
-        self.set_state(Mode.PROCESSING)
+        self._set_state(Mode.PROCESSING)
         self.model.processing_thread.should_stop = False
 
-        # TODO these are low level concerns that should be handled by the view
         self.view.clear_list_and_observers(self.curr_elems.article_list_view)
         self.curr_elems.prog_bar.setValue(0)
         self.curr_elems.prog_bar.show()
@@ -314,13 +313,12 @@ class Controller:
         # TODO this is a bad way to do this, should reset the model properly
         self.__init__(self.model, self.view)
 
-        # populate search page
+        # Populate search page
         selected_articles = self.model.bibliography.articles.values()
-
         for article in selected_articles:
             self.view.display_article(self.search_elems, article, 0)
 
-        # populate parsed page
+        # Populate parsed page
         if not self.model.n_parse_runs:
             return
 
@@ -331,7 +329,7 @@ class Controller:
         for article in selected_articles:
             self.view.display_article(self.parsed_elems, article, 0)
 
-        # populate pruned page
+        # Populate pruned page
         if not self.model.n_prunes:
             return
 
