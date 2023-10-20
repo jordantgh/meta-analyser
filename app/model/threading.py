@@ -34,7 +34,7 @@ class FilePreviewThread(QThread):
 
 
 class FileProcessingThread(QThread):
-    article_sig = pyqtSignal(object, list, int)
+    article_sig = pyqtSignal(object, int, list)
     finished_sig = pyqtSignal()
 
     def __init__(self, db_manager):
@@ -51,6 +51,7 @@ class FileProcessingThread(QThread):
             self.selected_articles,
             self.db_manager,
             self.should_stop,
-            callback=self.article_sig.emit)
+            callback=self.article_sig.emit
+            )
         
         self.finished_sig.emit()
