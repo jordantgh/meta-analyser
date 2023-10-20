@@ -193,10 +193,8 @@ class Controller:
             elif self.curr_elems.page_identity == PageIdentity.PRUNED:
                 table.pruned_columns = checked_columns
 
-    def prune_tables_and_columns(self):
-        self.set_state(Mode.PRUNING)
-
-        context = self.curr_elems.page_identity
+    def prune_tables_and_columns(self, context):
+        self._set_state(Mode.PRUNING)
 
         for article in self.model.bibliography.articles.values():
             article.cascade_checked_state(context)
@@ -208,13 +206,13 @@ class Controller:
         for article in self.model.bibliography.get_selected_articles(context):
             self.view.display_article(self.pruned_elems, article, 0)
 
-        self.set_state(Mode.BROWSING)
+        self._set_state(Mode.BROWSING)
 
-    def filter_tables(self):
+    def filter_tables(self, context):
         query = self.curr_elems.query_filter_field.text()
         if not query:
             return
-        self.model.filter_tables(query)
+        self.model.filter_tables(query, context)
 
     def on_proceed(self):
         if self.model.search_thread.isRunning():
