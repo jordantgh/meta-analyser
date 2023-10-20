@@ -226,6 +226,13 @@ class View(QMainWindow):
 
         list_widget.clear()
 
+    # fully reset the view
+    def reset(self):
+        for elems in [self.search_tab, self.parsed_tab, self.pruned_tab]:
+            self.clear_page_lists(elems)
+            elems.title_abstract_disp.clear()
+            elems.previews.clear()
+
     def list_item_factory(self, file_data, context):
         if context == PageIdentity.SEARCH:
             return SuppFileListItem(self, file_data, context)
