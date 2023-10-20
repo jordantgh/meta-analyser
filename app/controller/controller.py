@@ -311,11 +311,7 @@ class Controller:
 
         # repopulate the GUI
         # clear all pages
-        for page in [self.search_page, self.parsed_page, self.pruned_page]:
-            self.view.clear_list_and_observers(page.article_list_view)
-            page.data_list_view.clear()
-            page.title_abstract_disp.clear()
-            page.previews.clear()
+        self.view.reset()
 
         # re-init
         self.__init__(self.model, self.view)
