@@ -35,20 +35,15 @@ class View(QMainWindow):
         self.tab_widget.addTab(self.parsed_tab, "Parsing Results")
         self.tab_widget.addTab(self.pruned_tab, "Pruned Results")
 
-        self.search_components = SearchPageElements(self.search_tab)
-        self.parsed_components = ProcessedPageElements(self.parsed_tab)
-        self.pruned_components = ProcessedPageElements(self.pruned_tab)
+        self.search_elements = SearchPageElements(self.search_tab)
+        self.parsed_elements = ProcessedPageElements(self.parsed_tab)
+        self.pruned_elements = ProcessedPageElements(self.pruned_tab)
 
-        self.init_search_layouts(self.search_components)
-        self.init_processed_page_layouts(
-            self.parsed_tab, self.parsed_components
-        )
+        self.init_search_layouts(self.search_elements)
+        self.init_processed_page_layouts(self.parsed_tab, self.parsed_elements)
+        self.init_processed_page_layouts(self.pruned_tab, self.pruned_elements)
 
-        self.init_processed_page_layouts(
-            self.pruned_tab, self.pruned_components
-        )
-
-        self.search_components.query_field.setFocus()
+        self.search_elements.query_field.setFocus()
         self.init_load_animation()
 
     def keyPressEvent(self, event):
@@ -63,10 +58,10 @@ class View(QMainWindow):
     @property
     def active_elements(self):
         return {
-            self.search_tab: self.search_components,
-            self.parsed_tab: self.parsed_components,
-            self.pruned_tab: self.pruned_components
-        }.get(self.active_tab, None)
+            self.search_tab: self.search_elements,
+            self.parsed_tab: self.parsed_elements,
+            self.pruned_tab: self.pruned_elements
+        }.get(self.active_tab)
 
     # set active page
     def set_active_tab(self, page_identity):
@@ -77,50 +72,50 @@ class View(QMainWindow):
         elif page_identity == PageIdentity.PRUNED:
             self.tab_widget.setCurrentWidget(self.pruned_tab)
 
-    def init_search_layouts(self, components):
+    def init_search_layouts(self, elements):
         left_pane = QVBoxLayout()
         left_pane.addWidget(QLabel("Enter Query:"))
-        left_pane.addWidget(components.query_field)
-        left_pane.addWidget(components.prog_bar)
-        left_pane.addWidget(components.search_btn)
-        left_pane.addWidget(components.stop_search_btn)
-        left_pane.addWidget(components.search_status)
-        left_pane.addWidget(components.article_list_view)
+        left_pane.addWidget(elements.query_field)
+        left_pane.addWidget(elements.prog_bar)
+        left_pane.addWidget(elements.search_btn)
+        left_pane.addWidget(elements.stop_search_btn)
+        left_pane.addWidget(elements.search_status)
+        left_pane.addWidget(elements.article_list_view)
         left_pane.addWidget(QLabel("Associated Data:"))
-        left_pane.addWidget(components.data_list_view)
-        left_pane.addWidget(components.proceed_btn)
+        left_pane.addWidget(elements.data_list_view)
+        left_pane.addWidget(elements.proceed_btn)
 
-        left_pane.setStretchFactor(components.article_list_view, 3)
-        left_pane.setStretchFactor(components.data_list_view, 1)
+        left_pane.setStretchFactor(elements.article_list_view, 3)
+        left_pane.setStretchFactor(elements.data_list_view, 1)
 
-        self.init_core_layouts(self.search_tab, components, left_pane)
+        self.init_core_layouts(self.search_tab, elements, left_pane)
 
-    def init_processed_page_layouts(self, page, components):
+    def init_processed_page_layouts(self, page, elements):
         left_pane = QVBoxLayout()
-        left_pane.addWidget(components.prog_bar)
-        left_pane.addWidget(components.article_list_view)
+        left_pane.addWidget(elements.prog_bar)
+        left_pane.addWidget(elements.article_list_view)
         left_pane.addWidget(QLabel("Associated Data:"))
-        left_pane.addWidget(components.data_list_view)
+        left_pane.addWidget(elements.data_list_view)
         left_pane.addWidget(QLabel("Filter Query:"))
-        left_pane.addWidget(components.query_filter_field)
-        left_pane.addWidget(components.filter_btn)
-        left_pane.addWidget(components.prune_btn)
+        left_pane.addWidget(elements.query_filter_field)
+        left_pane.addWidget(elements.filter_btn)
+        left_pane.addWidget(elements.prune_btn)
 
-        left_pane.setStretchFactor(components.article_list_view, 3)
-        left_pane.setStretchFactor(components.data_list_view, 1)
+        left_pane.setStretchFactor(elements.article_list_view, 3)
+        left_pane.setStretchFactor(elements.data_list_view, 1)
 
-        self.init_core_layouts(page, components, left_pane)
+        self.init_core_layouts(page, elements, left_pane)
 
-    def init_core_layouts(self, page, components, left_pane):
+    def init_core_layouts(self, page, elements, left_pane):
         widget_0 = QWidget()
         widget_0.setLayout(left_pane)
 
         mid_pane = QVBoxLayout()
         textbox_label = QLabel("Title/Abstract:")
         mid_pane.addWidget(textbox_label)
-        mid_pane.addWidget(components.title_abstract_disp)
+        mid_pane.addWidget(elements.title_abstract_disp)
         mid_pane.setStretchFactor(textbox_label, 0)
-        mid_pane.setStretchFactor(components.title_abstract_disp, 1)
+        mid_pane.setStretchFactor(elements.title_abstract_disp, 1)
         mid_widget = QWidget()
         mid_widget.setLayout(mid_pane)
 
@@ -128,11 +123,11 @@ class View(QMainWindow):
         preview_pane = QVBoxLayout()
         preview_label = QLabel("Data Preview:")
         preview_pane.addWidget(preview_label)
-        preview_pane.addWidget(components.previews)
-        preview_pane.addWidget(components.loading_label)
+        preview_pane.addWidget(elements.previews)
+        preview_pane.addWidget(elements.loading_label)
         preview_pane.setStretchFactor(preview_label, 0)
-        preview_pane.setStretchFactor(components.previews, 1)
-        preview_pane.setStretchFactor(components.loading_label, 0)
+        preview_pane.setStretchFactor(elements.previews, 1)
+        preview_pane.setStretchFactor(elements.loading_label, 0)
         preview_widget = QWidget()
         preview_widget.setLayout(preview_pane)
 
@@ -194,23 +189,23 @@ class View(QMainWindow):
         list_widget.addItem(item)
         list_widget.setItemWidget(item, item_widget)
 
-    def display_article(self, components, article, progress):
-        article_item = ArticleListItem(article, components.page_identity)
-        self.to_list(components.article_list_view, article_item, article.pmc_id)
-        components.prog_bar.setValue(progress + 1)
+    def display_article(self, elements, article, progress):
+        article_item = ArticleListItem(article, elements.page_identity)
+        self.to_list(elements.article_list_view, article_item, article.pmc_id)
+        elements.prog_bar.setValue(progress + 1)
 
-    def update_article_display(self, article, components, data_set):
-        self.clear_list_and_observers(components.data_list_view)
-        components.title_abstract_disp.setHtml(
+    def update_article_display(self, article, elements, data_set):
+        self.clear_list_and_observers(elements.data_list_view)
+        elements.title_abstract_disp.setHtml(
             f"<a href='{article.url}'>"
             f"<b>{article.title}</b></a>"
             f"<br><br>{article.abstract}"
         )
 
         for data in data_set:
-            data_item = self.list_item_factory(data, components.page_identity)
+            data_item = self.list_item_factory(data, elements.page_identity)
             data_item.checkbox.setChecked(data.checked)
-            self.to_list(components.data_list_view, data_item, data.id)
+            self.to_list(elements.data_list_view, data_item, data.id)
 
     def clear_page_lists(self, elements):
         self.clear_list_and_observers(elements.article_list_view)
