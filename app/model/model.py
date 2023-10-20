@@ -1,6 +1,5 @@
 from uuid import uuid4
 import pickle
-from enum import Enum, auto
 
 from model.article_managers import Bibliography, Article, SuppFile, SuppFileManager, ProcessedTable, ProcessedTableManager, stash_all_observers, restore_all_observers
 from model.database import TableDBManager, PostPruningTableDBEntry
