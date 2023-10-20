@@ -28,10 +28,9 @@ class QListWidget(QListWidget):
             self.itemClicked.emit(self.currentItem())
 
 
-class CommonPageElements:
+class PageElements(QObject): # QObject needed for signalling
     def __init__(self, parent_tab):
-        # TODO we're refactoring the page_identity stuff, so this may cease to
-        # be necessary
+        super().__init__()
         self.page_identity = parent_tab.page_identity
         self.prog_bar = QProgressBar(parent_tab)
         self.prog_bar.setRange(0, 100)
@@ -69,11 +68,22 @@ class SearchPageElements(CommonPageElements):
         self.proceed_btn = QPushButton("Proceed", parent_tab)
         
 
-class ProcessedPageElements(CommonPageElements):
+class ProcessedPageElements(PageElements):
+    filter_sig = pyqtSignal(object)
+    prune_sig = pyqtSignal(object)
+
     def __init__(self, parent_tab):
         super().__init__(parent_tab)
         self.query_filter_field = QLineEdit(parent_tab)
         self.filter_btn = QPushButton("Filter", parent_tab)
-        self.query_filter_field \
-            .returnPressed.connect(self.filter_btn.click)
+        self.query_filter_field.returnPressed.connect(self.filter_btn.click)
+        self.filter_btn.clicked.connect(self.emit_filter_identity)
+
         self.prune_btn = QPushButton("Prune Tables and Columns", parent_tab)
+        self.prune_btn.clicked.connect(self.emit_prune_identity)
+    
+    def emit_filter_identity(self):
+        self.filter_sig.emit(self.page_identity)
+
+    def emit_prune_identity(self):
+        self.prune_sig.emit(self.page_identity)

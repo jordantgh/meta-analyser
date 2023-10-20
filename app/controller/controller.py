@@ -54,13 +54,13 @@ class Controller:
 
             # Parsed page
             self.parsed_elems.article_list_view.itemClicked: self.click_article,
-            self.parsed_elems.filter_btn.clicked: self.filter_tables,
-            self.parsed_elems.prune_btn.clicked: self.prune_tables_and_columns,
+            self.parsed_elems.filter_sig: self.filter_tables,
+            self.parsed_elems.prune_sig: self.prune_tables_and_columns,
 
             # Pruned page
             self.pruned_elems.article_list_view.itemClicked: self.click_article,
-            self.pruned_elems.filter_btn.clicked: self.filter_tables,
-            self.pruned_elems.prune_btn.clicked: self.prune_tables_and_columns
+            self.pruned_elems.filter_sig: self.filter_tables,
+            self.pruned_elems.prune_sig: self.prune_tables_and_columns
         }
 
         for signal, slot in signals_map.items():
