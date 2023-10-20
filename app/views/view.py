@@ -168,19 +168,19 @@ class View(QMainWindow):
         )
 
     def show_searching_view(self):
-        self.search_elements.prog_bar.setValue(0)
-        self.search_elements.prog_bar.show()
-        self.search_elements.search_status.setText("Searching...")
-        self.search_elements.search_status.show()
-        self.search_elements.stop_search_btn.show()
-        self.search_elements.stop_search_btn.setEnabled(True)
-        
+        self.search_elems.prog_bar.setValue(0)
+        self.search_elems.prog_bar.show()
+        self.search_elems.search_status.setText("Searching...")
+        self.search_elems.search_status.show()
+        self.search_elems.stop_search_btn.show()
+        self.search_elems.stop_search_btn.setEnabled(True)
+
     def hide_searching_view(self):
-        self.search_elements.search_status.setText("Stopping search...")
-        self.search_elements.prog_bar.hide()
-        self.search_elements.search_status.setText("Search stopped.")
-        self.search_elements.stop_search_btn.hide()
-        self.search_elements.stop_search_btn.setEnabled(False)
+        self.search_elems.search_status.setText("Stopping search...")
+        self.search_elems.prog_bar.hide()
+        self.search_elems.search_status.setText("Search stopped.")
+        self.search_elems.stop_search_btn.hide()
+        self.search_elems.stop_search_btn.setEnabled(False)
 
     def to_list(self, list_widget, item_widget, id):
         item = QListWidgetItem()
@@ -221,9 +221,8 @@ class View(QMainWindow):
 
         list_widget.clear()
 
-    # fully reset the view
     def reset(self):
-        for elems in [self.search_tab, self.parsed_tab, self.pruned_tab]:
+        for elems in [self.search_elems, self.parsed_elems, self.pruned_elems]:
             self.clear_page_lists(elems)
             elems.title_abstract_disp.clear()
             elems.previews.clear()
