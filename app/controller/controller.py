@@ -11,16 +11,16 @@ class Controller:
     def __init__(self, model: Model, view: View):
         self.model = model
         self.view = view
-        self.search_page = self.view.search_components
-        self.parsed_page = self.view.parsed_components
-        self.pruned_page = self.view.pruned_components
+        self.search_elems = self.view.search_elements
+        self.parsed_elems = self.view.parsed_elements
+        self.pruned_elems = self.view.pruned_elements
         self.connect_sigs()
 
     def set_state(self, state):
         self.model.set_state(state)
 
     @property
-    def view_elem(self):
+    def curr_elems(self):
         return self.view.active_elements
 
     @property
@@ -74,7 +74,7 @@ class Controller:
 
         self.view.display_article(self.output_page, article_data, progress)
 
-    def search_for_articles(self):
+    def search_articles(self):
         self.set_state(Mode.SEARCHING)
         self.model.reset_for_searching()
         self.view.tab_widget.setCurrentIndex(0)
@@ -88,10 +88,11 @@ class Controller:
             return
 
         self.model.search_thread.should_stop = False
-        query = self.search_page.query_field.text()
+        query = self.search_elems.query_field.text()
         if not query:
             return
 
+        self.view.clear_list_and_observers(self.search_elems.article_list_view)
         self.view.show_searching_view()
 
         self.model.search_thread.query = query
@@ -110,53 +111,50 @@ class Controller:
         while self.model.state == Mode.SEARCHING:
             QCoreApplication.processEvents(QEventLoop.AllEvents, 100)
 
-    def on_processing_finished(self):
+    def stop_processing(self):
         if self.model.processing_thread.isRunning():
             self.model.processing_thread.stop()
             self.model.processing_thread.quit()
             self.model.processing_thread.wait()
 
-        self.parsed_page.prog_bar.hide()
+        self.parsed_elems.prog_bar.hide()
         self.set_state(Mode.BROWSING)
 
-    def handle_article_click(self, item):
+    def click_article(self, item):
         article_id = item.data(Qt.UserRole)
         article = self.model.bibliography.get_article(article_id)
 
-        components = self.view_elem
-        
-        if components.page_identity == PageIdentity.SEARCH:
-            data_set = article.supp_files
-        elif components.page_identity == PageIdentity.PARSED:
-            data_set = article.processed_tables
-        elif components.page_identity == PageIdentity.PRUNED:
-            data_set = article.pruned_tables        
-        
-        self.view.update_article_display(article, components, data_set)
+        elements = self.curr_elems
 
-        for i in range(components.data_list_view.count()):
-            list_item = components.data_list_view.item(i)
-            widget = components.data_list_view.itemWidget(list_item)
-            if components.page_identity == PageIdentity.SEARCH:
+        if elements.page_identity == PageIdentity.SEARCH:
+            data_set = article.supp_files
+        elif elements.page_identity == PageIdentity.PARSED:
+            data_set = article.processed_tables
+        elif elements.page_identity == PageIdentity.PRUNED:
+            data_set = article.pruned_tables
+
+        self.view.update_article_display(article, elements, data_set)
+
+        for i in range(elements.data_list_view.count()):
+            list_item = elements.data_list_view.item(i)
+            widget = elements.data_list_view.itemWidget(list_item)
+            if elements.page_identity == PageIdentity.SEARCH:
                 widget.preview_requested.connect(self.request_suppfile_preview)
             else:
                 widget.preview_requested.connect(self.preview_processed_table)
 
     def load_preview(self, data, table_id=None, callback=None):
-
-        context = self.view_elem.page_identity
+        context = self.curr_elems.page_identity
         use_checkable_header = context != PageIdentity.SEARCH
 
-        processed_table = self.model.processed_table_manager \
+        table = self.model.processed_table_manager \
             .get_processed_table(table_id) if table_id else None
 
         cols = None
         if context == PageIdentity.PARSED:
-            cols = processed_table \
-                .checked_columns if processed_table else None
+            cols = table.checked_columns if table else None
         elif context == PageIdentity.PRUNED:
-            cols = processed_table \
-                .pruned_columns if processed_table else None
+            cols = table.pruned_columns if table else None
 
         self.view.display_multisheet_table(
             data, use_checkable_header, table_id, callback, cols
@@ -177,42 +175,43 @@ class Controller:
 
     def preview_processed_table(self, table_id, context):
         table_data = {
-            "sheet": self.model.table_db_manager
-            .get_processed_table_data(table_id, context).head(100)
+            "sheet": self.model.table_db_manager.get_processed_table_data(
+                table_id, context
+            ).head(100)
         }
 
         self.view.start_load_animation()
         self.load_preview(table_data, table_id, self.update_checked_columns)
 
     def update_checked_columns(self, table_id, checked_columns):
-        processed_table = self.model.processed_table_manager \
-            .get_processed_table(table_id)
+        table = self.model.processed_table_manager.get_processed_table(
+            table_id)
 
-        if processed_table:
-            if self.view_elem.page_identity == PageIdentity.PARSED:
-                processed_table.checked_columns = checked_columns
-            elif self.view_elem.page_identity == PageIdentity.PRUNED:
-                processed_table.pruned_columns = checked_columns
+        if table:
+            if self.curr_elems.page_identity == PageIdentity.PARSED:
+                table.checked_columns = checked_columns
+            elif self.curr_elems.page_identity == PageIdentity.PRUNED:
+                table.pruned_columns = checked_columns
 
     def prune_tables_and_columns(self):
         self.set_state(Mode.PRUNING)
 
-        context = self.view_elem.page_identity
+        context = self.curr_elems.page_identity
 
         for article in self.model.bibliography.articles.values():
             article.cascade_checked_state(context)
 
         self.view.set_active_tab(PageIdentity.PRUNED)
         self.model.prune_tables_and_columns(context)
-        self.view.clear_page_lists()
+        self.view.clear_page_lists(self.curr_elems)
 
         for article in self.model.bibliography.get_selected_articles(context):
-            self.view.display_article(self.pruned_page, article, 0)
+            self.view.display_article(self.pruned_elems, article, 0)
 
         self.set_state(Mode.BROWSING)
 
     def filter_tables(self):
-        query = self.view_elem.query_filter_field.text()
+        query = self.curr_elems.query_filter_field.text()
         if not query:
             return
         self.model.filter_tables(query)
@@ -248,9 +247,9 @@ class Controller:
         self.model.processing_thread.should_stop = False
 
         # TODO these are low level concerns that should be handled by the view
-        self.view.clear_list_and_observers(self.view_elem.article_list_view)
-        self.view_elem.prog_bar.setValue(0)
-        self.view_elem.prog_bar.show()
+        self.view.clear_list_and_observers(self.curr_elems.article_list_view)
+        self.curr_elems.prog_bar.setValue(0)
+        self.curr_elems.prog_bar.show()
 
         for article in self.model.bibliography.articles.values():
             article.cascade_checked_state(PageIdentity.SEARCH)
@@ -314,16 +313,17 @@ class Controller:
         self.view.reset()
 
         # re-init
+        # TODO this is a bad way to do this, should reset the model properly
         self.__init__(self.model, self.view)
 
         # populate search page
         selected_articles = self.model.bibliography.articles.values()
 
         for article in selected_articles:
-            self.view.display_article(self.search_page, article, 0)
+            self.view.display_article(self.search_elems, article, 0)
 
         # populate parsed page
-        if not self.model.ever_parsed:
+        if not self.model.n_parse_runs:
             return
 
         selected_articles = self.model.bibliography.get_selected_articles(
@@ -331,13 +331,13 @@ class Controller:
         )
 
         for article in selected_articles:
-            self.view.display_article(self.parsed_page, article, 0)
+            self.view.display_article(self.parsed_elems, article, 0)
 
         # populate pruned page
-        if not self.model.ever_pruned:
+        if not self.model.n_prunes:
             return
 
-        if self.model.ever_pruned == 1:
+        if self.model.n_prunes == 1:
             selected_articles = self.model.bibliography.get_selected_articles(
                 PageIdentity.PARSED
             )
@@ -348,6 +348,4 @@ class Controller:
             )
 
         for article in selected_articles:
-            self.view.display_article(
-                self.pruned_page, article, 0
-            )
+            self.view.display_article(self.pruned_elems, article, 0)
