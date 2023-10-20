@@ -195,7 +195,6 @@ class Model:
             'n_prunes': self.n_prunes
         }
 
-        # Serialize the dictionary and save it to a file
         with open(filename, 'wb') as f:
             pickle.dump(save_object, f)
 
@@ -203,7 +202,6 @@ class Model:
         restore_all_observers(self.bibliography, global_stash, visited_objects)
 
     def load(self, filename):
-        # Load File
         with open(filename, 'rb') as f:
             save_object = pickle.load(f)
 
