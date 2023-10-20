@@ -69,7 +69,7 @@ def parse_tables(selected_articles, db_manager, should_stop, callback=None):
 
         if callback:
             progress = int(100 * (index + 1) / len(selected_articles))
-            callback(article, processed_table_ids, progress)
+            callback(article, progress, processed_table_ids)
 
 
 def _is_contained(box, o_box):

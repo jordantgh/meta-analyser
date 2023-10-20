@@ -4,6 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from uuid import uuid4
 import pandas as pd
 
+from utils.constants import PageIdentity
+
 Base = declarative_base()
 
 
@@ -29,7 +31,7 @@ class TableDBManager:
     ):
         self.processed_db_url = processed_db_url
         self.post_pruning_db_url = post_pruning_db_url
-        
+
         self.processed_engine = create_engine(processed_db_url)
         self.post_pruning_engine = create_engine(post_pruning_db_url)
 
@@ -63,21 +65,32 @@ class TableDBManager:
     def update_table(self, table_class, table_id, df):
         engine, Session = self._get_engine_and_session(table_class)
         with Session() as session:
-            existing_table = session.query(table_class).filter_by(table_id=table_id).first()
+            existing_table = session.query(
+                table_class
+            ).filter_by(table_id=table_id).first()
+
             if existing_table:
-                df.to_sql(existing_table.sql_table_name, engine, if_exists='replace', index=False)
+                df.to_sql(
+                    existing_table.sql_table_name,
+                    engine,
+                    if_exists='replace',
+                    index=False
+                )
                 session.commit()
 
-    def get_processed_table_data(self, table_id):
-        return self.get_table_data(ProcessedTableDBEntry, table_id)
-
-    def get_post_pruning_table_data(self, table_id):
-        return self.get_table_data(PostPruningTableDBEntry, table_id)
+    # TODO consolidate these using context to decide which table to query
+    def get_processed_table_data(self, table_id, context):
+        if context == PageIdentity.PARSED:
+            return self.get_table_data(ProcessedTableDBEntry, table_id)
+        else:
+            return self.get_table_data(PostPruningTableDBEntry, table_id)
 
     def get_table_data(self, table_class, table_id):
         engine, Session = self._get_engine_and_session(table_class)
         with Session() as session:
-            table_entry = session.query(table_class).filter_by(table_id=table_id).first()
+            table_entry = session.query(table_class).filter_by(
+                table_id=table_id
+            ).first()
             if table_entry:
                 df = pd.read_sql_table(table_entry.sql_table_name, engine)
                 return df.reset_index(drop=True)
@@ -86,31 +99,37 @@ class TableDBManager:
     def get_table_object(self, table_class, table_id):
         _, Session = self._get_engine_and_session(table_class)
         with Session() as session:
-            table = session.query(table_class).filter_by(table_id=table_id).first()
+            table = session.query(table_class).filter_by(
+                table_id=table_id).first()
             return table
 
     def delete_table(self, table_class, table_id):
         engine, Session = self._get_engine_and_session(table_class)
         with Session() as session:
-            table_entry = session.query(table_class).filter_by(table_id=table_id).first()
+            table_entry = session.query(table_class).filter_by(
+                table_id=table_id).first()
             if table_entry:
                 with engine.connect() as conn:
-                    conn.execute(text(f"DROP TABLE IF EXISTS \"{table_entry.sql_table_name}\""))
+                    conn.execute(
+                        text(f"DROP TABLE IF EXISTS \"{table_entry.sql_table_name}\""))
                 session.delete(table_entry)
                 session.commit()
 
     def reset(self):
         for engine, Session in [
             (self.processed_engine, self.ProcessedSession),
-            (self.post_pruning_engine, self.PostPruningSession)]:
+                (self.post_pruning_engine, self.PostPruningSession)]:
             with Session() as session:
                 for table_class in [ProcessedTableDBEntry, PostPruningTableDBEntry]:
                     table_entries = session.query(table_class).all()
                     for entry in table_entries:
                         with engine.connect() as conn:
-                            conn.execute(text(f"DROP TABLE IF EXISTS \"{entry.sql_table_name}\""))
+                            conn.execute(
+                                text(f"DROP TABLE IF EXISTS \"{entry.sql_table_name}\""))
                     session.query(table_class).delete()
                 session.commit()
 
+
 def processed_df_to_db(db_manager, table_id, original_file_id, df):
-    db_manager.save_table(ProcessedTableDBEntry, table_id, original_file_id, df)
+    db_manager.save_table(ProcessedTableDBEntry,
+                          table_id, original_file_id, df)

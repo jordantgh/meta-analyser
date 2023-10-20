@@ -1,96 +1,81 @@
 from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
+from model.model import Model
+from views.view import View
+
+from utils.constants import PageIdentity, Mode
+
 
 class Controller:
-    def __init__(self, model, view):
+    def __init__(self, model: Model, view: View):
         self.model = model
         self.view = view
-        self.search_page = self.view.search_components
-        self.parsed_page = self.view.parsed_components
-        self.pruned_page = self.view.pruned_components
-        self.connect_sigs()
+        self.search_elems = self.view.search_elems
+        self.parsed_elems = self.view.parsed_elems
+        self.pruned_elems = self.view.pruned_elems
+        self._connect_sigs()
 
-    def set_state(self, state):
+    def _set_state(self, state):
         self.model.set_state(state)
 
     @property
-    def view_elem(self):
+    def curr_elems(self):
         return self.view.active_elements
 
-    def connect_sigs(self):
-        # Menu bar
-        self.view.save_action.triggered.connect(self.save)
-        self.view.load_action.triggered.connect(self.load)
+    @property
+    def output_page(self):
+        mode = self.model.state
+        return {
+            Mode.SEARCHING: self.search_elems,
+            Mode.PROCESSING: self.parsed_elems,
+            Mode.PRUNING: self.pruned_elems
+        }.get(mode)
 
-        # Search page; article click
-        self.search_page \
-            .article_list.itemClicked \
-            .connect(self.handle_article_click)
-        # Search page; buttons
-        self.search_page \
-            .search_btn.clicked \
-            .connect(self.search_for_articles)
-        self.search_page \
-            .stop_search_btn.clicked \
-            .connect(self.send_search_stop)
-        self.search_page \
-            .proceed_btn.clicked \
-            .connect(self.on_proceed)
-        # Search thread
-        self.model \
-            .search_thread.article_sig \
-            .connect(self.on_article_discovered)
-        self.model \
-            .search_thread.finished_sig \
-            .connect(self.stop_search)
+    def _connect_sigs(self):
+        signals_map = {
+            self.view.save_action.triggered: self.save,
+            self.view.load_action.triggered: self.load,
 
-        # Processing thread
-        self.model \
-            .processing_thread.article_sig \
-            .connect(self.on_article_processed)
-        self.model \
-            .processing_thread.finished_sig \
-            .connect(self.on_processing_finished)
-        self.model \
-            .preview_thread.prev_ready_sig \
-            .connect(self.load_preview)
-        # Parsed tables page; article click
-        self.parsed_page \
-            .article_list.itemClicked \
-            .connect(self.handle_processed_article_click)
-        # Parsed tables page; buttons
-        self.parsed_page \
-            .filter_btn.clicked \
-            .connect(self.filter_tables)
-        self.parsed_page \
-            .prune_btn.clicked \
-            .connect(self.prune_tables_and_columns)
+            # Search page
+            self.search_elems.article_list_view.itemClicked: self.click_article,
+            self.search_elems.search_btn.clicked: self.search_articles,
+            self.search_elems.stop_search_btn.clicked: self.send_search_stop,
+            self.search_elems.proceed_btn.clicked: self.on_proceed,
 
-        # Pruned tables page; article click
-        self.pruned_page \
-            .article_list.itemClicked \
-            .connect(self.handle_pruned_article_click)
-        # Pruned tables page; buttons
-        self.pruned_page \
-            .filter_btn.clicked \
-            .connect(self.filter_tables)
-        self.pruned_page \
-            .prune_btn.clicked \
-            .connect(self.prune_tables_and_columns)
+            # Search threads
+            self.model.search_thread.article_sig: self.display_article,
+            self.model.search_thread.finished_sig: self.stop_search,
+            self.model.search_preview_thread.prev_ready_sig: self.load_preview,
 
-    def on_article_discovered(self, article_json, progress):
-        article_data = self.model.create_article_data(article_json)
-        self.view.display_article(
-            self.search_page, 'search', article_data, progress)
+            # Processing thread
+            self.model.processing_thread.article_sig: self.display_article,
+            self.model.processing_thread.finished_sig: self.stop_processing,
 
-    def on_article_processed(self, article, ids_list, progress):
-        article_data = self.model.update_article(article, ids_list)
-        self.view.display_article(
-            self.parsed_page, 'parsed', article_data, progress)
+            # Parsed page
+            self.parsed_elems.article_list_view.itemClicked: self.click_article,
+            self.parsed_elems.filter_sig: self.filter_tables,
+            self.parsed_elems.prune_sig: self.prune_tables_and_columns,
 
-    def search_for_articles(self):
-        self.set_state(self.model.Mode.SEARCHING)
+            # Pruned page
+            self.pruned_elems.article_list_view.itemClicked: self.click_article,
+            self.pruned_elems.filter_sig: self.filter_tables,
+            self.pruned_elems.prune_sig: self.prune_tables_and_columns
+        }
+
+        for signal, slot in signals_map.items():
+            signal.connect(slot)
+
+    def display_article(self, article, progress, ids_list=None):
+        if self.model.state == Mode.SEARCHING:
+            article_data = self.model.create_article_data(article)
+        elif self.model.state == Mode.PROCESSING:
+            article_data = self.model.update_article(article, ids_list)
+
+        self.view.display_article(self.output_page, article_data, progress)
+
+    def search_articles(self):
+        self._set_state(Mode.SEARCHING)
         self.model.reset_for_searching()
         self.view.tab_widget.setCurrentIndex(0)
 
@@ -103,192 +88,131 @@ class Controller:
             return
 
         self.model.search_thread.should_stop = False
-        query = self.search_page.query_field.text()
+        query = self.search_elems.query_field.text()
         if not query:
             return
 
-        # TODO these are low level concerns that should be handled by the view
-        self.view.clear_list_and_observers(self.search_page.article_list)
-        self.search_page.prog_bar.setValue(0)
-        self.search_page.prog_bar.show()
-        self.search_page.search_status.setText("Searching...")
-        self.search_page.stop_search_btn.show()
-        self.search_page.stop_search_btn.setEnabled(True)
+        self.view.clear_list_and_observers(self.search_elems.article_list_view)
+        self.view.show_searching_view()
 
         self.model.search_thread.query = query
         self.model.search_thread.start()
 
     def stop_search(self, search_thread):
         search_thread.quit()
-
-        # TODO these are low level concerns that should be handled by the view
-        self.search_page.search_status.setText("Stopping search...")
-        self.search_page.prog_bar.hide()
-        self.search_page.search_status.setText("Search stopped.")
-        self.search_page.stop_search_btn.hide()
-        self.search_page.stop_search_btn.setEnabled(False)
-
-        self.set_state(self.model.Mode.BROWSING)
+        self.view.hide_searching_view()
+        self._set_state(Mode.BROWSING)
 
     def send_search_stop(self):
         if self.model.search_thread.isRunning():
             self.model.search_thread.stop()
             self.model.search_thread.wait()
 
-        while self.model.state == self.model.Mode.SEARCHING:
+        while self.model.state == Mode.SEARCHING:
             QCoreApplication.processEvents(QEventLoop.AllEvents, 100)
 
-    def on_processing_finished(self):
+    def stop_processing(self):
         if self.model.processing_thread.isRunning():
             self.model.processing_thread.stop()
             self.model.processing_thread.quit()
             self.model.processing_thread.wait()
 
-        self.parsed_page.prog_bar.hide()
-        self.set_state(self.model.Mode.BROWSING)
+        self.parsed_elems.prog_bar.hide()
+        self._set_state(Mode.BROWSING)
 
-    # TODO these three can be combined and list item type passed in or derived
-    # from view_elem.__class__.__name__
-    def handle_article_click(self, item):
+    def click_article(self, item):
         article_id = item.data(Qt.UserRole)
         article = self.model.bibliography.get_article(article_id)
 
-        self.view.update_article_display(
-            article,
-            'supp_files',
-            self.view.suppfilelistitem_factory,
-            'search')
+        elements = self.curr_elems
 
-        # TODO do we need to pass in the factory if the relevant class can be
-        # derived from list item type within view.update_article_display?
-        # ... could just do away with the factories altogether
+        if elements.page_identity == PageIdentity.SEARCH:
+            data_set = article.supp_files
+        elif elements.page_identity == PageIdentity.PARSED:
+            data_set = article.processed_tables
+        elif elements.page_identity == PageIdentity.PRUNED:
+            data_set = article.pruned_tables
 
-        for i in range(self.view_elem.supp_files_view.count()):
-            list_item = self.view_elem.supp_files_view.item(i)
-            widget = self.view_elem.supp_files_view.itemWidget(list_item)
-            widget.preview_requested.connect(self.preview_supp_file)
+        self.view.update_article_display(article, elements, data_set)
 
-    def handle_processed_article_click(self, item):
-        article_id = item.data(Qt.UserRole)
-        article = self.model.bibliography.get_article(article_id)
+        for i in range(elements.data_list_view.count()):
+            list_item = elements.data_list_view.item(i)
+            widget = elements.data_list_view.itemWidget(list_item)
+            if elements.page_identity == PageIdentity.SEARCH:
+                widget.preview_requested.connect(self.request_suppfile_preview)
+            else:
+                widget.preview_requested.connect(self.preview_processed_table)
 
-        self.view.update_article_display(
-            article,
-            'processed_tables',
-            self.view.processedtablelistitem_factory,
-            'parsed')
+    def load_preview(self, data, table_id=None, callback=None):
+        context = self.curr_elems.page_identity
+        use_checkable_header = context != PageIdentity.SEARCH
 
-        for i in range(self.view_elem.supp_files_view.count()):
-            list_item = self.view_elem.supp_files_view.item(i)
-            widget = self.view_elem.supp_files_view.itemWidget(list_item)
-            widget.preview_requested.connect(self.preview_processed_table)
-
-    def handle_pruned_article_click(self, item):
-        article_id = item.data(Qt.UserRole)
-        article = self.model.bibliography.get_article(article_id)
-
-        self.view.update_article_display(
-            article,
-            'pruned_article_tables',
-            self.view.processedtablelistitem_factory,
-            'pruned')
-
-        for i in range(self.view_elem.supp_files_view.count()):
-            list_item = self.view_elem.supp_files_view.item(i)
-            widget = self.view_elem.supp_files_view.itemWidget(list_item)
-            widget.preview_requested.connect(self.preview_pruned_table)
-
-    def load_preview(self, data, table_id=None, callback=None, context=None):
-        use_checkable_header = self.view_elem \
-            .__class__.__name__ == 'ProcessedPageElements'
-
-        processed_table = self.model.processed_table_manager \
+        table = self.model.processed_table_manager \
             .get_processed_table(table_id) if table_id else None
 
-        checked_columns = None
-        if context == 'parsed':
-            checked_columns = processed_table \
-                .checked_columns if processed_table else None
-        elif context == 'pruned':
-            checked_columns = processed_table \
-                .pruned_columns if processed_table else None
+        cols = None
+        if context == PageIdentity.PARSED:
+            cols = table.checked_columns if table else None
+        elif context == PageIdentity.PRUNED:
+            cols = table.pruned_columns if table else None
 
         self.view.display_multisheet_table(
-            data, use_checkable_header, table_id, callback, checked_columns)
-        self.view.stop_load_animation()
-        self.view_elem.previews.show()
+            data, use_checkable_header, table_id, callback, cols
+        )
 
-    def preview_supp_file(self, file_id):
+        self.view.stop_load_animation()
+
+    def request_suppfile_preview(self, file_id):
         file_data = self.model.file_manager.get_file(file_id)
         self.view.start_load_animation()
 
-        if self.model.preview_thread.isRunning():
-            self.model.preview_thread.quit()
-            self.model.preview_thread.wait()
+        if self.model.search_preview_thread.isRunning():
+            self.model.search_preview_thread.quit()
+            self.model.search_preview_thread.wait()
 
-        self.model.preview_thread.file_url = file_data.url
-        self.model.preview_thread.start()
+        self.model.search_preview_thread.file_url = file_data.url
+        self.model.search_preview_thread.start()
 
-    def preview_processed_table(self, table_id):
+    def preview_processed_table(self, table_id, context):
         table_data = {
             "sheet": self.model.table_db_manager.get_processed_table_data(
-                table_id).head(100)}
+                table_id, context
+            ).head(100)
+        }
 
         self.view.start_load_animation()
-        self.load_preview(table_data, table_id,
-                          self.update_checked_columns, 'parsed')
-
-    def preview_pruned_table(self, table_id):
-        table_data = {
-            "sheet": self.model.table_db_manager.get_post_pruning_table_data(
-                table_id).head(100)}
-
-        self.view.start_load_animation()
-        self.load_preview(table_data, table_id,
-                          self.update_pruned_columns, 'pruned')
+        self.load_preview(table_data, table_id, self.update_checked_columns)
 
     def update_checked_columns(self, table_id, checked_columns):
-        processed_table = self.model.processed_table_manager \
-            .get_processed_table(table_id)
+        table = self.model.processed_table_manager.get_processed_table(
+            table_id)
 
-        if processed_table:
-            processed_table.checked_columns = checked_columns
+        if table:
+            if self.curr_elems.page_identity == PageIdentity.PARSED:
+                table.checked_columns = checked_columns
+            elif self.curr_elems.page_identity == PageIdentity.PRUNED:
+                table.pruned_columns = checked_columns
 
-    def update_pruned_columns(self, table_id, checked_columns):
-        processed_table = self.model.processed_table_manager \
-            .get_processed_table(table_id)
-
-        if processed_table:
-            processed_table.pruned_columns = checked_columns
-
-    def prune_tables_and_columns(self):
-        self.set_state(self.model.Mode.PRUNING)
-        # get current page from view_elem (class name doesnt work!)
-        current_page = self.view.tab_widget.currentIndex()
-        if current_page == 1:
-            context = 'parsed'
-        elif current_page == 2:
-            context = 'pruned'
+    def prune_tables_and_columns(self, context):
+        self._set_state(Mode.PRUNING)
 
         for article in self.model.bibliography.articles.values():
             article.cascade_checked_state(context)
 
-        self.view.tab_widget.setCurrentIndex(2)
+        self.view.set_active_tab(PageIdentity.PRUNED)
         self.model.prune_tables_and_columns(context)
+        self.view.clear_page_lists(self.curr_elems)
 
-        self.view.clear_article_list_and_files_view()
-
-        # display all selected articles in the pruned page
         for article in self.model.bibliography.get_selected_articles(context):
-            self.view.display_article(self.pruned_page, 'pruned', article, 0)
+            self.view.display_article(self.pruned_elems, article, 0)
 
-        self.set_state(self.model.Mode.BROWSING)
-        
-    def filter_tables(self):
-        query = self.view_elem.query_filter_field.text()
+        self._set_state(Mode.BROWSING)
+
+    def filter_tables(self, context):
+        query = self.curr_elems.query_filter_field.text()
         if not query:
             return
-        self.model.filter_tables(query)
+        self.model.filter_tables(query, context)
 
     def on_proceed(self):
         if self.model.search_thread.isRunning():
@@ -298,7 +222,8 @@ class Controller:
                 "A search is still in progress. "
                 "Do you want to stop the current search and proceed?",
                 QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No)
+                QMessageBox.No
+            )
 
             if reply == QMessageBox.Yes:
                 self.send_search_stop()
@@ -306,109 +231,117 @@ class Controller:
                 return
 
         self.model.reset_for_processing()
-        self.view.tab_widget.setCurrentIndex(1)
+        self.view.set_active_tab(PageIdentity.PARSED)
 
         if self.model.processing_thread.isRunning():
             QMessageBox.warning(
                 self.view,
                 "Processing in Progress",
-                "A parsing run is already in progress. Please wait.")
+                "A parsing run is already in progress. Please wait."
+            )
             return
 
-        self.set_state(self.model.Mode.PROCESSING)
+        self._set_state(Mode.PROCESSING)
         self.model.processing_thread.should_stop = False
 
-        # TODO these are low level concerns that should be handled by the view
-        self.view.clear_list_and_observers(self.view_elem.article_list)
-        self.view_elem.prog_bar.setValue(0)
-        self.view_elem.prog_bar.show()
+        self.view.clear_list_and_observers(self.curr_elems.article_list_view)
+        self.curr_elems.prog_bar.setValue(0)
+        self.curr_elems.prog_bar.show()
 
         for article in self.model.bibliography.articles.values():
-            article.cascade_checked_state('search')
+            article.cascade_checked_state(PageIdentity.SEARCH)
 
         selected_articles = self.model.bibliography.get_selected_articles(
-            'search')
+            PageIdentity.SEARCH
+        )
+
         self.model.processing_thread.selected_articles = selected_articles
         self.model.processing_thread.start()
 
     def save(self):
         # check if the app is in a state where it can be saved
-        if self.model.state != self.model.Mode.BROWSING:
+        if self.model.state != Mode.BROWSING:
             QMessageBox.warning(
                 self.view,
                 "Cannot Save",
-                "The application can only be saved in the browsing state.")
+                "The application can only be saved in the browsing state."
+            )
             return
 
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         filename, _ = QFileDialog.getSaveFileName(
-            self.view, "Save As", "", "All Files (*);;Text Files (*.txt)", options=options)
+            self.view,
+            "Save As",
+            "",
+            "All Files (*);;Text Files (*.txt)",
+            options=options
+        )
 
         if filename:
             self.model.save(filename)
-            
-    def load(self):        
-        if self.model.state != self.model.Mode.BROWSING:
+
+    def load(self):
+        if self.model.state != Mode.BROWSING:
             QMessageBox.warning(
                 self.view,
                 "Cannot Save",
-                "The application can only be saved in the browsing state.")
+                "The application can only be saved in the browsing state."
+            )
             return
 
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
         filename, _ = QFileDialog.getOpenFileName(
-            self.view, "Load File", "", "Pickle Files (*.pkl);;All Files (*)", options=options
+            self.view,
+            "Load File",
+            "",
+            "Pickle Files (*.pkl);;All Files (*)",
+            options=options
         )
 
         if not filename:
             return
 
         self.model.load(filename)
-        
+
         # repopulate the GUI
-        ## clear all pages
-        for page in [self.search_page, self.parsed_page, self.pruned_page]:
-            self.view.clear_list_and_observers(page.article_list)
-            page.supp_files_view.clear()
-            page.title_abstract_disp.clear()
-            page.previews.clear()
-            
-        # re-init 
+        # clear all pages
+        self.view.reset()
+
+        # re-init
+        # TODO this is a bad way to do this, should reset the model properly
         self.__init__(self.model, self.view)
-        
-        ## populate search page
+
+        # Populate search page
         selected_articles = self.model.bibliography.articles.values()
-        
         for article in selected_articles:
-            self.view.display_article(self.search_page, 'search', article, 0)
-        
-        ## populate parsed page
-        if not self.model.ever_parsed:
+            self.view.display_article(self.search_elems, article, 0)
+
+        # Populate parsed page
+        if not self.model.n_parse_runs:
             return
-        
-        selected_articles = self.model.bibliography \
-            .get_selected_articles('search')
-            
-        for article in selected_articles:
-            self.view.display_article(self.parsed_page, 'parsed', article, 0)
-            
-        ## populate pruned page
-        
-        # BUG: the current implementation wont handle it if there was >1
-        # prune run in the loaded model. If pruned >1 times, we should get
-        # selected articles from the pruned page and not the parsed page
-        print(self.model.ever_pruned)
-        if not self.model.ever_pruned:
-            return
-        
-        if self.model.ever_pruned == 1:
-            selected_articles = self.model.bibliography \
-                .get_selected_articles('parsed')
-        else:
-            selected_articles = self.model.bibliography \
-                .get_selected_articles('pruned')
+
+        selected_articles = self.model.bibliography.get_selected_articles(
+            PageIdentity.SEARCH
+        )
 
         for article in selected_articles:
-            self.view.display_article(self.pruned_page, 'pruned', article, 0)
+            self.view.display_article(self.parsed_elems, article, 0)
+
+        # Populate pruned page
+        if not self.model.n_prunes:
+            return
+
+        if self.model.n_prunes == 1:
+            selected_articles = self.model.bibliography.get_selected_articles(
+                PageIdentity.PARSED
+            )
+
+        else:
+            selected_articles = self.model.bibliography.get_selected_articles(
+                PageIdentity.PRUNED
+            )
+
+        for article in selected_articles:
+            self.view.display_article(self.pruned_elems, article, 0)

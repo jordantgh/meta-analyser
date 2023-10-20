@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QFocusEvent
 from PyQt5.QtCore import Qt, pyqtSignal, QRect
-from PyQt5.QtWidgets import QStyleOptionButton, QHeaderView, QStyle, QTabBar
+from PyQt5.QtWidgets import QStyleOptionButton, QHeaderView, QStyle, QTabBar, QWidget
 
 
 class CustomTabBar(QTabBar):
@@ -9,6 +9,12 @@ class CustomTabBar(QTabBar):
             event.ignore()
         else:
             super().focusInEvent(event)
+
+
+class TabPage(QWidget):
+    def __init__(self, parent, page_identity):
+        super().__init__(parent)
+        self.page_identity = page_identity
 
 
 class CheckableHeaderView(QHeaderView):

@@ -28,7 +28,7 @@ def get_supp_files(pmc_id, browser, max_retries=3):
                 links = supp_mats_tag.query_selector_all('a')
                 for link in links:
                     href = link.get_attribute('href')
-                    if (href.endswith('.csv') or href.endswith('.xlsx') or href.endswith('.xls') or href.endswith('.txt')):
+                    if (href.endswith('.csv') or href.endswith('.xlsx') or href.endswith('.txt')):
                         full_url = f"https://www.ncbi.nlm.nih.gov{href}"
                         supplementary_files.append(full_url)
             page.close()
@@ -45,7 +45,7 @@ def get_supp_files(pmc_id, browser, max_retries=3):
     return supplementary_files
 
 def query_pmc(query, callback=None, thread = None):
-    article_data = {
+    article_json = {
         "Title": "",
         "Authors": [],
         "PMID": "",
@@ -93,7 +93,7 @@ def query_pmc(query, callback=None, thread = None):
 
                 supplementary_files = get_supp_files(pmcid, browser)
 
-                article_data = {
+                article_json = {
                     "Title": summary["Title"],
                     "Authors": summary["AuthorList"],
                     "PMID": pmid,
@@ -106,14 +106,14 @@ def query_pmc(query, callback=None, thread = None):
                 if supplementary_files:
                     if callback:
                         progress = int(((batch_num + (index + 1) / len(summaries)) / total_batches) * 100)
-                        callback(article_data, progress)
+                        callback(article_json, progress)
 
 
                 time.sleep(random.uniform(0.2, 0.5))
 
         browser.close()
 
-    return article_data
+    return article_json
 
 def main(query_file):
     with open(query_file, 'r') as f:
