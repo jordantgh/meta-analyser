@@ -23,11 +23,12 @@ class BaseData:
 
 
 class SuppFile(BaseData):
-    def __init__(self, article, url, id):
+    def __init__(self, article, url, metadata, id):
         self.checked = True
         self.article = article
         self.article_id = article.pmc_id
         self.url = url
+        self.metadata = metadata
         self.id = id
 
     def checkbox_toggled(self):
