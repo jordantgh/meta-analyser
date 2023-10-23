@@ -78,7 +78,6 @@ class TableDBManager:
                 )
                 session.commit()
 
-    # TODO consolidate these using context to decide which table to query
     def get_processed_table_data(self, table_id, context):
         if context == PageIdentity.PARSED:
             return self.get_table_data(ProcessedTableDBEntry, table_id)
