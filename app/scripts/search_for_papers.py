@@ -184,6 +184,7 @@ def get_supp_files(pmc_id, browser, max_retries=3):
                 f"Error encountered: {e}. Retrying in {wait_time:.2f} seconds.")
             time.sleep(wait_time)
     logging.error(f"Failed to scrape after {max_retries} attempts.")
+    page.close()
     return supp_file_dict
 
 
