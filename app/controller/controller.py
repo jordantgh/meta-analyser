@@ -182,7 +182,7 @@ class Controller:
         self.view.start_load_animation()
         self.load_preview(table_data, table.id, self._update_checked_columns)
 
-    def update_checked_columns(self, table_id, checked_columns):
+    def _update_checked_columns(self, table_id, checked_columns):
         table = self.model.processed_table_manager.get_processed_table(
             table_id)
 
