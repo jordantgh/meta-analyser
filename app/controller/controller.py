@@ -143,6 +143,11 @@ class Controller:
                 widget.preview_requested.connect(self.preview_processed_table)
 
     def load_preview(self, data, table_id=None, callback=None):
+
+        # TODO idea: partially run the parser on the previewed file to get the
+        # regions of the file that are tables, then highlight those regions in
+        # the supp file previewer
+
         context = self.curr_elems.page_identity
         use_checkable_header = context != PageIdentity.SEARCH
 
@@ -161,6 +166,10 @@ class Controller:
 
         self.view.stop_load_animation()
 
+    # The original signal emits two arguments, but this slot only takes one
+    # - why does this work? Granted, we don't need the context argument, but
+    # still, it doesn't make sense why this doesn't throw an error.
+    # TODO debug later
     def request_suppfile_preview(self, file_data):
         self.view.start_load_animation()
 
