@@ -126,12 +126,9 @@ class View(QMainWindow):
 
         # Container for previews
         preview_pane = QVBoxLayout()
-        preview_label = QLabel("Data Preview:")
-        preview_pane.addWidget(preview_label)
-        preview_pane.addWidget(elements.previews)
+        preview_pane.addWidget(elements.outer_tab_widget)
         preview_pane.addWidget(elements.loading_label)
-        preview_pane.setStretchFactor(preview_label, 0)
-        preview_pane.setStretchFactor(elements.previews, 1)
+        preview_pane.setStretchFactor(elements.outer_tab_widget, 1)
         preview_pane.setStretchFactor(elements.loading_label, 0)
         preview_widget = QWidget()
         preview_widget.setLayout(preview_pane)

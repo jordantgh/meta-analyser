@@ -53,10 +53,14 @@ class PageElements(QObject): # QObject needed for signalling
 
         self.title_abstract_disp.setFocusPolicy(Qt.NoFocus)
 
-        self.previews = QTabWidget(parent_tab)
-        self.previews.setMinimumHeight(200)
-        self.previews.setSizePolicy(
-            QSizePolicy.Expanding, QSizePolicy.Preferred)
+        self.outer_tab_widget = QTabWidget(parent_tab)   
+        self.previews = QTabWidget()
+        
+        self.outer_tab_widget.addTab(self.previews, "Previews")
+        
+        self.metadata_view = QTextBrowser()
+        self.metadata_view.setOpenExternalLinks(True)
+        self.outer_tab_widget.addTab(self.metadata_view, "Metadata")
 
         self.loading_label = QLabel(parent_tab)
         self.loading_label.setAlignment(Qt.AlignCenter)
