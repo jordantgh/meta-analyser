@@ -6,7 +6,7 @@ from skimage.measure import label, regionprops
 from model.file_io import download_supp, extract_dfs
 from model.database import processed_df_to_db
 
-# TODO idea: use the contentful regions discarded by the parser to
+# TODO #31 idea: use the contentful regions discarded by the parser to
 # add metadata; these are often descriptions/titles of the tables.
 # Could then use pythagoras to find the closest table and set the metadata
 # on that table.

@@ -129,7 +129,7 @@ class Model:
                 if new_data is not None:
                     table.pruned_columns = list(range(len(new_data.columns)))
 
-    # TODO filtering is slow and needs its own thread; gui hangs up too long
+    # TODO #30 filtering is slow and needs its own thread; gui hangs up too long
     def filter_tables(self, query, context):
         for article in self.bibliography.get_selected_articles(
             PageIdentity.PARSED
