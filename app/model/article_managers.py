@@ -87,19 +87,16 @@ class ProcessedTableManager:
 
 
 class Article(BaseData):
-    def __init__(
-            self,
-            title,
-            authors,
-            abstract,
-            pmc_id,
-            url,
-            supp_files=[],
-            processed_tables=[]
-    ):
+    def __init__(self, article_json):
         self.checked = {context: True for context in PageIdentity}
+        self.title = article_json["Title"]
+        self.authors = article_json["Authors"]
+        self.abstract = article_json["Abstract"]
+        self.pmc_id = article_json["PMCID"]
+        self.url = article_json["URL"]
         self.supp_files = [SuppFile(self, url, meta, uuid4(
         )) for url, meta in article_json["SupplementaryFiles"].items()]
+        self.processed_tables = []
         self.pruned_tables = []
         self.observers = {}
 

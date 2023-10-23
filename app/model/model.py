@@ -41,15 +41,7 @@ class Model:
             self.n_prunes += 1
 
     def create_article_data(self, article_json):
-        article = Article(
-            title=article_json["Title"],
-            authors=article_json["Authors"],
-            abstract=article_json["Abstract"],
-            pmc_id=article_json["PMCID"],
-            url=article_json["URL"]
-        )
-
-        self._update_supp_files(article, article_json)
+        article = Article(article_json)
         self.bibliography.add_article(article)
 
         return article
