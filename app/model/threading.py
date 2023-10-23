@@ -4,6 +4,7 @@ from model.file_io import download_supp, extract_dfs
 from model.tabular_operations import parse_tables
 from scripts.search_for_papers import query_pmc
 
+
 class SearchThread(QThread):
     article_sig = pyqtSignal(dict, int)
     finished_sig = pyqtSignal(object)
@@ -16,9 +17,14 @@ class SearchThread(QThread):
     def stop(self):
         self.should_stop = True
 
+    def prepare(self, query):
+        self.query = query
+        self.should_stop = False
+
     def run(self):
-        query_pmc(self.query, callback=self.article_sig.emit, thread = self)
+        query_pmc(self.query, callback=self.article_sig.emit, thread=self)
         self.finished_sig.emit(self)
+
 
 class FilePreviewThread(QThread):
     prev_ready_sig = pyqtSignal(dict)
@@ -26,11 +32,22 @@ class FilePreviewThread(QThread):
     def __init__(self, file_url):
         super().__init__()
         self.file_url = file_url
+        self.should_stop = False
+
+    def stop(self):
+        self.should_stop = True
+
+    def prepare(self, file_url):
+        self.file_url = file_url
+        self.should_stop = False
 
     def run(self):
-        fname = download_supp(self.file_url)
-        data = extract_dfs(fname)
-        self.prev_ready_sig.emit(data)
+        fname = download_supp(self.file_url, self.should_stop)
+        if fname is None:
+            return
+        data = extract_dfs(fname, self.should_stop)
+        if data is not None:
+            self.prev_ready_sig.emit(data)
 
 
 class FileProcessingThread(QThread):
@@ -46,12 +63,16 @@ class FileProcessingThread(QThread):
     def stop(self):
         self.should_stop = True
 
+    def prepare(self, selected_articles):
+        self.selected_articles = selected_articles
+        self.should_stop = False
+
     def run(self):
         parse_tables(
             self.selected_articles,
             self.db_manager,
             self.should_stop,
             callback=self.article_sig.emit
-            )
-        
+        )
+
         self.finished_sig.emit()

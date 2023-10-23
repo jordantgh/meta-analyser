@@ -87,7 +87,6 @@ class Controller:
                 "Please wait or stop the current search.")
             return
 
-        self.model.search_thread.should_stop = False
         query = self.search_elems.query_field.text()
         if not query:
             return
@@ -95,7 +94,7 @@ class Controller:
         self.view.clear_list_and_observers(self.search_elems.article_list_view)
         self.view.show_searching_view()
 
-        self.model.search_thread.query = query
+        self.model.search_thread.prepare(query)
         self.model.search_thread.start()
 
     def stop_search(self, search_thread):
@@ -166,10 +165,11 @@ class Controller:
         self.view.start_load_animation()
 
         if self.model.search_preview_thread.isRunning():
+            self.model.search_preview_thread.stop()
             self.model.search_preview_thread.quit()
             self.model.search_preview_thread.wait()
 
-        self.model.search_preview_thread.file_url = file_data.url
+        self.model.search_preview_thread.prepare(file_data.url)
         self.model.search_preview_thread.start()
 
     def preview_processed_table(self, table_id, context):
@@ -241,7 +241,6 @@ class Controller:
             return
 
         self._set_state(Mode.PROCESSING)
-        self.model.processing_thread.should_stop = False
 
         self.view.clear_list_and_observers(self.curr_elems.article_list_view)
         self.curr_elems.prog_bar.setValue(0)
@@ -254,7 +253,7 @@ class Controller:
             PageIdentity.SEARCH
         )
 
-        self.model.processing_thread.selected_articles = selected_articles
+        self.model.processing_thread.prepare(selected_articles)
         self.model.processing_thread.start()
 
     def save(self):
