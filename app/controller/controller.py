@@ -162,8 +162,7 @@ class Controller:
 
         self.view.stop_load_animation()
 
-    def request_suppfile_preview(self, file_id):
-        file_data = self.model.file_manager.get_file(file_id)
+    def request_suppfile_preview(self, file_data):
         self.view.start_load_animation()
 
         if self.model.search_preview_thread.isRunning():

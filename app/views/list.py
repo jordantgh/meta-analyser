@@ -73,7 +73,7 @@ class DataListItem(ListItem):
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
-        self.preview_requested.emit(self.file_id, self.context)
+        self.preview_requested.emit(self.data, self.context)
 
     def get_disp_name(self, text):
         font_metrics = QFontMetrics(self.main_window.font())

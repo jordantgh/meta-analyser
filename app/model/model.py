@@ -1,8 +1,7 @@
-from uuid import uuid4
 import pickle
 
 from model.article_managers import (
-    Bibliography, Article, SuppFile, SuppFileManager, ProcessedTable,
+    Bibliography, Article, ProcessedTable,
     ProcessedTableManager, stash_all_observers, restore_all_observers
 )
 
@@ -19,7 +18,6 @@ class Model:
     def __init__(self):
         self._state = Mode.BROWSING
         self.bibliography = Bibliography()
-        self.file_manager = SuppFileManager()
         self.search_thread = SearchThread()
         self.search_preview_thread = FilePreviewThread("")
         self.table_db_manager = TableDBManager()
@@ -41,15 +39,6 @@ class Model:
             self.n_parse_runs += 1
         elif state == Mode.PRUNING:
             self.n_prunes += 1
-
-    def _update_supp_files(self, article, article_json):
-        supp_files = []
-        for file_url in article_json["SupplementaryFiles"]:
-            supp_file = SuppFile(article, file_url, uuid4())
-            self.file_manager.add_file(supp_file)
-            supp_files.append(supp_file)
-
-        article.supp_files = supp_files
 
     def create_article_data(self, article_json):
         article = Article(
@@ -167,8 +156,7 @@ class Model:
 
     def reset_for_searching(self):
         self.bibliography.reset()
-        self.file_manager.reset()
-        
+
         self.n_parse_runs = 0
         self.n_prunes = 0
 
@@ -187,7 +175,6 @@ class Model:
         save_object = {
             'state': self.state,
             'bibliography': self.bibliography,
-            'file_manager': self.file_manager,
             'processed_db_url': self.table_db_manager.processed_db_url,
             'post_pruning_db_url': self.table_db_manager.post_pruning_db_url,
             'processed_table_manager': self.processed_table_manager,
@@ -206,7 +193,6 @@ class Model:
             save_object = pickle.load(f)
 
         self.bibliography = save_object['bibliography']
-        self.file_manager = save_object['file_manager']
         self.table_db_manager = TableDBManager(
             save_object['processed_db_url'],
             save_object['post_pruning_db_url'])

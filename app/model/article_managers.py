@@ -72,20 +72,6 @@ class ProcessedTable(BaseData):
                 self.notify_observers(context)
 
 
-class SuppFileManager:
-    def __init__(self):
-        self.supp_files = {}
-
-    def add_file(self, file):
-        self.supp_files[file.id] = file
-
-    def get_file(self, file_id):
-        return self.supp_files.get(file_id)
-
-    def reset(self):
-        self.supp_files = {}
-
-
 class ProcessedTableManager:
     def __init__(self):
         self.processed_tables = {}
@@ -112,13 +98,8 @@ class Article(BaseData):
             processed_tables=[]
     ):
         self.checked = {context: True for context in PageIdentity}
-        self.title = title
-        self.authors = authors
-        self.abstract = abstract
-        self.pmc_id = pmc_id
-        self.url = url
-        self.supp_files = supp_files
-        self.processed_tables = processed_tables
+        self.supp_files = [SuppFile(self, url, meta, uuid4(
+        )) for url, meta in article_json["SupplementaryFiles"].items()]
         self.pruned_tables = []
         self.observers = {}
 
