@@ -177,7 +177,7 @@ class Controller:
         table_data = {
             "sheet": self.model.table_db_manager.get_processed_table_data(
                 table_id, context
-            ).head(100)
+            )
         }
 
         self.view.start_load_animation()

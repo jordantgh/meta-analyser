@@ -250,7 +250,11 @@ class View(QMainWindow):
 
         for sheet, df in df_dict.items():
             table = self._create_ui_table(
-                df, use_checkable_header, table_id, callback, checked_columns
+                df.head(100),
+                use_checkable_header,
+                table_id,
+                callback,
+                checked_columns
             )
             tab_widget.addTab(table, sheet)
 
