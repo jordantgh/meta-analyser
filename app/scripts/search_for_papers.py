@@ -18,7 +18,7 @@ load_dotenv()
 Entrez.email = os.environ.get("ENTEREZ_EMAIL")
 Entrez.tool = "PMC Search and Summarise"
 
-pattern = re.compile(r'(\b(S(\d+))\s+(table|appendix|file)\b)|(\b(table|appendix|file)\s+S(\d+)\b)|(\b(supplement(ary|al)?|additional|supporting|extended|source)?\s*(info|information|file|dataset|data|table|material)\s*(supplement)?\s*(\d+)?\b)', re.IGNORECASE)
+PATTERN = re.compile(r'(\b(S(\d+))\s+(table|appendix|file)\b)|(\b(table|appendix|file)\s+S(\d+)\b)|(\b(supplement(ary|al)?|additional|supporting|extended|source)?\s*(info|information|file|dataset|data|table|material)\s*(supplement)?\s*(\d+)?\b)', re.IGNORECASE)
 
 
 def get_supp_files(pmc_id, browser, max_retries=3):
@@ -27,7 +27,7 @@ def get_supp_files(pmc_id, browser, max_retries=3):
     for attempt in range(max_retries):
         try:
             page = browser.new_page()
-            page.goto(f"https://www.ncbi.nlm.nih.gov/pmc/articles/{pmc_id}/")
+            page.goto(f"{BASE_URL}/pmc/articles/{pmc_id}/")
 
             supp_mats_tags = page.query_selector_all('.sec.suppmat')
 
@@ -37,9 +37,9 @@ def get_supp_files(pmc_id, browser, max_retries=3):
                 full_text = sup_tag.inner_text()
                 sup_box_text = sup_tag.query_selector('.sup-box') \
                     .inner_text() if sup_tag.query_selector('.sup-box') else ''
-                
+
                 outer_descr = full_text.replace(sup_box_text, '').strip()
-                
+
                 sup_boxes = sup_tag.query_selector_all('.sup-box')
                 for sup_box in sup_boxes:
                     link = sup_box.query_selector('a')
@@ -48,19 +48,30 @@ def get_supp_files(pmc_id, browser, max_retries=3):
 
                     if href.endswith('.csv') or href.endswith('.xlsx') or href.endswith('.txt'):
 
-                        full_url = f"https://www.ncbi.nlm.nih.gov{href}"
+                        full_url = f"{BASE_URL}{href}"
 
                         # Find a useful inner description
+                        # TODO: strip out any ':' if present
                         inner_text = link.inner_text().strip()
-                        match = pattern.search(inner_text)
+                        match = PATTERN.search(inner_text)
                         inner_descr = match.group() if match else ""
-                        
+
                         intext_ref = page.eval_on_selector_all(
                             f'p a[href="#{tag_id}"]',
-                            '''nodes => nodes.map(node => {
+                            """
+                            let uniqueHTMLs = new Set();
+                            nodes => nodes.map(node => {
                                 let parent = node.closest("p");
-                                return parent ? parent.innerText : "";
-                            })'''
+                                if (parent) {
+                                    let html = parent.outerHTML;
+                                    if (!uniqueHTMLs.has(html)) {
+                                        uniqueHTMLs.add(html);
+                                        return html;
+                                    }
+                                }
+                                return null;
+                            }).filter(Boolean)
+                            """
                         )
 
                         # Prepare the description tuple
