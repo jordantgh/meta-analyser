@@ -178,6 +178,12 @@ class Controller:
             self.model.search_preview_thread.quit()
             self.model.search_preview_thread.wait()
 
+        # TODO add to other pages
+        # Need to manage the article:supp_file:table relationship such that
+        # the metadata is available to the tables
+        '\n'.join(map(str, file_data.metadata))
+        self.curr_elems.metadata_view.setHtml(str(file_data.metadata))
+
         self.model.search_preview_thread.prepare(file_data.url)
         self.model.search_preview_thread.start()
 
