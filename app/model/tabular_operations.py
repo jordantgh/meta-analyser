@@ -6,6 +6,12 @@ from skimage.measure import label, regionprops
 from model.file_io import download_supp, extract_dfs
 from model.database import processed_df_to_db
 
+# TODO idea: use the contentful regions discarded by the parser to
+# add metadata; these are often descriptions/titles of the tables.
+# Could then use pythagoras to find the closest table and set the metadata
+# on that table.
+
+
 # TODO heavily overdue a readability pass
 def parse_tables(selected_articles, db_manager, should_stop, callback=None):
     for index, article in enumerate(selected_articles):
@@ -30,7 +36,7 @@ def parse_tables(selected_articles, db_manager, should_stop, callback=None):
 
                     if df.empty:
                         continue
-                    
+
                     binary_rep = np.array(df.notnull().astype("int"))
                     labeled = label(binary_rep)
                     region_bboxes = [
@@ -43,18 +49,18 @@ def parse_tables(selected_articles, db_manager, should_stop, callback=None):
                         minr, minc, maxr, maxc = box
                         if maxr - minr <= 1 or maxc - minc <= 1:
                             continue
-                        
+
                         other_bboxes = [o_box for j, o_box
                                         in enumerate(region_bboxes)
                                         if i != j]
-                        
+
                         is_contained = any(
                             _is_contained(box, o_box)
                             for o_box in other_bboxes)
 
                         if is_contained:
                             continue
-                        
+
                         region = df.iloc[minr:maxr, minc:maxc]
                         base_name = os.path.splitext(fname)[0]
                         unique_id = f"{base_name}_{sheetname}_Table{i}"
