@@ -172,15 +172,15 @@ class Controller:
         self.model.search_preview_thread.prepare(file_data.url)
         self.model.search_preview_thread.start()
 
-    def preview_processed_table(self, table_id, context):
+    def preview_processed_table(self, table, context):
         table_data = {
             "sheet": self.model.table_db_manager.get_processed_table_data(
-                table_id, context
+                table.id, context
             )
         }
 
         self.view.start_load_animation()
-        self.load_preview(table_data, table_id, self.update_checked_columns)
+        self.load_preview(table_data, table.id, self._update_checked_columns)
 
     def update_checked_columns(self, table_id, checked_columns):
         table = self.model.processed_table_manager.get_processed_table(
