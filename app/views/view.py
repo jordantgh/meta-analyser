@@ -43,10 +43,8 @@ class View(QMainWindow):
         self.pruned_elems = ProcessedPageElements(self.pruned_tab)
 
         self._init_search_layouts(self.search_elems)
-        self._init_processed_page_layouts(
-            self.parsed_tab, self.parsed_elems)
-        self._init_processed_page_layouts(
-            self.pruned_tab, self.pruned_elems)
+        self._init_processed_page_layouts(self.parsed_tab, self.parsed_elems)
+        self._init_processed_page_layouts(self.pruned_tab, self.pruned_elems)
 
         self.search_elems.query_field.setFocus()
         self._init_load_animation()
