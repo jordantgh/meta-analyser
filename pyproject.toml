@@ -27,6 +27,7 @@ bio = "^1.5.9"
 mypy = "^1.5.1"
 sqlalchemy = "^2.0.20"
 pyinstaller = "^5.13.2"
+nltk = "^3.8.1"
 
 
 [tool.poetry.group.dev.dependencies]
