@@ -9,6 +9,15 @@ import os
 from http.client import IncompleteRead
 import logging
 import re
+from bs4 import BeautifulSoup
+
+from scripts.html_sentences import (
+    InsertMatcher,
+    get_sentences,
+    get_html_sentence
+)
+
+from unicodedata import normalize
 
 logging.basicConfig(filename="app.log", level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -19,6 +28,74 @@ Entrez.email = os.environ.get("ENTEREZ_EMAIL")
 Entrez.tool = "PMC Search and Summarise"
 
 PATTERN = re.compile(r'(\b(S(\d+))\s+(table|appendix|file)\b)|(\b(table|appendix|file)\s+S(\d+)\b)|(\b(supplement(ary|al)?|additional|supporting|extended|source)?\s*(info|information|file|dataset|data|table|material)\s*(supplement)?\s*(\d+)?\b)', re.IGNORECASE)
+
+BASE_URL = "https://www.ncbi.nlm.nih.gov"
+
+
+def highlight_sentence_in_html(html, tag_id):
+    soup = BeautifulSoup(html, 'html.parser')
+
+    # Find the text within the <a> tags where href matches tag_id
+    # e.g. <a href="#sd01">Supplementary Table 1</a>, <a href="#sd01">S1</a>
+    citing_texts = []
+    for a_tag in soup.find_all('a', href=f"#{tag_id}"):
+        if a_tag.string:
+            citing_texts.append(normalize('NFC', a_tag.string))
+
+    if not citing_texts:
+        return html  # If no citation is found, return the original html
+
+    # Locate the parent <p> tag of the <a> tag
+    paragraph = a_tag.find_parent('p') if a_tag else None
+    if not paragraph:
+        return html
+
+    p_with_html = str(paragraph)
+    p_textonly = paragraph.get_text()
+
+    # Sentence tokenization and highlighting
+    sentences, sentence_mappings = get_sentences(p_textonly)
+    comparison = InsertMatcher(None, p_textonly, p_with_html)
+    diff_ranges = comparison.get_opcodes()
+
+    html_sentences = []
+    for sentence, (start_idx, end_idx) in zip(sentences, sentence_mappings):
+        html_sentence = get_html_sentence(
+            sentence, start_idx, end_idx, diff_ranges, p_with_html
+        )
+
+        for cite in set(citing_texts):
+            if cite in sentence:
+                html_sentence = f"<strong>{html_sentence}</strong>"
+                break
+
+        html_sentences.append(html_sentence)
+
+    paragraph.clear()
+    paragraph.append(BeautifulSoup(' '.join(html_sentences), 'html.parser'))
+
+    return str(soup)
+
+
+def full_urls(description, base_url):
+
+    def replacer(match):
+        href_val = match.group(2)
+        if href_val.startswith("http://") or href_val.startswith("https://"):
+            # Absolute URL, no change needed
+            return match.group(0)
+        elif href_val.startswith("/"):
+            # Relative URL, prepend domain directly
+            return match.group(1) + BASE_URL + href_val
+        elif href_val.startswith("#"):
+            # Fragment identifier, prepend full base URL and add a slash
+            return match.group(1) + base_url + href_val
+        else:
+            return match.group(0)
+
+    updated_description = re.sub(
+        r'(href=["\'])([^"\']+)', replacer, description)
+    return updated_description
 
 
 def get_supp_files(pmc_id, browser, max_retries=3):
@@ -75,12 +152,24 @@ def get_supp_files(pmc_id, browser, max_retries=3):
                         )
 
                         # Prepare the description tuple
-                        desc_tuple = tuple(
-                            filter(None, [outer_descr, inner_descr, intext_ref])
+                        outer_descr_str = f"<strong>{outer_descr}</strong>" if outer_descr else ""
+                        inner_descr_str = f"<em>{inner_descr}</em>" if inner_descr else ""
+
+                        # Formatting intext_ref entries
+                        intext_ref_strs = [
+                            f"<p>{highlight_sentence_in_html(ref, tag_id)}</p>" for ref in intext_ref
+                        ]
+
+                        # Joining all components for a formatted description
+                        formatted_description = f"{outer_descr_str}{inner_descr_str}{''.join(intext_ref_strs)}"
+
+                        formatted_description = full_urls(
+                            formatted_description,
+                            f"{BASE_URL}/pmc/articles/{pmc_id}/"
                         )
 
-                        if desc_tuple:
-                            supp_file_dict[full_url] = desc_tuple
+                        if formatted_description.strip():  # Checking if not just whitespace
+                            supp_file_dict[full_url] = formatted_description
 
             page.close()
             return supp_file_dict
@@ -105,7 +194,7 @@ def query_pmc(query, callback=None, thread=None):
         "PMID": "",
         "PMCID": "",
         "Abstract": "",
-        "SupplementaryFiles": []
+        "SupplementaryFiles": {}
     }
 
     # Launch browser once for all scrapes
@@ -149,10 +238,7 @@ def query_pmc(query, callback=None, thread=None):
                 except (KeyError, IndexError, HTTPError):
                     abstract_text = "No abstract available."
 
-                supp_file_dict = get_supp_files(pmcid, browser)
-                supplementary_files = list(supp_file_dict.keys())
-                print(supp_file_dict.values())
-
+                supplementary_files = get_supp_files(pmcid, browser)
 
                 article_json = {
                     "Title": summary["Title"],
