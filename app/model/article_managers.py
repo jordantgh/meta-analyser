@@ -1,4 +1,5 @@
 from utils.constants import PageIdentity
+from uuid import uuid4
 
 
 class BaseData:
