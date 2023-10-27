@@ -290,7 +290,7 @@ class View(QMainWindow):
 
         for sheet, df in df_dict.items():
             table = self._create_ui_table(
-                df.head(100),
+                df,
                 use_checkable_header,
                 table_id,
                 callback,
@@ -306,21 +306,46 @@ class View(QMainWindow):
         callback: 'Callable' = None,
         checked_columns: 'list[int]' = None
     ) -> 'CustomTable':
+
+        model = QStandardItemModel()
+        model.setHorizontalHeaderLabels(data.columns.astype(str))
+
+        # Disable GUI updates
+        ui_table = CustomTable()
+        ui_table.setUpdatesEnabled(False)
+
+        # Populate the table in chunks
+        chunk_size = 5000
+        for i in range(0, len(data), chunk_size):
+            chunk = data.iloc[i:i + chunk_size]
+            for row in chunk.itertuples(index=False, name=None):
+                items = [
+                    QStandardItem(str(value)) if not pd.isna(value) else
+                    QStandardItem("") for value in row
+                ]
+                model.appendRow(items)
+            QCoreApplication.processEvents()
+
+        ui_table.setModel(model)
+
+        # Re-enable GUI updates
+        ui_table.setUpdatesEnabled(True)
+        ui_table.update()
+
+        # Set Read-Only
+        ui_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
+        # Disable Column Resizing
+        ui_table.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
+
+        # Checkable Header
         if use_checkable_header:
-            header = CheckableHeaderView(Qt.Horizontal, ui_table)
-            header.table_id = table_id
+            header = CheckableHeaderView(Qt.Horizontal, ui_table, table_id)
             header.columns_checked.connect(callback)
             ui_table.setHorizontalHeader(header)
             if checked_columns is not None:
                 header.set_checked_sections(checked_columns)
             else:
                 header.set_all_sections_checked()
-        else:
-            header = QHeaderView(Qt.Horizontal, ui_table)
-            ui_table.setHorizontalHeader(header)
-
-        for row, row_data in data.iterrows():
-            for col, value in enumerate(row_data):
-                ui_table.setItem(row, col, QTableWidgetItem(str(value)))
 
         return ui_table
