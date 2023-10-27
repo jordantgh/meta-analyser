@@ -1,3 +1,8 @@
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from model.database import TableDBManager
+    from model.article_managers import Article
+
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from model.file_io import download_supp, extract_dfs

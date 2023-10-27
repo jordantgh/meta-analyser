@@ -1,3 +1,18 @@
+from typing import TYPE_CHECKING, Callable
+if TYPE_CHECKING:
+    from uuid import UUID
+    from model.model import Model
+    from views.view import View
+    from model.article_managers import (
+        BaseData, Article, SuppFile, ProcessedTable
+    )
+    from views.page import (
+        PageElements, SearchPageElements, ProcessedPageElements
+    )
+    from model.threading import SearchThread, FilePreviewThread, FileProcessingThread
+    from views.list import DataListItem
+    from PyQt5.QtWidgets import QListWidgetItem
+
 from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 

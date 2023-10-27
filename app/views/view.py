@@ -1,4 +1,13 @@
-from PyQt5.QtCore import Qt, QTimer
+from typing import TYPE_CHECKING, Callable, cast
+if TYPE_CHECKING:
+    from views.page import PageElements
+    from PyQt5.QtGui import QKeyEvent
+    from PyQt5.QtWidgets import QListWidget
+    from model.article_managers import Article, BaseData
+    from views.list import ListItem, DataListItem
+    from pandas import DataFrame
+
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QLabel, QListWidgetItem, QTableWidget,
     QTableWidgetItem, QTabWidget, QHeaderView, QSplitter, QAction, QMenu

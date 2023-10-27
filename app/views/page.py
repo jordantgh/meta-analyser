@@ -1,3 +1,8 @@
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from views.custom_components import TabPage
+    from PyQt5.QtGui import QKeyEvent
+
 from PyQt5.QtCore import Qt, QTimer, QObject, pyqtSignal
 from PyQt5.QtWidgets import QLabel, QProgressBar, QPushButton, QListWidget, QTabWidget, QTextBrowser, QLineEdit, QSizePolicy
 

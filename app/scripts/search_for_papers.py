@@ -1,3 +1,8 @@
+from typing import TYPE_CHECKING, Callable
+if TYPE_CHECKING:
+    from playwright.sync_api import Browser, ElementHandle
+    from model.threading import BaseThread
+
 import json
 from Bio import Entrez
 import time

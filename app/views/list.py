@@ -1,3 +1,11 @@
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from model.article_managers import BaseData, Article, SuppFile, ProcessedTable
+    from utils.constants import PageIdentity
+    from PyQt5.QtGui import QMouseEvent
+    from PyQt5.QtWidgets import QListWidget
+    from views.view import View
+
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QCheckBox, QSizePolicy
 from PyQt5.QtGui import QFontMetrics

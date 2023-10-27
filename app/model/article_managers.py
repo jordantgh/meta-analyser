@@ -1,3 +1,7 @@
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from views.list import DataListItem, ArticleListItem
+
 from utils.constants import PageIdentity
 from uuid import uuid4
 

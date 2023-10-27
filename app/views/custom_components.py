@@ -1,6 +1,13 @@
-from PyQt5.QtGui import QFocusEvent
-from PyQt5.QtCore import Qt, pyqtSignal, QRect
-from PyQt5.QtWidgets import QStyleOptionButton, QHeaderView, QStyle, QTabBar, QWidget
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from PyQt5.QtGui import (
+        QFocusEvent, QMouseEvent, QStandardItemModel, QPainter
+    )
+
+    from PyQt5.QtWidgets import QTabWidget
+    from utils.constants import PageIdentity
+
+from PyQt5.QtGui import QKeySequence
 
 
 class CustomTabBar(QTabBar):

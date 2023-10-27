@@ -1,3 +1,12 @@
+# -IMPORTS FOR INTELLISENSE/TYPE HINTING ONLY-#
+from typing import TYPE_CHECKING, Callable
+if TYPE_CHECKING:
+    from uuid import UUID
+    from model.article_managers import Article
+    from model.database import TableDBManager
+    from pandas import DataFrame
+
+from collections import defaultdict
 import logging
 import numpy as np
 import os
