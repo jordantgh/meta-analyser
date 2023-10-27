@@ -49,22 +49,7 @@ def postprocess(text: 'str') -> 'str':
 
 def highlight_sentence_in_html(html: 'str', tag_id: 'str') -> 'str':
     soup = BeautifulSoup(html, 'html.parser')
-
-    # Find the text within the <a> tags where href matches tag_id
-    # e.g. <a href="#sd01">Supplementary Table 1</a>, <a href="#sd01">S1</a>
-    citing_texts = []
-    for a_tag in soup.find_all('a', href=f"#{tag_id}"):
-        if a_tag.string:
-            citing_texts.append(normalize('NFC', a_tag.string))
-
-    if not citing_texts:
-        return html  # If no citation is found, return the original html
-
-    # Locate the parent <p> tag of the <a> tag
-    paragraph = a_tag.find_parent('p') if a_tag else None
-    if not paragraph:
-        return html
-
+    paragraph = soup.find('p')
     p_with_html = str(paragraph)
     p_textonly = paragraph.get_text()
     p_textonly = preprocess(p_textonly)
@@ -82,10 +67,9 @@ def highlight_sentence_in_html(html: 'str', tag_id: 'str') -> 'str':
             sentence, start_idx, end_idx, diff_ranges, p_with_html
         )
 
-        for cite in set(citing_texts):
-            if cite in sentence:
-                html_sentence = f"<strong>{html_sentence}</strong>"
-                break
+        # Search for the specific <a> tag within each html_sentence
+        if re.search(f'href=[\'"]?#{tag_id}[\'"]?', html_sentence):
+            html_sentence = f"<strong>{html_sentence}</strong>"
 
         html_sentences.append(html_sentence)
 
