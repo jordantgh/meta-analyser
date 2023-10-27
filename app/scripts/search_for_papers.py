@@ -37,6 +37,16 @@ PATTERN = re.compile(r'(\b(S(\d+))\s+(table|appendix|file)\b)|(\b(table|appendix
 BASE_URL = "https://www.ncbi.nlm.nih.gov"
 
 
+def preprocess(text: 'str') -> 'str':
+    # Match "Fig. XX"/"fig. XX as these get caught as sentence bounds by nltk
+    return re.sub(r'([Ff]ig)\.', r'FIGURE_IDENTIFIER', text)
+
+
+def postprocess(text: 'str') -> 'str':
+    # restore the figure identifier
+    return re.sub(r'FIGURE_IDENTIFIER_(\w+)', r'Fig. \1', text)
+
+
 def highlight_sentence_in_html(html: 'str', tag_id: 'str') -> 'str':
     soup = BeautifulSoup(html, 'html.parser')
 
@@ -57,9 +67,12 @@ def highlight_sentence_in_html(html: 'str', tag_id: 'str') -> 'str':
 
     p_with_html = str(paragraph)
     p_textonly = paragraph.get_text()
+    p_textonly = preprocess(p_textonly)
 
     # Sentence tokenization and highlighting
     sentences, sentence_mappings = get_sentences(p_textonly)
+    sentences = [postprocess(sentence) for sentence in sentences]
+
     comparison = InsertMatcher(None, p_textonly, p_with_html)
     diff_ranges = comparison.get_opcodes()
 
