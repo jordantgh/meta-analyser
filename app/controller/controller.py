@@ -164,6 +164,8 @@ class Controller:
 
         self.view.update_article_display(article, elements, data_set)
 
+        for i in range(elements.data_ui_list.count()):
+            list_item = elements.data_ui_list.item(i)
             widget: 'DataListItem' = elements.data_ui_list.itemWidget(
                 list_item)
             if elements.page_identity == PageIdentity.SEARCH:
@@ -212,11 +214,9 @@ class Controller:
             self.model.search_preview_thread.quit()
             self.model.search_preview_thread.wait()
 
-        # TODO add to other pages
         # Need to manage the article:supp_file:table relationship such that
         # the metadata is available to the tables
-        '\n'.join(map(str, file_data.metadata))
-        self.curr_elems.metadata_view.setHtml(str(file_data.metadata))
+        self.curr_elems.metadata_view.setHtml(file_data.metadata)
 
         self.model.search_preview_thread.prepare(file_data.url)
         self.model.search_preview_thread.start()
@@ -229,6 +229,9 @@ class Controller:
                 table.id, context
             )
         }
+
+        # Load the metadata; hack until I completely refactor the data model
+        self.curr_elems.metadata_view.setHtml(table.supp_file.metadata)
 
         self.view.start_load_animation()
         self.load_preview(table_data, table.id, self._update_checked_columns)
@@ -294,7 +297,7 @@ class Controller:
 
         self._set_state(Mode.PROCESSING)
 
-        self.view.clear_list_and_observers(self.curr_elems.article_list_view)
+        self.view.clear_list_and_observers(self.curr_elems.article_ui_list)
         self.curr_elems.prog_bar.setValue(0)
         self.curr_elems.prog_bar.show()
 
