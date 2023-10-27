@@ -8,16 +8,23 @@ if TYPE_CHECKING:
     from pandas import DataFrame
 
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from PyQt5.QtCore import Qt, QTimer, QCoreApplication
 from PyQt5.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QLabel, QListWidgetItem, QTableWidget,
-    QTableWidgetItem, QTabWidget, QHeaderView, QSplitter, QAction, QMenu
+    QMainWindow, QWidget, QVBoxLayout, QLabel, QListWidgetItem, QTabWidget,
+    QHeaderView, QSplitter, QAction, QMenu, QAbstractItemView
 )
 
-from views.custom_components import CustomTabBar, TabPage, CheckableHeaderView
-from views.list import ArticleListItem, SuppFileListItem, ProcessedTableListItem
+from views.custom_components import (
+    CustomTabBar, TabPage, CustomTable, CheckableHeaderView
+)
+from views.list import (
+    ListItem, ArticleListItem, SuppFileListItem, ProcessedTableListItem
+)
 from views.page import SearchPageElements, ProcessedPageElements
 
 from utils.constants import PageIdentity
+
+import pandas as pd
 
 
 class View(QMainWindow):

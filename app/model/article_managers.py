@@ -3,7 +3,7 @@ if TYPE_CHECKING:
     from views.list import DataListItem, ArticleListItem
 
 from utils.constants import PageIdentity
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 
 class BaseData:

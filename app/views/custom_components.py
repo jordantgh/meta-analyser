@@ -8,6 +8,11 @@ if TYPE_CHECKING:
     from utils.constants import PageIdentity
 
 from PyQt5.QtGui import QKeySequence
+from PyQt5.QtCore import Qt, QEvent, pyqtSignal, QRect
+from PyQt5.QtWidgets import (
+    QStyleOptionButton, QHeaderView, QStyle, QTabBar, QWidget, QVBoxLayout,
+    QTableView, QShortcut, QLineEdit, QDialog, QPushButton, QMessageBox
+)
 
 
 class CustomTabBar(QTabBar):
