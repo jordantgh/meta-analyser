@@ -39,11 +39,11 @@ def parse_tables(
                 continue
 
             try:
-                fname = download_supp(file.url)
+                fname = download_supp(file.url, should_stop)
                 if fname is None:
                     continue
 
-                data = extract_dfs(fname)
+                data = extract_dfs(fname, should_stop)
 
                 for sheetname, df in data.items():
                     if should_stop:
