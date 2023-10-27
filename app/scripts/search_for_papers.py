@@ -79,7 +79,7 @@ def highlight_sentence_in_html(html: 'str', tag_id: 'str') -> 'str':
     return str(soup)
 
 
-def full_urls(description, base_url):
+def full_urls(description: 'str', base_url: 'str') -> 'str':
 
     def replacer(match):
         href_val = match.group(2)
