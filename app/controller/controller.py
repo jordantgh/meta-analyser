@@ -16,9 +16,6 @@ if TYPE_CHECKING:
 from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
-from model.model import Model
-from views.view import View
-
 from utils.constants import PageIdentity, Mode
 
 
