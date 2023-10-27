@@ -1,8 +1,12 @@
-from uuid import uuid4
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from uuid import UUID
+    from pandas import DataFrame
+
 import pickle
 
 from model.article_managers import (
-    Bibliography, Article, SuppFile, SuppFileManager, ProcessedTable,
+    Bibliography, Article, ProcessedTable,
     ProcessedTableManager, stash_all_observers, restore_all_observers
 )
 
@@ -19,22 +23,19 @@ class Model:
     def __init__(self):
         self._state = Mode.BROWSING
         self.bibliography = Bibliography()
-        self.file_manager = SuppFileManager()
         self.search_thread = SearchThread()
-        self.search_preview_thread = FilePreviewThread("")
+        self.search_preview_thread = FilePreviewThread()
         self.table_db_manager = TableDBManager()
         self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
-
-        # Flags to track whether we've ever parsed/pruned for when we load
         self.n_parse_runs = 0
         self.n_prunes = 0
 
     @property
-    def state(self):
+    def state(self) -> 'Mode':
         return self._state
 
-    def set_state(self, state):
+    def set_state(self, state: 'Mode'):
         self._state = state
 
         if state == Mode.PROCESSING:
@@ -42,31 +43,16 @@ class Model:
         elif state == Mode.PRUNING:
             self.n_prunes += 1
 
-    def _update_supp_files(self, article, article_json):
-        supp_files = []
-        for file_url in article_json["SupplementaryFiles"]:
-            supp_file = SuppFile(article, file_url, uuid4())
-            self.file_manager.add_file(supp_file)
-            supp_files.append(supp_file)
-
-        article.supp_files = supp_files
-
-    def create_article_data(self, article_json):
-        article = Article(
-            title=article_json["Title"],
-            authors=article_json["Authors"],
-            abstract=article_json["Abstract"],
-            pmc_id=article_json["PMCID"],
-            url=article_json["URL"]
-        )
-
-        self._update_supp_files(article, article_json)
+    def create_article_data(self, article_json: 'dict'):
+        article = Article(article_json)
         self.bibliography.add_article(article)
 
         return article
 
-    def _update_processed_tables(self, article, ids_list):
-        processed_tables = []
+    def _update_processed_tables(
+        self, article, ids_list: 'list[tuple[str, UUID]]'
+    ):
+        processed_tables: 'list[ProcessedTable]' = []
         for table_id, file_id in ids_list:
             table_data = self.table_db_manager.get_processed_table_data(
                 table_id,
@@ -87,27 +73,32 @@ class Model:
 
         return processed_tables
 
-    def update_article(self, article, ids_list):
+    def update_article(
+        self, article: 'Article', ids_list: 'list[tuple[str, UUID]]'
+    ):
         article.processed_tables = self._update_processed_tables(
             article, ids_list
         )
 
         return article
 
-    def prune_tables_and_columns(self, context):
+    # May need a thread for this, hangs up on large queries
+    def prune_tables_and_columns(self, context: 'PageIdentity'):
+
+        article: 'Article'
         for article in self.bibliography.get_selected_articles(context):
 
             # TODO unspaghettify this
-            tables_to_prune = [table
-                               for table
-                               in article.processed_tables if table.checked]
+            selected_tables = [
+                table for table in article.processed_tables if table.checked
+            ]
 
-            for table in tables_to_prune:
+            table: 'ProcessedTable'
+            for table in selected_tables:
                 pruned_df = None
 
-                data = self.table_db_manager.get_processed_table_data(
-                    table.id, context
-                )
+                data: 'DataFrame' = self.table_db_manager. \
+                    get_processed_table_data(table.id, context)
 
                 if context == PageIdentity.PARSED:
                     cols = table.checked_columns
@@ -138,18 +129,20 @@ class Model:
                             pruned_df
                         )
 
-            article.pruned_tables = tables_to_prune
+            article.pruned_tables = selected_tables
 
-            for table in tables_to_prune:
+            for table in article.pruned_tables:
                 new_data = self.table_db_manager.get_processed_table_data(
-                    table.id, context
+                    table.id, PageIdentity.PRUNED
                 )
 
                 if new_data is not None:
                     table.pruned_columns = list(range(len(new_data.columns)))
 
-    # TODO filtering is slow and needs its own thread; gui hangs up too long
-    def filter_tables(self, query, context):
+    # TODO #30 filtering is slow and needs its own thread; gui hangs up too long
+    def filter_tables(self, query: 'str', context: 'PageIdentity'):
+
+        article: 'Article'
         for article in self.bibliography.get_selected_articles(
             PageIdentity.PARSED
         ):
@@ -159,7 +152,7 @@ class Model:
                     context
                 )
 
-                processed_table.set_checked(bool(qp.search(
+                processed_table.set_checked_state(bool(qp.search(
                     query,
                     [(processed_table.id, table_data.to_string())])),
                     PageIdentity.PARSED
@@ -167,8 +160,7 @@ class Model:
 
     def reset_for_searching(self):
         self.bibliography.reset()
-        self.file_manager.reset()
-        
+
         self.n_parse_runs = 0
         self.n_prunes = 0
 
@@ -176,7 +168,7 @@ class Model:
         self.processed_table_manager.reset()
         self.table_db_manager.reset()
 
-    def save(self, filename):
+    def save(self, filename: 'str'):
         # stash observers so we can pickle the model
         global_stash = {}
         # since articles refer to suppfiles/tables and vice versa, we need to
@@ -187,7 +179,9 @@ class Model:
         save_object = {
             'state': self.state,
             'bibliography': self.bibliography,
-            'file_manager': self.file_manager,
+            # TODO the db urls are tricky because if the user keeps editing
+            # after saving the dbs get changed so that reloads don't work
+            # properly
             'processed_db_url': self.table_db_manager.processed_db_url,
             'post_pruning_db_url': self.table_db_manager.post_pruning_db_url,
             'processed_table_manager': self.processed_table_manager,
@@ -201,18 +195,17 @@ class Model:
         visited_objects.clear()
         restore_all_observers(self.bibliography, global_stash, visited_objects)
 
-    def load(self, filename):
+    def load(self, filename: 'str'):
         with open(filename, 'rb') as f:
             save_object = pickle.load(f)
 
         self.bibliography = save_object['bibliography']
-        self.file_manager = save_object['file_manager']
         self.table_db_manager = TableDBManager(
             save_object['processed_db_url'],
             save_object['post_pruning_db_url'])
         self.processed_table_manager = save_object['processed_table_manager']
         self.search_thread = SearchThread()
-        self.search_preview_thread = FilePreviewThread("")
+        self.search_preview_thread = FilePreviewThread()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
 
         self.n_parse_runs = save_object.get('n_parse_runs', False)

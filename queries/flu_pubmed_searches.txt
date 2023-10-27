@@ -1,0 +1,125 @@
+(
+    (
+        (
+            (
+                (
+                    "CRISPR"[Title/Abstract] OR 
+                    "CRISPR-Cas9"[Title/Abstract] OR 
+                    "CRISPR/Cas9"[Title/Abstract] OR 
+                    "CRISPR-Cas"[Title/Abstract] OR 
+                    "CRISPR/Cas"[Title/Abstract] OR
+                    "pooled CRISPR*"[Title/Abstract]
+                )
+                AND 
+                (
+                    "knockout screen"[Title/Abstract] OR 
+                    "knock-out screen"[Title/Abstract] OR 
+                    "KO screen"[Title/Abstract] OR
+                    "pooled screen"[Title/Abstract] OR
+                    "gene-editing screen"[Title/Abstract] OR
+                    "editing screen"[Title/Abstract] OR
+                    "knockout screens"[Title/Abstract] OR 
+                    "knock-out screens"[Title/Abstract] OR 
+                    "KO screens"[Title/Abstract] OR
+                    "pooled screens"[Title/Abstract] OR
+                    "gene-editing screens"[Title/Abstract] OR
+                    "editing screens"[Title/Abstract] OR
+                    "knockout screening"[Title/Abstract] OR 
+                    "knock-out screening"[Title/Abstract] OR 
+                    "KO screening"[Title/Abstract] OR
+                    "pooled screening"[Title/Abstract] OR
+                    "gene-editing screening"[Title/Abstract] OR
+                    "editing screening"[Title/Abstract] OR
+                    "knockout library"[Title/Abstract] OR
+                    "knock-out library"[Title/Abstract]
+                )
+            )
+            OR
+            (
+                "whole genome CRISPR"[Title/Abstract] OR
+                "whole-genome CRISPR"[Title/Abstract] OR
+                "genome-wide CRISPR"[Title/Abstract] OR
+                "genome wide CRISPR"[Title/Abstract] OR
+                "genome-scale CRISPR"[Title/Abstract] OR
+                "genome scale CRISPR"[Title/Abstract]
+            )
+            OR
+            (
+                "CRISPR screen*"[Title/Abstract] OR 
+                "CRISPR-Cas9 screen*"[Title/Abstract] OR 
+                "CRISPR/Cas9 screen*"[Title/Abstract] OR 
+                "CRISPR-Cas screen*"[Title/Abstract] OR 
+                "CRISPR/Cas screen*"[Title/Abstract] OR
+                "CRISPR screens"[Title/Abstract] OR 
+                "CRISPR-Cas9 screens"[Title/Abstract] OR 
+                "CRISPR/Cas9 screens"[Title/Abstract] OR 
+                "CRISPR-Cas screens"[Title/Abstract] OR 
+                "CRISPR/Cas screens"[Title/Abstract] OR
+                "CRISPR screening"[Title/Abstract] OR 
+                "CRISPR-Cas9 screening"[Title/Abstract] OR 
+                "CRISPR/Cas9 screening"[Title/Abstract] OR 
+                "CRISPR-Cas screening"[Title/Abstract] OR 
+                "CRISPR/Cas screening"[Title/Abstract]
+            )
+        )
+        OR
+        (
+            (
+                "CRISPRi"[Title/Abstract] OR 
+                "CRISPRa"[Title/Abstract]
+            )
+            AND
+            (
+                "knockdown screen*"[Title/Abstract] OR
+                "knock-down screen*"[Title/Abstract] OR
+                "KD screen*"[Title/Abstract] OR
+                "activation screen*"[Title/Abstract]
+                "knockdown screens"[Title/Abstract] OR
+                "knock-down screens"[Title/Abstract] OR
+                "KD screens"[Title/Abstract] OR
+                "activation screens"[Title/Abstract]
+                "knockdown screening"[Title/Abstract] OR
+                "knock-down screening"[Title/Abstract] OR
+                "KD screening"[Title/Abstract] OR
+                "activation screening"[Title/Abstract]
+            )
+        )
+    )
+    AND 
+    (
+        "influenza"[Title/Abstract] OR 
+        "IAV"[Title/Abstract]
+
+    )
+    AND 
+    (
+        "infection"[Title/Abstract] OR 
+        "infectivity"[Title/Abstract] OR
+        "transmission"[Title/Abstract] OR
+        "transmissibility"[Title/Abstract] OR
+        "load"[Title/Abstract] OR
+        "titre"[Title/Abstract] OR
+        "titer"[Title/Abstract] OR
+        "entry"[Title/Abstract] OR
+        "replication"[Title/Abstract] OR
+        "growth"[Title/Abstract] OR
+        "assembly"[Title/Abstract] OR
+        "production"[Title/Abstract] OR
+        "budding"[Title/Abstract] OR
+        "release"[Title/Abstract] OR
+        "spread"[Title/Abstract] OR
+        "yield"[Title/Abstract]
+    )
+    AND 
+    (
+        
+        "novel factors"[Title/Abstract] OR
+        "host factors"[Title/Abstract] OR 
+        "host-factors"[Title/Abstract] OR 
+        "restriction"[Title/Abstract] OR 
+        "restriction factors"[Title/Abstract] OR 
+        "permissive factors"[Title/Abstract] OR 
+        "entry factors"[Title/Abstract]
+        
+    )
+)

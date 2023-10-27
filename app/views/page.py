@@ -1,3 +1,8 @@
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from views.custom_components import TabPage
+    from PyQt5.QtGui import QKeyEvent
+
 from PyQt5.QtCore import Qt, QTimer, QObject, pyqtSignal
 from PyQt5.QtWidgets import QLabel, QProgressBar, QPushButton, QListWidget, QTabWidget, QTextBrowser, QLineEdit, QSizePolicy
 
@@ -6,7 +11,7 @@ class QPushButton(QPushButton):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: 'QKeyEvent'):
         if event is not None:
             if event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return:
                 self.setDown(True)
@@ -23,22 +28,22 @@ class QListWidget(QListWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: 'QKeyEvent'):
         super().keyPressEvent(event)
         if event.key() in [Qt.Key_Up, Qt.Key_Down]:
             self.itemClicked.emit(self.currentItem())
 
 
-class PageElements(QObject): # QObject needed for signalling
-    def __init__(self, parent_tab):
+class PageElements(QObject):  # QObject needed for signalling
+    def __init__(self, parent_tab: 'TabPage'):
         super().__init__()
         self.page_identity = parent_tab.page_identity
         self.prog_bar = QProgressBar(parent_tab)
         self.prog_bar.setRange(0, 100)
         self.prog_bar.setValue(0)
         self.prog_bar.hide()
-        self.article_list_view = QListWidget(parent_tab)
-        self.data_list_view = QListWidget(parent_tab)
+        self.article_ui_list = QListWidget(parent_tab)
+        self.data_ui_list = QListWidget(parent_tab)
 
         self.title_abstract_disp = QTextBrowser(parent_tab)
         self.title_abstract_disp.setMinimumHeight(100)
@@ -53,17 +58,21 @@ class PageElements(QObject): # QObject needed for signalling
 
         self.title_abstract_disp.setFocusPolicy(Qt.NoFocus)
 
-        self.previews = QTabWidget(parent_tab)
-        self.previews.setMinimumHeight(200)
-        self.previews.setSizePolicy(
-            QSizePolicy.Expanding, QSizePolicy.Preferred)
+        self.outer_tab_widget = QTabWidget(parent_tab)
+        self.previews = QTabWidget()
+
+        self.outer_tab_widget.addTab(self.previews, "Previews")
+
+        self.metadata_view = QTextBrowser()
+        self.metadata_view.setOpenExternalLinks(True)
+        self.outer_tab_widget.addTab(self.metadata_view, "Metadata")
 
         self.loading_label = QLabel(parent_tab)
         self.loading_label.setAlignment(Qt.AlignCenter)
 
 
 class SearchPageElements(PageElements):
-    def __init__(self, parent_tab):
+    def __init__(self, parent_tab: 'TabPage'):
         super().__init__(parent_tab)
         self.search_status = QLabel(parent_tab)
         self.query_field = QLineEdit(parent_tab)
@@ -79,7 +88,7 @@ class ProcessedPageElements(PageElements):
     filter_sig = pyqtSignal(object)
     prune_sig = pyqtSignal(object)
 
-    def __init__(self, parent_tab):
+    def __init__(self, parent_tab: 'TabPage'):
         super().__init__(parent_tab)
         self.query_filter_field = QLineEdit(parent_tab)
         self.filter_btn = QPushButton("Filter", parent_tab)
@@ -88,7 +97,7 @@ class ProcessedPageElements(PageElements):
 
         self.prune_btn = QPushButton("Prune Tables and Columns", parent_tab)
         self.prune_btn.clicked.connect(self.emit_prune_identity)
-    
+
     def emit_filter_identity(self):
         self.filter_sig.emit(self.page_identity)
 

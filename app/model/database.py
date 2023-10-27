@@ -1,3 +1,9 @@
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from uuid import UUID
+    from pandas import DataFrame
+    from utils.constants import PageIdentity
+
 from sqlalchemy import create_engine, Column, String, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -9,18 +15,19 @@ from utils.constants import PageIdentity
 Base = declarative_base()
 
 
-class ProcessedTableDBEntry(Base):
+class TableDBEntry(Base):
+    __abstract__ = True
+    table_id = Column(String, primary_key=True)
+    original_file_id = Column(String)
+    sql_table_name = Column(String)
+
+
+class ProcessedTableDBEntry(TableDBEntry):
     __tablename__ = 'processed_tables'
-    table_id = Column(String, primary_key=True)
-    original_file_id = Column(String)
-    sql_table_name = Column(String)
 
 
-class PostPruningTableDBEntry(Base):
+class PostPruningTableDBEntry(TableDBEntry):
     __tablename__ = 'post_pruning_tables'
-    table_id = Column(String, primary_key=True)
-    original_file_id = Column(String)
-    sql_table_name = Column(String)
 
 
 class TableDBManager:
@@ -41,7 +48,7 @@ class TableDBManager:
         self.ProcessedSession = sessionmaker(bind=self.processed_engine)
         self.PostPruningSession = sessionmaker(bind=self.post_pruning_engine)
 
-    def _get_engine_and_session(self, table_class):
+    def _get_engine_and_session(self, table_class: 'TableDBEntry') -> 'tuple':
         if table_class == ProcessedTableDBEntry:
             return self.processed_engine, self.ProcessedSession
         elif table_class == PostPruningTableDBEntry:
@@ -49,7 +56,13 @@ class TableDBManager:
         else:
             raise ValueError("Invalid table_class")
 
-    def save_table(self, table_class, table_id, original_file_id, df):
+    def save_table(
+        self,
+        table_class: 'TableDBEntry',
+        table_id: 'str',
+        original_file_id: 'UUID',
+        df: 'DataFrame'
+    ):
         engine, Session = self._get_engine_and_session(table_class)
         with Session() as session:
             sql_table_name = f"{table_class.__tablename__}_{table_id}"
@@ -62,10 +75,15 @@ class TableDBManager:
             session.add(new_table)
             session.commit()
 
-    def update_table(self, table_class, table_id, df):
+    def update_table(
+        self,
+        table_class: 'TableDBEntry',
+        table_id: 'str',
+        df: 'DataFrame'
+    ):
         engine, Session = self._get_engine_and_session(table_class)
         with Session() as session:
-            existing_table = session.query(
+            existing_table: 'TableDBEntry' = session.query(
                 table_class
             ).filter_by(table_id=table_id).first()
 
@@ -78,17 +96,24 @@ class TableDBManager:
                 )
                 session.commit()
 
-    # TODO consolidate these using context to decide which table to query
-    def get_processed_table_data(self, table_id, context):
+    def get_processed_table_data(
+        self,
+        table_id: 'str',
+        context: 'PageIdentity'
+    ) -> 'DataFrame':
         if context == PageIdentity.PARSED:
             return self.get_table_data(ProcessedTableDBEntry, table_id)
         else:
             return self.get_table_data(PostPruningTableDBEntry, table_id)
 
-    def get_table_data(self, table_class, table_id):
+    def get_table_data(
+        self,
+        table_class: 'TableDBEntry',
+        table_id: 'str'
+    ) -> 'DataFrame':
         engine, Session = self._get_engine_and_session(table_class)
         with Session() as session:
-            table_entry = session.query(table_class).filter_by(
+            table_entry: 'TableDBEntry' = session.query(table_class).filter_by(
                 table_id=table_id
             ).first()
             if table_entry:
@@ -96,17 +121,25 @@ class TableDBManager:
                 return df.reset_index(drop=True)
             return None
 
-    def get_table_object(self, table_class, table_id):
+    def get_table_object(
+        self,
+        table_class: 'TableDBEntry',
+        table_id: 'str'
+    ) -> 'TableDBEntry':
         _, Session = self._get_engine_and_session(table_class)
         with Session() as session:
             table = session.query(table_class).filter_by(
                 table_id=table_id).first()
             return table
 
-    def delete_table(self, table_class, table_id):
+    def delete_table(
+        self,
+        table_class: 'TableDBEntry',
+        table_id: 'str'
+    ):
         engine, Session = self._get_engine_and_session(table_class)
         with Session() as session:
-            table_entry = session.query(table_class).filter_by(
+            table_entry: 'TableDBEntry' = session.query(table_class).filter_by(
                 table_id=table_id).first()
             if table_entry:
                 with engine.connect() as conn:
@@ -120,8 +153,12 @@ class TableDBManager:
             (self.processed_engine, self.ProcessedSession),
                 (self.post_pruning_engine, self.PostPruningSession)]:
             with Session() as session:
-                for table_class in [ProcessedTableDBEntry, PostPruningTableDBEntry]:
-                    table_entries = session.query(table_class).all()
+                for table_class in [
+                    ProcessedTableDBEntry, PostPruningTableDBEntry
+                ]:
+                    table_entries: 'list[TableDBEntry]' = session.query(
+                        table_class
+                    ).all()
                     for entry in table_entries:
                         with engine.connect() as conn:
                             conn.execute(
@@ -130,6 +167,10 @@ class TableDBManager:
                 session.commit()
 
 
-def processed_df_to_db(db_manager, table_id, original_file_id, df):
-    db_manager.save_table(ProcessedTableDBEntry,
-                          table_id, original_file_id, df)
+def processed_df_to_db(
+    db_manager: 'TableDBManager',
+    table_id: 'str',
+    original_file_id: 'UUID',
+    df: 'DataFrame'
+):
+    db_manager.save_table(ProcessedTableDBEntry, table_id, original_file_id, df)
