@@ -99,13 +99,13 @@ class View(QMainWindow):
         left_pane.addWidget(elements.search_btn)
         left_pane.addWidget(elements.stop_search_btn)
         left_pane.addWidget(elements.search_status)
-        left_pane.addWidget(elements.article_list_view)
+        left_pane.addWidget(elements.article_ui_list)
         left_pane.addWidget(QLabel("Associated Data:"))
-        left_pane.addWidget(elements.data_list_view)
+        left_pane.addWidget(elements.data_ui_list)
         left_pane.addWidget(elements.proceed_btn)
 
-        left_pane.setStretchFactor(elements.article_list_view, 3)
-        left_pane.setStretchFactor(elements.data_list_view, 1)
+        left_pane.setStretchFactor(elements.article_ui_list, 3)
+        left_pane.setStretchFactor(elements.data_ui_list, 1)
 
         self._init_core_layouts(self.search_tab, elements, left_pane)
 
@@ -116,16 +116,16 @@ class View(QMainWindow):
     ):
         left_pane = QVBoxLayout()
         left_pane.addWidget(elements.prog_bar)
-        left_pane.addWidget(elements.article_list_view)
+        left_pane.addWidget(elements.article_ui_list)
         left_pane.addWidget(QLabel("Associated Data:"))
-        left_pane.addWidget(elements.data_list_view)
+        left_pane.addWidget(elements.data_ui_list)
         left_pane.addWidget(QLabel("Filter Query:"))
         left_pane.addWidget(elements.query_filter_field)
         left_pane.addWidget(elements.filter_btn)
         left_pane.addWidget(elements.prune_btn)
 
-        left_pane.setStretchFactor(elements.article_list_view, 3)
-        left_pane.setStretchFactor(elements.data_list_view, 1)
+        left_pane.setStretchFactor(elements.article_ui_list, 3)
+        left_pane.setStretchFactor(elements.data_ui_list, 1)
 
         self._init_core_layouts(page, elements, left_pane)
 
@@ -225,7 +225,7 @@ class View(QMainWindow):
         progress: 'int'
     ):
         article_item = ArticleListItem(article, elements.page_identity)
-        self._to_list(elements.article_list_view, article_item, article.pmc_id)
+        self._to_list(elements.article_ui_list, article_item, article.pmc_id)
         elements.prog_bar.setValue(progress + 1)
 
     def update_article_display(
@@ -234,6 +234,7 @@ class View(QMainWindow):
         elements: 'PageElements',
         data_set: 'list[BaseData]'
     ):
+        self.clear_list_and_observers(elements.data_ui_list)
         elements.title_abstract_disp.setHtml(
             f"<a href='{article.url}'>"
             f"<b>{article.title}</b></a>"
@@ -245,11 +246,11 @@ class View(QMainWindow):
                 data, elements.page_identity
             )
             data_item.checkbox.setChecked(data.checked)
-            self._to_list(elements.data_list_view, data_item, data.id)
+            self._to_list(elements.data_ui_list, data_item, data.id)
 
     def clear_page_lists(self, elements: 'PageElements'):
-        self.clear_list_and_observers(elements.article_list_view)
-        self.clear_list_and_observers(elements.data_list_view)
+        self.clear_list_and_observers(elements.article_ui_list)
+        self.clear_list_and_observers(elements.data_ui_list)
 
     def clear_list_and_observers(self, list_widget: 'QListWidget'):
         for index in range(list_widget.count()):
