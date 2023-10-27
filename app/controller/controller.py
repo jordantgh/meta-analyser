@@ -62,29 +62,30 @@ class Controller:
             self.view.load_action.triggered: self.load,
 
             # Search page
-            self.search_elems.article_list_view.itemClicked: self.click_article,
-            self.search_elems.search_btn.clicked: self.search_articles,
-            self.search_elems.stop_search_btn.clicked: self.send_search_stop,
-            self.search_elems.proceed_btn.clicked: self.on_proceed,
+            search.article_ui_list.itemClicked: self.on_article_clicked,
+            search.search_btn.clicked: self.search_articles,
+            search.stop_search_btn.clicked: self.send_search_stop,
+            search.proceed_btn.clicked: self.on_proceed,
 
-            # Search threads
-            self.model.search_thread.article_sig: self.display_article,
-            self.model.search_thread.finished_sig: self.stop_search,
-            self.model.search_preview_thread.prev_ready_sig: self.load_preview,
-
-            # Processing thread
-            self.model.processing_thread.article_sig: self.display_article,
-            self.model.processing_thread.finished_sig: self.stop_processing,
 
             # Parsed page
-            self.parsed_elems.article_list_view.itemClicked: self.click_article,
-            self.parsed_elems.filter_sig: self.filter_tables,
-            self.parsed_elems.prune_sig: self.prune_tables_and_columns,
+            parsed.article_ui_list.itemClicked: self.on_article_clicked,
+            parsed.filter_sig: self.filter_tables,
+            parsed.prune_sig: self.prune_tables_and_columns,
 
             # Pruned page
-            self.pruned_elems.article_list_view.itemClicked: self.click_article,
-            self.pruned_elems.filter_sig: self.filter_tables,
-            self.pruned_elems.prune_sig: self.prune_tables_and_columns
+            pruned.article_ui_list.itemClicked: self.on_article_clicked,
+            pruned.filter_sig: self.filter_tables,
+            pruned.prune_sig: self.prune_tables_and_columns,
+
+            # Search threads
+            search_thread.article_sig: self.display_article_in_list,
+            search_thread.finished_sig: self.stop_search,
+            search_preview_thread.prev_ready_sig: self.load_preview,
+
+            # Processing thread
+            processing_thread.article_sig: self.display_article_in_list,
+            processing_thread.finished_sig: self.stop_processing
         }
 
         for signal, slot in signals_map.items():
