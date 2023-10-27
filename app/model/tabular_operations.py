@@ -30,7 +30,7 @@ def parse_tables(
         callback: 'Callable' = None
 ):
     for index, article in enumerate(selected_articles):
-        processed_table_ids = []
+        processed_table_ids: 'list[tuple[str, UUID]]' = []
         for file in article.supp_files:
             if should_stop:
                 break
