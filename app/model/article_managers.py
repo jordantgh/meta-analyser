@@ -7,8 +7,19 @@ from uuid import uuid4, UUID
 
 
 class BaseData:
+    def __init__(self):
+        self.checked = True
+
+    def register_observer(
+        self, observer, context: 'PageIdentity'
+    ):
+        self.observers[context] = observer
+
+    def notify_observers(self, context: 'PageIdentity'):
+        self.observers[context].update(self)
+
     def alert_observers(self):
-        return False
+        return True
 
     def checkbox_togglable(self):
         return True
@@ -35,11 +46,22 @@ class SuppFile(BaseData):
             metadata: 'str',
             id: 'UUID'
     ):
+        super().__init__()
         self.article = article
         self.article_id = article.pmc_id
         self.url = url
         self.metadata = metadata
         self.id = id
+
+    # don't use the observer pattern for supp files, they don't need it
+    def register_observer():
+        pass
+
+    def notify_observers():
+        pass
+
+    def alert_observers(self):
+        return False
 
     def checkbox_toggled(self):
         self.article.update_based_on_elements(PageIdentity.SEARCH)
@@ -52,6 +74,7 @@ class ProcessedTable(BaseData):
         file_id: 'UUID',
         num_columns=None
     ):
+        super().__init__()
         self.article: 'Article' = article
         self.article_id: 'str' = article.pmc_id
         self.supp_file: 'SuppFile' = article.get_file(file_id)
@@ -95,9 +118,11 @@ class ProcessedTableManager:
 
 class Article(BaseData):
     def __init__(self, article_json: 'dict'):
+        super().__init__()
         self.checked: 'dict[PageIdentity, bool]' = {
             context: True for context in PageIdentity
         }
+
         self.title: 'str' = article_json["Title"]
         self.authors: 'str' = article_json["Authors"]
         self.abstract: 'str' = article_json["Abstract"]
@@ -124,19 +149,13 @@ class Article(BaseData):
             is_checked = self.checked[context]
 
         hierarchy = [context for context in PageIdentity]
-
-        # Find the position of the current context in the hierarchy
-        index = hierarchy.index(context)
-
-        # Update the checked state of the parent context (preserves initial
-        # state for the initially called context)
+        current_index = hierarchy.index(context)
         self.checked[context] = is_checked
 
-        # Stop recursion if we're at the last element in the hierarchy
-        if index == len(hierarchy) - 1:
+        if current_index == len(hierarchy) - 1:
             return
 
-        for sub_context in hierarchy[index + 1:]:
+        for sub_context in hierarchy[current_index + 1:]:
             self.cascade_checked_state(sub_context, is_checked)
 
     def update_based_on_elements(self, context: 'PageIdentity'):
@@ -156,6 +175,9 @@ class Article(BaseData):
         return next((f for f in self.supp_files if f.id == file_id), None)
 
     def get_table_by_id(self, table_id: 'str') -> 'ProcessedTable':
+        return next(
+            (t for t in self.processed_tables if t.id == table_id), None
+        )
 
 
 class Bibliography:
