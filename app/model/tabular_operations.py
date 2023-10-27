@@ -15,13 +15,8 @@ from skimage.measure import label, regionprops
 from model.file_io import download_supp, extract_dfs
 from model.database import processed_df_to_db
 
-# TODO #31 idea: use the contentful regions discarded by the parser to
-# add metadata; these are often descriptions/titles of the tables.
-# Could then use pythagoras to find the closest table and set the metadata
-# on that table.
-
-
 # TODO heavily overdue a readability pass
+
 
 def parse_tables(
         selected_articles: 'list[Article]',
@@ -29,6 +24,7 @@ def parse_tables(
         should_stop: 'bool',
         callback: 'Callable' = None
 ):
+    tables_metadatas = defaultdict(list)
     for index, article in enumerate(selected_articles):
         processed_table_ids: 'list[tuple[str, UUID]]' = []
         for file in article.supp_files:
@@ -57,12 +53,15 @@ def parse_tables(
                     region_bboxes = [
                         region.bbox for region in regionprops(labeled)]
 
+                    non_table_bboxes = []  # Step 2
+
                     for i, box in enumerate(region_bboxes):
                         if should_stop:
                             break
 
                         minr, minc, maxr, maxc = box
                         if maxr - minr <= 1 or maxc - minc <= 1:
+                            non_table_bboxes.append(box)
                             continue
 
                         other_bboxes = [o_box for j, o_box
@@ -79,8 +78,13 @@ def parse_tables(
                         data: 'DataFrame' = df.iloc[minr:maxr, minc:maxc]
                         base_name = os.path.splitext(fname)[0]
                         unique_id = f"{base_name}_{sheetname}_Table{i}"
+                        tables_metadatas[unique_id].extend(
+                            _find_closest_metadata(box, non_table_bboxes, df)
+                        )
+
                         processed_df_to_db(
-                            db_manager, unique_id, file.id, region)
+                            db_manager, unique_id, file.id, data
+                        )
 
                         processed_table_ids.append((unique_id, file.id))
 
@@ -98,6 +102,27 @@ def _find_closest_metadata(
     non_table_bboxes: 'list[tuple]',
     df: 'DataFrame'
 ) -> 'list[DataFrame]':
+    minr, minc, maxr, maxc = box
+    center_x, center_y = (minr + maxr) / 2, (minc + maxc) / 2
+
+    closest_metadata = None
+    min_distance = float('inf')
+
+    for nt_box in non_table_bboxes:
+        nt_minr, nt_minc, nt_maxr, nt_maxc = nt_box
+        nt_center_x, nt_center_y = (
+            nt_minr + nt_maxr) / 2, (nt_minc + nt_maxc) / 2
+
+        distance = np.sqrt((center_x - nt_center_x)**2 +
+                           (center_y - nt_center_y)**2)
+
+        if distance < min_distance:
+            min_distance = distance
+            closest_metadata = df.iloc[nt_minr:nt_maxr, nt_minc:nt_maxc]
+
+    return [closest_metadata] if closest_metadata is not None else []
+
+
 def _is_contained(box: 'tuple', o_box: 'tuple') -> 'bool':
     return (o_box[0] <= box[0] and
             o_box[1] <= box[1] and
