@@ -97,7 +97,7 @@ class DataListItem(ListItem):
 
     def get_disp_name(self, text: 'str') -> 'str':
         font_metrics = QFontMetrics(self.main_window.font())
-        available_width = self.page.data_list_view.width() - 150
+        available_width = self.page.data_ui_list.width() - 150
         return font_metrics.elidedText(text, Qt.ElideMiddle, available_width)
 
 
