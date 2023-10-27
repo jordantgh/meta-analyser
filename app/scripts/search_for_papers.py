@@ -156,7 +156,10 @@ def get_supp_files(pmc_id: 'str', browser: 'Browser', max_retries: 'int' = 3):
 
                         # Prepare the description tuple
                         outer_descr_str = f"<strong>{outer_descr}</strong>" if outer_descr else ""
-                        inner_descr_str = f"<em>{inner_descr}</em>" if inner_descr else ""
+                        inner_descr_str = f"\n\n<em>{inner_descr}</em>" if inner_descr else ""
+
+                        if inner_descr_str.endswith(":"):
+                            inner_descr_str = inner_descr_str[:-1]
 
                         # Formatting intext_ref entries
                         intext_ref_strs = [
@@ -171,7 +174,7 @@ def get_supp_files(pmc_id: 'str', browser: 'Browser', max_retries: 'int' = 3):
                             f"{BASE_URL}/pmc/articles/{pmc_id}/"
                         )
 
-                        if formatted_description.strip():  # Checking if not just whitespace
+                        if formatted_description.strip():
                             supp_file_dict[full_url] = formatted_description
 
             page.close()
