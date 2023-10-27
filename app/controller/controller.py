@@ -117,11 +117,11 @@ class Controller:
                 "Please wait or stop the current search.")
             return
 
-        query = self.search_elems.query_field.text()
+        query = self.output_page.query_field.text()
         if not query:
             return
 
-        self.view.clear_list_and_observers(self.search_elems.article_list_view)
+        self.view.clear_list_and_observers(self.output_page.article_ui_list)
         self.view.show_searching_view()
 
         self.model.search_thread.prepare(query)
@@ -146,7 +146,7 @@ class Controller:
             self.model.processing_thread.quit()
             self.model.processing_thread.wait()
 
-        self.parsed_elems.prog_bar.hide()
+        self.output_page.prog_bar.hide()
         self._set_state(Mode.BROWSING)
 
     def on_article_clicked(self, item: 'QListWidgetItem'):
@@ -255,7 +255,7 @@ class Controller:
 
         article: 'Article'
         for article in self.model.bibliography.get_selected_articles(context):
-            self.view.display_article(self.pruned_elems, article, 0)
+            self.view.display_article(self.output_page, article, 0)
 
         self._set_state(Mode.BROWSING)
 
@@ -364,25 +364,32 @@ class Controller:
         self.__init__(self.model, self.view)
 
         # Populate search page
+        self._set_state(Mode.SEARCHING)
         selected_articles = self.model.bibliography.articles.values()
         for article in selected_articles:
-            self.view.display_article(self.search_elems, article, 0)
+            self.view.display_article(self.output_page, article, 0)
+
+        self._set_state(Mode.BROWSING)
 
         # Populate parsed page
         if not self.model.n_parse_runs:
             return
 
+        self._set_state(Mode.PROCESSING)
         selected_articles = self.model.bibliography.get_selected_articles(
             PageIdentity.SEARCH
         )
 
         for article in selected_articles:
-            self.view.display_article(self.parsed_elems, article, 0)
+            self.view.display_article(self.output_page, article, 0)
+
+        self._set_state(Mode.BROWSING)
 
         # Populate pruned page
         if not self.model.n_prunes:
             return
 
+        self._set_state(Mode.PRUNING)
         if self.model.n_prunes == 1:
             selected_articles = self.model.bibliography.get_selected_articles(
                 PageIdentity.PARSED
@@ -394,4 +401,6 @@ class Controller:
             )
 
         for article in selected_articles:
-            self.view.display_article(self.pruned_elems, article, 0)
+            self.view.display_article(self.output_page, article, 0)
+
+        self._set_state(Mode.BROWSING)
