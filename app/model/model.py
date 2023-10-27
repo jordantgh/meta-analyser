@@ -28,8 +28,6 @@ class Model:
         self.table_db_manager = TableDBManager()
         self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
-
-        # Flags to track whether we've ever parsed/pruned for when we load
         self.n_parse_runs = 0
         self.n_prunes = 0
 
@@ -131,11 +129,11 @@ class Model:
                             pruned_df
                         )
 
-            article.pruned_tables = tables_to_prune
+            article.pruned_tables = selected_tables
 
-            for table in tables_to_prune:
+            for table in article.pruned_tables:
                 new_data = self.table_db_manager.get_processed_table_data(
-                    table.id, context
+                    table.id, PageIdentity.PRUNED
                 )
 
                 if new_data is not None:
@@ -154,7 +152,7 @@ class Model:
                     context
                 )
 
-                processed_table.set_checked(bool(qp.search(
+                processed_table.set_checked_state(bool(qp.search(
                     query,
                     [(processed_table.id, table_data.to_string())])),
                     PageIdentity.PARSED
@@ -181,6 +179,9 @@ class Model:
         save_object = {
             'state': self.state,
             'bibliography': self.bibliography,
+            # TODO the db urls are tricky because if the user keeps editing
+            # after saving the dbs get changed so that reloads don't work
+            # properly
             'processed_db_url': self.table_db_manager.processed_db_url,
             'post_pruning_db_url': self.table_db_manager.post_pruning_db_url,
             'processed_table_manager': self.processed_table_manager,
