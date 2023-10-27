@@ -24,7 +24,7 @@ class Model:
         self._state = Mode.BROWSING
         self.bibliography = Bibliography()
         self.search_thread = SearchThread()
-        self.search_preview_thread = FilePreviewThread("")
+        self.search_preview_thread = FilePreviewThread()
         self.table_db_manager = TableDBManager()
         self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
@@ -204,7 +204,7 @@ class Model:
             save_object['post_pruning_db_url'])
         self.processed_table_manager = save_object['processed_table_manager']
         self.search_thread = SearchThread()
-        self.search_preview_thread = FilePreviewThread("")
+        self.search_preview_thread = FilePreviewThread()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
 
         self.n_parse_runs = save_object.get('n_parse_runs', False)
