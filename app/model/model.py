@@ -34,10 +34,10 @@ class Model:
         self.n_prunes = 0
 
     @property
-    def state(self):
+    def state(self) -> 'Mode':
         return self._state
 
-    def set_state(self, state):
+    def set_state(self, state: 'Mode'):
         self._state = state
 
         if state == Mode.PROCESSING:
@@ -45,14 +45,16 @@ class Model:
         elif state == Mode.PRUNING:
             self.n_prunes += 1
 
-    def create_article_data(self, article_json):
+    def create_article_data(self, article_json: 'dict'):
         article = Article(article_json)
         self.bibliography.add_article(article)
 
         return article
 
-    def _update_processed_tables(self, article, ids_list):
-        processed_tables = []
+    def _update_processed_tables(
+        self, article, ids_list: 'list[tuple[str, UUID]]'
+    ):
+        processed_tables: 'list[ProcessedTable]' = []
         for table_id, file_id in ids_list:
             table_data = self.table_db_manager.get_processed_table_data(
                 table_id,
@@ -73,27 +75,32 @@ class Model:
 
         return processed_tables
 
-    def update_article(self, article, ids_list):
+    def update_article(
+        self, article: 'Article', ids_list: 'list[tuple[str, UUID]]'
+    ):
         article.processed_tables = self._update_processed_tables(
             article, ids_list
         )
 
         return article
 
-    def prune_tables_and_columns(self, context):
+    # May need a thread for this, hangs up on large queries
+    def prune_tables_and_columns(self, context: 'PageIdentity'):
+
+        article: 'Article'
         for article in self.bibliography.get_selected_articles(context):
 
             # TODO unspaghettify this
-            tables_to_prune = [table
-                               for table
-                               in article.processed_tables if table.checked]
+            selected_tables = [
+                table for table in article.processed_tables if table.checked
+            ]
 
-            for table in tables_to_prune:
+            table: 'ProcessedTable'
+            for table in selected_tables:
                 pruned_df = None
 
-                data = self.table_db_manager.get_processed_table_data(
-                    table.id, context
-                )
+                data: 'DataFrame' = self.table_db_manager. \
+                    get_processed_table_data(table.id, context)
 
                 if context == PageIdentity.PARSED:
                     cols = table.checked_columns
@@ -135,7 +142,9 @@ class Model:
                     table.pruned_columns = list(range(len(new_data.columns)))
 
     # TODO #30 filtering is slow and needs its own thread; gui hangs up too long
-    def filter_tables(self, query, context):
+    def filter_tables(self, query: 'str', context: 'PageIdentity'):
+
+        article: 'Article'
         for article in self.bibliography.get_selected_articles(
             PageIdentity.PARSED
         ):
@@ -161,7 +170,7 @@ class Model:
         self.processed_table_manager.reset()
         self.table_db_manager.reset()
 
-    def save(self, filename):
+    def save(self, filename: 'str'):
         # stash observers so we can pickle the model
         global_stash = {}
         # since articles refer to suppfiles/tables and vice versa, we need to
@@ -185,7 +194,7 @@ class Model:
         visited_objects.clear()
         restore_all_observers(self.bibliography, global_stash, visited_objects)
 
-    def load(self, filename):
+    def load(self, filename: 'str'):
         with open(filename, 'rb') as f:
             save_object = pickle.load(f)
 

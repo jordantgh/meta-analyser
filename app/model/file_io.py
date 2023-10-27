@@ -3,7 +3,7 @@ import requests
 import os
 
 
-def extract_dfs(fname, should_stop):  # returns a dictionary of dataframes
+def extract_dfs(fname: 'str', should_stop: 'bool') -> 'dict[str, pd.DataFrame]':
     if should_stop:
         return
 
@@ -33,7 +33,7 @@ def extract_dfs(fname, should_stop):  # returns a dictionary of dataframes
     return data
 
 
-def download_supp(url, should_stop):
+def download_supp(url: 'str', should_stop: 'str') -> 'str':
     if should_stop:
         return
 

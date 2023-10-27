@@ -4,7 +4,7 @@ from unicodedata import normalize
 
 
 class InsertMatcher(SequenceMatcher):
-    def get_opcodes(self):
+    def get_opcodes(self) -> 'list[tuple]':
         opcodes = super().get_opcodes()
         new_opcodes = []
         for tag, i1, i2, j1, j2 in opcodes:
@@ -15,7 +15,7 @@ class InsertMatcher(SequenceMatcher):
         return new_opcodes
 
 
-def get_index_mappings(sentences, text):
+def get_index_mappings(sentences, text) -> 'list[tuple[int, int]]':
     mappings = []
     last_idx = 0
     for sentence in sentences:
@@ -31,7 +31,11 @@ def get_index_mappings(sentences, text):
     return mappings
 
 
-def filter_opcodes(start_idx, end_idx, opcodes):
+def filter_opcodes(
+        start_idx: 'int',
+        end_idx: 'int',
+        opcodes: 'list[tuple]'
+) -> 'list[tuple]':
     filtered_opcodes = []
     for tag, i1, i2, j1, j2 in opcodes:
         if i2 <= start_idx or i1 >= end_idx:
@@ -41,7 +45,11 @@ def filter_opcodes(start_idx, end_idx, opcodes):
     return filtered_opcodes
 
 
-def apply_opcodes(sentence, filtered_opcodes, original_html):
+def apply_opcodes(
+    sentence: 'str',
+    filtered_opcodes: 'list[tuple]',
+    original_html: 'str'
+) -> 'str':
     new_text = []
     i1 = 0
     for tag, i1, i2, j1, j2 in filtered_opcodes:
@@ -54,15 +62,19 @@ def apply_opcodes(sentence, filtered_opcodes, original_html):
 
 
 def get_html_sentence(
-    sentence, start_idx, end_idx, opcodes, original_html
-):
+    sentence: 'str',
+    start_idx: 'int',
+    end_idx: 'int',
+    opcodes: 'list[tuple]',
+    original_html: 'str'
+) -> 'str':
     filtered_opcodes = filter_opcodes(start_idx, end_idx, opcodes)
     new_sentence = apply_opcodes(sentence, filtered_opcodes, original_html)
 
     return new_sentence
 
 
-def get_sentences(text):
+def get_sentences(text: 'str') -> 'list[str]':
     normalized_text = normalize('NFC', text)  # Normalize the text
     sentences = sent_tokenize(normalized_text)
     sentence_mappings = get_index_mappings(sentences, normalized_text)

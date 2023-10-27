@@ -37,7 +37,7 @@ PATTERN = re.compile(r'(\b(S(\d+))\s+(table|appendix|file)\b)|(\b(table|appendix
 BASE_URL = "https://www.ncbi.nlm.nih.gov"
 
 
-def highlight_sentence_in_html(html, tag_id):
+def highlight_sentence_in_html(html: 'str', tag_id: 'str') -> 'str':
     soup = BeautifulSoup(html, 'html.parser')
 
     # Find the text within the <a> tags where href matches tag_id
@@ -103,7 +103,7 @@ def full_urls(description, base_url):
     return updated_description
 
 
-def get_supp_files(pmc_id, browser, max_retries=3):
+def get_supp_files(pmc_id: 'str', browser: 'Browser', max_retries: 'int' = 3):
     supp_file_dict = {}
 
     for attempt in range(max_retries):
@@ -111,7 +111,9 @@ def get_supp_files(pmc_id, browser, max_retries=3):
             page = browser.new_page()
             page.goto(f"{BASE_URL}/pmc/articles/{pmc_id}/")
 
-            supp_mats_tags = page.query_selector_all('.sec.suppmat')
+            supp_mats_tags: 'list[ElementHandle]' = page.query_selector_all(
+                '.sec.suppmat'
+            )
 
             for sup_tag in supp_mats_tags:
                 tag_id = sup_tag.get_attribute('id')
@@ -133,12 +135,11 @@ def get_supp_files(pmc_id, browser, max_retries=3):
                         full_url = f"{BASE_URL}{href}"
 
                         # Find a useful inner description
-                        # TODO: strip out any ':' if present
                         inner_text = link.inner_text().strip()
                         match = PATTERN.search(inner_text)
                         inner_descr = match.group() if match else ""
 
-                        intext_ref = page.eval_on_selector_all(
+                        intext_ref: 'list[str]' = page.eval_on_selector_all(
                             f'p a[href="#{tag_id}"]',
                             """
                             let uniqueHTMLs = new Set();
@@ -193,7 +194,11 @@ def get_supp_files(pmc_id, browser, max_retries=3):
     return supp_file_dict
 
 
-def query_pmc(query, callback=None, thread=None):
+def query_pmc(
+    query: 'str',
+    callback: 'Callable' = None,
+    thread: 'BaseThread' = None
+):
     article_json = {
         "Title": "",
         "Authors": [],

@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import (
 
 
 class CustomTabBar(QTabBar):
-    def focusInEvent(self, event: QFocusEvent):
+    def focusInEvent(self, event: 'QFocusEvent'):
         if event.reason() == Qt.TabFocusReason:
             event.ignore()
         else:
@@ -24,7 +24,7 @@ class CustomTabBar(QTabBar):
 
 
 class TabPage(QWidget):
-    def __init__(self, parent, page_identity):
+    def __init__(self, parent: 'QTabWidget', page_identity: 'PageIdentity'):
         super().__init__(parent)
         self.page_identity = page_identity
 
@@ -32,13 +32,23 @@ class TabPage(QWidget):
 class CheckableHeaderView(QHeaderView):
     columns_checked = pyqtSignal(object, list)
 
-    def __init__(self, orientation, parent=None):
+    def __init__(
+        self,
+        orientation: 'Qt.Orientation',
+        parent: 'QTableView' = None,
+        table_id: 'str' = None
+    ):
         super().__init__(orientation, parent)
         self.setSectionsClickable(True)
         self._checkedSections = set()
         self.table_id = None
 
-    def paintSection(self, painter, rect, logicalIndex):
+    def paintSection(
+        self,
+        painter: 'QPainter',
+        rect: 'QRect',
+        logicalIndex: 'int'
+    ):
         painter.save()
         super().paintSection(painter, rect, logicalIndex)
         painter.restore()
@@ -49,21 +59,17 @@ class CheckableHeaderView(QHeaderView):
             state = QStyle.State_Off
 
         option = QStyleOptionButton()
-        option.rect = QRect(rect.x() + rect.width() // 2 - 6, rect.y() + rect.height() // 2 - 6, 12, 12)
+        option.rect = QRect(
+            rect.x() + rect.width() // 2 - 6,
+            rect.y() + rect.height() // 2 - 6, 12, 12
+        )
+
         option.state = QStyle.State_Enabled | state
         self.style().drawControl(QStyle.CE_CheckBox, option, painter)
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: 'QMouseEvent'):
         index = self.logicalIndexAt(event.pos())
-        if index in self._checkedSections:
-            self._checkedSections.remove(index)
-        else:
-            self._checkedSections.add(index)
-        self.viewport().update()
-        self.columns_checked.emit(self.table_id, list(self._checkedSections))
-        super().mousePressEvent(event)
-        
-    def set_checked_sections(self, checked_sections):
+    def set_checked_sections(self, checked_sections: 'list[int]'):
         self._checkedSections = set(checked_sections)
         self.viewport().update()
     

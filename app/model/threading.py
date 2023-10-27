@@ -22,7 +22,7 @@ class SearchThread(QThread):
     def stop(self):
         self.should_stop = True
 
-    def prepare(self, query):
+    def prepare(self, query: 'str'):
         self.query = query
         self.should_stop = False
 
@@ -42,7 +42,7 @@ class FilePreviewThread(QThread):
     def stop(self):
         self.should_stop = True
 
-    def prepare(self, file_url):
+    def prepare(self, file_url: 'str'):
         self.file_url = file_url
         self.should_stop = False
 
@@ -59,16 +59,13 @@ class FileProcessingThread(QThread):
     article_sig = pyqtSignal(object, int, list)
     finished_sig = pyqtSignal()
 
-    def __init__(self, db_manager):
+    def __init__(self, db_manager: 'TableDBManager'):
         super().__init__()
         self.selected_articles = []
         self.db_manager = db_manager
         self.should_stop = False
 
-    def stop(self):
-        self.should_stop = True
-
-    def prepare(self, selected_articles):
+    def prepare(self, selected_articles: 'list[Article]'):
         self.selected_articles = selected_articles
         self.should_stop = False
 

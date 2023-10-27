@@ -22,7 +22,13 @@ from model.database import processed_df_to_db
 
 
 # TODO heavily overdue a readability pass
-def parse_tables(selected_articles, db_manager, should_stop, callback=None):
+
+def parse_tables(
+        selected_articles: 'list[Article]',
+        db_manager: 'TableDBManager',
+        should_stop: 'bool',
+        callback: 'Callable' = None
+):
     for index, article in enumerate(selected_articles):
         processed_table_ids = []
         for file in article.supp_files:
@@ -70,7 +76,7 @@ def parse_tables(selected_articles, db_manager, should_stop, callback=None):
                         if is_contained:
                             continue
 
-                        region = df.iloc[minr:maxr, minc:maxc]
+                        data: 'DataFrame' = df.iloc[minr:maxr, minc:maxc]
                         base_name = os.path.splitext(fname)[0]
                         unique_id = f"{base_name}_{sheetname}_Table{i}"
                         processed_df_to_db(
@@ -87,7 +93,12 @@ def parse_tables(selected_articles, db_manager, should_stop, callback=None):
             callback(article, progress, processed_table_ids)
 
 
-def _is_contained(box, o_box):
+def _find_closest_metadata(
+    box: 'tuple',
+    non_table_bboxes: 'list[tuple]',
+    df: 'DataFrame'
+) -> 'list[DataFrame]':
+def _is_contained(box: 'tuple', o_box: 'tuple') -> 'bool':
     return (o_box[0] <= box[0] and
             o_box[1] <= box[1] and
             o_box[2] >= box[2] and

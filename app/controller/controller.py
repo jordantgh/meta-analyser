@@ -23,31 +23,43 @@ from utils.constants import PageIdentity, Mode
 
 
 class Controller:
-    def __init__(self, model: Model, view: View):
+    def __init__(self, model: 'Model', view: 'View'):
         self.model = model
         self.view = view
-        self.search_elems = self.view.search_elems
-        self.parsed_elems = self.view.parsed_elems
-        self.pruned_elems = self.view.pruned_elems
-        self._connect_sigs()
+        self._connect_sigs(
+            view.search_elems,
+            view.parsed_elems,
+            view.pruned_elems,
+            model.search_thread,
+            model.search_preview_thread,
+            model.processing_thread
+        )
 
-    def _set_state(self, state):
+    def _set_state(self, state: 'Mode'):
         self.model.set_state(state)
 
     @property
-    def curr_elems(self):
+    def curr_elems(self) -> 'PageElements':
         return self.view.active_elements
 
     @property
-    def output_page(self):
-        mode = self.model.state
+    def output_page(self) -> 'PageElements':
+        mode: 'Mode' = self.model.state
         return {
-            Mode.SEARCHING: self.search_elems,
-            Mode.PROCESSING: self.parsed_elems,
-            Mode.PRUNING: self.pruned_elems
+            Mode.SEARCHING: self.view.search_elems,
+            Mode.PROCESSING: self.view.parsed_elems,
+            Mode.PRUNING: self.view.pruned_elems
         }.get(mode)
 
-    def _connect_sigs(self):
+    def _connect_sigs(
+            self,
+            search: 'SearchPageElements',
+            parsed: 'ProcessedPageElements',
+            pruned: 'ProcessedPageElements',
+            search_thread: 'SearchThread',
+            search_preview_thread: 'FilePreviewThread',
+            processing_thread: 'FileProcessingThread'
+    ):
         signals_map = {
             self.view.save_action.triggered: self.save,
             self.view.load_action.triggered: self.load,
@@ -81,7 +93,12 @@ class Controller:
         for signal, slot in signals_map.items():
             signal.connect(slot)
 
-    def display_article(self, article, progress, ids_list=None):
+    def display_article_in_list(
+        self,
+        article: 'Article',
+        progress: 'int',
+        ids_list: 'list[tuple[str, UUID]]' = None
+    ):
         if self.model.state == Mode.SEARCHING:
             article_data = self.model.create_article_data(article)
         elif self.model.state == Mode.PROCESSING:
@@ -112,7 +129,7 @@ class Controller:
         self.model.search_thread.prepare(query)
         self.model.search_thread.start()
 
-    def stop_search(self, search_thread):
+    def stop_search(self, search_thread: 'SearchThread'):
         search_thread.quit()
         self.view.hide_searching_view()
         self._set_state(Mode.BROWSING)
@@ -134,9 +151,9 @@ class Controller:
         self.parsed_elems.prog_bar.hide()
         self._set_state(Mode.BROWSING)
 
-    def click_article(self, item):
+    def on_article_clicked(self, item: 'QListWidgetItem'):
         article_id = item.data(Qt.UserRole)
-        article = self.model.bibliography.get_article(article_id)
+        article: 'Article' = self.model.bibliography.get_article(article_id)
 
         elements = self.curr_elems
 
@@ -149,15 +166,19 @@ class Controller:
 
         self.view.update_article_display(article, elements, data_set)
 
-        for i in range(elements.data_list_view.count()):
-            list_item = elements.data_list_view.item(i)
-            widget = elements.data_list_view.itemWidget(list_item)
+            widget: 'DataListItem' = elements.data_ui_list.itemWidget(
+                list_item)
             if elements.page_identity == PageIdentity.SEARCH:
                 widget.preview_requested.connect(self.request_suppfile_preview)
             else:
                 widget.preview_requested.connect(self.preview_processed_table)
 
-    def load_preview(self, data, table_id=None, callback=None):
+    def load_preview(
+        self,
+        data: 'BaseData',
+        table_id=None,
+        callback: 'Callable' = None
+    ):
 
         # TODO idea: partially run the parser on the previewed file to get the
         # regions of the file that are tables, then highlight those regions in
@@ -166,7 +187,7 @@ class Controller:
         context = self.curr_elems.page_identity
         use_checkable_header = context != PageIdentity.SEARCH
 
-        table = self.model.processed_table_manager \
+        table: 'ProcessedTable' = self.model.processed_table_manager \
             .get_processed_table(table_id) if table_id else None
 
         cols = None
@@ -185,7 +206,7 @@ class Controller:
     # - why does this work? Granted, we don't need the context argument, but
     # still, it doesn't make sense why this doesn't throw an error.
     # TODO debug later
-    def request_suppfile_preview(self, file_data):
+    def request_suppfile_preview(self, file_data: 'SuppFile'):
         self.view.start_load_animation()
 
         if self.model.search_preview_thread.isRunning():
@@ -202,7 +223,9 @@ class Controller:
         self.model.search_preview_thread.prepare(file_data.url)
         self.model.search_preview_thread.start()
 
-    def preview_processed_table(self, table, context):
+    def preview_processed_table(
+        self, table: 'ProcessedTable', context: 'PageIdentity'
+    ):
         table_data = {
             "sheet": self.model.table_db_manager.get_processed_table_data(
                 table.id, context
@@ -213,8 +236,8 @@ class Controller:
         self.load_preview(table_data, table.id, self._update_checked_columns)
 
     def _update_checked_columns(self, table_id, checked_columns):
-        table = self.model.processed_table_manager.get_processed_table(
-            table_id)
+        table: 'ProcessedTable' = self.model.processed_table_manager. \
+            get_processed_table(table_id)
 
         if table:
             if self.curr_elems.page_identity == PageIdentity.PARSED:
@@ -222,7 +245,7 @@ class Controller:
             elif self.curr_elems.page_identity == PageIdentity.PRUNED:
                 table.pruned_columns = checked_columns
 
-    def prune_tables_and_columns(self, context):
+    def prune_tables_and_columns(self, context: 'PageIdentity'):
         self._set_state(Mode.PRUNING)
 
         for article in self.model.bibliography.articles.values():
@@ -232,12 +255,13 @@ class Controller:
         self.model.prune_tables_and_columns(context)
         self.view.clear_page_lists(self.curr_elems)
 
+        article: 'Article'
         for article in self.model.bibliography.get_selected_articles(context):
             self.view.display_article(self.pruned_elems, article, 0)
 
         self._set_state(Mode.BROWSING)
 
-    def filter_tables(self, context):
+    def filter_tables(self, context: 'PageIdentity'):
         query = self.curr_elems.query_filter_field.text()
         if not query:
             return

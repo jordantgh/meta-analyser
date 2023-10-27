@@ -11,7 +11,7 @@ class QPushButton(QPushButton):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: 'QKeyEvent'):
         if event is not None:
             if event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return:
                 self.setDown(True)
@@ -28,14 +28,14 @@ class QListWidget(QListWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: 'QKeyEvent'):
         super().keyPressEvent(event)
         if event.key() in [Qt.Key_Up, Qt.Key_Down]:
             self.itemClicked.emit(self.currentItem())
 
 
-class PageElements(QObject): # QObject needed for signalling
-    def __init__(self, parent_tab):
+class PageElements(QObject):  # QObject needed for signalling
+    def __init__(self, parent_tab: 'TabPage'):
         super().__init__()
         self.page_identity = parent_tab.page_identity
         self.prog_bar = QProgressBar(parent_tab)
@@ -58,11 +58,11 @@ class PageElements(QObject): # QObject needed for signalling
 
         self.title_abstract_disp.setFocusPolicy(Qt.NoFocus)
 
-        self.outer_tab_widget = QTabWidget(parent_tab)   
+        self.outer_tab_widget = QTabWidget(parent_tab)
         self.previews = QTabWidget()
-        
+
         self.outer_tab_widget.addTab(self.previews, "Previews")
-        
+
         self.metadata_view = QTextBrowser()
         self.metadata_view.setOpenExternalLinks(True)
         self.outer_tab_widget.addTab(self.metadata_view, "Metadata")
@@ -72,7 +72,7 @@ class PageElements(QObject): # QObject needed for signalling
 
 
 class SearchPageElements(PageElements):
-    def __init__(self, parent_tab):
+    def __init__(self, parent_tab: 'TabPage'):
         super().__init__(parent_tab)
         self.search_status = QLabel(parent_tab)
         self.query_field = QLineEdit(parent_tab)
@@ -88,7 +88,7 @@ class ProcessedPageElements(PageElements):
     filter_sig = pyqtSignal(object)
     prune_sig = pyqtSignal(object)
 
-    def __init__(self, parent_tab):
+    def __init__(self, parent_tab: 'TabPage'):
         super().__init__(parent_tab)
         self.query_filter_field = QLineEdit(parent_tab)
         self.filter_btn = QPushButton("Filter", parent_tab)
@@ -97,7 +97,7 @@ class ProcessedPageElements(PageElements):
 
         self.prune_btn = QPushButton("Prune Tables and Columns", parent_tab)
         self.prune_btn.clicked.connect(self.emit_prune_identity)
-    
+
     def emit_filter_identity(self):
         self.filter_sig.emit(self.page_identity)
 

@@ -65,17 +65,17 @@ class View(QMainWindow):
         self.search_elems.query_field.setFocus()
         self._init_load_animation()
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: 'QKeyEvent'):
         if event.key() == Qt.Key_Escape:
             self.focusWidget().clearFocus()
 
     # Getters for active page
     @property
-    def active_tab(self):
+    def active_tab(self) -> 'TabPage':
         return self.tab_widget.currentWidget()
 
     @property
-    def active_elements(self):
+    def active_elements(self) -> 'PageElements':
         return {
             self.search_tab: self.search_elems,
             self.parsed_tab: self.parsed_elems,
@@ -83,7 +83,7 @@ class View(QMainWindow):
         }.get(self.active_tab)
 
     # Set active page
-    def set_active_tab(self, page_identity):
+    def set_active_tab(self, page_identity: 'PageIdentity'):
         if page_identity == PageIdentity.SEARCH:
             self.tab_widget.setCurrentWidget(self.search_tab)
         elif page_identity == PageIdentity.PARSED:
@@ -91,7 +91,7 @@ class View(QMainWindow):
         elif page_identity == PageIdentity.PRUNED:
             self.tab_widget.setCurrentWidget(self.pruned_tab)
 
-    def _init_search_layouts(self, elements):
+    def _init_search_layouts(self, elements: 'SearchPageElements'):
         left_pane = QVBoxLayout()
         left_pane.addWidget(QLabel("Enter Query:"))
         left_pane.addWidget(elements.query_field)
@@ -109,7 +109,11 @@ class View(QMainWindow):
 
         self._init_core_layouts(self.search_tab, elements, left_pane)
 
-    def _init_processed_page_layouts(self, page, elements):
+    def _init_processed_page_layouts(
+            self,
+            page: 'TabPage',
+            elements: 'ProcessedPageElements'
+    ):
         left_pane = QVBoxLayout()
         left_pane.addWidget(elements.prog_bar)
         left_pane.addWidget(elements.article_list_view)
@@ -125,7 +129,12 @@ class View(QMainWindow):
 
         self._init_core_layouts(page, elements, left_pane)
 
-    def _init_core_layouts(self, page, elements, left_pane):
+    def _init_core_layouts(
+        self,
+        page: 'TabPage',
+        elements: 'PageElements',
+        left_pane: 'QVBoxLayout'
+    ):
         widget_0 = QWidget()
         widget_0.setLayout(left_pane)
 
@@ -197,20 +206,34 @@ class View(QMainWindow):
         self.search_elems.stop_search_btn.hide()
         self.search_elems.stop_search_btn.setEnabled(False)
 
-    def _to_list(self, list, item_widget, id):
+    def _to_list(
+        self,
+        list: 'QListWidget',
+        item_widget: 'QWidget',
+        id: 'str'
+    ):
         item = QListWidgetItem()
         item.setSizeHint(item_widget.sizeHint())
         item.setData(Qt.UserRole, id)
         list.addItem(item)
         list.setItemWidget(item, item_widget)
 
-    def display_article(self, elements, article, progress):
+    def display_article(
+        self,
+        elements: 'PageElements',
+        article: 'Article',
+        progress: 'int'
+    ):
         article_item = ArticleListItem(article, elements.page_identity)
         self._to_list(elements.article_list_view, article_item, article.pmc_id)
         elements.prog_bar.setValue(progress + 1)
 
-    def update_article_display(self, article, elements, data_set):
-        self.clear_list_and_observers(elements.data_list_view)
+    def update_article_display(
+        self,
+        article: 'Article',
+        elements: 'PageElements',
+        data_set: 'list[BaseData]'
+    ):
         elements.title_abstract_disp.setHtml(
             f"<a href='{article.url}'>"
             f"<b>{article.title}</b></a>"
@@ -218,31 +241,36 @@ class View(QMainWindow):
         )
 
         for data in data_set:
-            data_item = self._list_item_factory(data, elements.page_identity)
+            data_item: 'DataListItem' = self._list_item_factory(
+                data, elements.page_identity
+            )
             data_item.checkbox.setChecked(data.checked)
             self._to_list(elements.data_list_view, data_item, data.id)
 
-    def clear_page_lists(self, elements):
+    def clear_page_lists(self, elements: 'PageElements'):
         self.clear_list_and_observers(elements.article_list_view)
         self.clear_list_and_observers(elements.data_list_view)
 
-    def clear_list_and_observers(self, list_widget):
+    def clear_list_and_observers(self, list_widget: 'QListWidget'):
         for index in range(list_widget.count()):
             item = list_widget.item(index)
             if item:
-                widget = list_widget.itemWidget(item)
+                widget = cast(ListItem, list_widget.itemWidget(item))
                 if widget and widget.data.alert_observers():
                     widget.remove()
 
         list_widget.clear()
 
     def reset(self):
+        elems: 'PageElements'
         for elems in [self.search_elems, self.parsed_elems, self.pruned_elems]:
             self.clear_page_lists(elems)
             elems.title_abstract_disp.clear()
             elems.previews.clear()
 
-    def _list_item_factory(self, file_data, context):
+    def _list_item_factory(
+        self, file_data: 'BaseData', context: 'PageIdentity'
+    ) -> 'DataListItem':
         if context == PageIdentity.SEARCH:
             return SuppFileListItem(self, file_data, context)
         else:
@@ -250,11 +278,11 @@ class View(QMainWindow):
 
     def display_multisheet_table(
         self,
-        df_dict,
-        use_checkable_header,
-        table_id=None,
-        callback=None,
-        checked_columns=None
+        df_dict: 'dict[str, DataFrame]',
+        use_checkable_header: 'bool',
+        table_id: 'str' = None,
+        callback: 'Callable' = None,
+        checked_columns: 'list[int]' = None
     ):
         tab_widget = self.active_elements.previews
         tab_widget.clear()
@@ -271,17 +299,12 @@ class View(QMainWindow):
 
     def _create_ui_table(
         self,
-        data,
-        use_checkable_header,
-        table_id=None,
-        callback=None,
-        checked_columns=None
-    ):
-        ui_table = QTableWidget()
-        ui_table.setRowCount(len(data.index))
-        ui_table.setColumnCount(len(data.columns))
-        ui_table.setHorizontalHeaderLabels(data.columns.astype(str))
-
+        data: 'DataFrame',
+        use_checkable_header: 'bool',
+        table_id: 'str' = None,
+        callback: 'Callable' = None,
+        checked_columns: 'list[int]' = None
+    ) -> 'CustomTable':
         if use_checkable_header:
             header = CheckableHeaderView(Qt.Horizontal, ui_table)
             header.table_id = table_id

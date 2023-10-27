@@ -28,8 +28,13 @@ class BaseData:
 
 
 class SuppFile(BaseData):
-    def __init__(self, article, url, metadata, id):
-        self.checked = True
+    def __init__(
+            self,
+            article: 'Article',
+            url: 'str',
+            metadata: 'str',
+            id: 'UUID'
+    ):
         self.article = article
         self.article_id = article.pmc_id
         self.url = url
@@ -41,36 +46,32 @@ class SuppFile(BaseData):
 
 
 class ProcessedTable(BaseData):
-    def __init__(self, article, id, file_id, num_columns=None):
-        self.checked = True
-        self.article = article
-        self.article_id = article.pmc_id
-        self.id = id
+    def __init__(
+        self, article: 'Article',
+        id: 'str',
+        file_id: 'UUID',
+        num_columns=None
+    ):
+        self.article: 'Article' = article
+        self.article_id: 'str' = article.pmc_id
+        self.supp_file: 'SuppFile' = article.get_file(file_id)
+        self.id: 'str' = id
         self.file_id = file_id
         self.pruned_columns = []
         if num_columns is not None:
             self.checked_columns = list(range(num_columns))
         else:
             self.checked_columns = []
-        self.observers = {}
+        self.observers: 'dict[PageIdentity, DataListItem]' = {}
 
-    def register_observer(self, observer, context):
-        self.observers[context] = observer
-
-    def notify_observers(self, context):
-        self.observers[context].update(self)
-
-    def alert_observers(self):
-        return True
-
-    def checkbox_toggled(self, context):
+    def checkbox_toggled(self, context: 'PageIdentity'):
         self.notify_observers(context)
         self.article.update_based_on_elements(context)
 
-    def set_checked(self, state, context):
-        was_checked = self.checked
-        self.checked = state
-        if state != was_checked:
+    def set_checked_state(self, checked_state: 'bool', context: 'PageIdentity'):
+        old_state = self.checked
+        self.checked = checked_state
+        if checked_state != old_state:
             self.article.update_based_on_elements(context)
             # first check if observers are registered yet (checking/unchecking
             # can happen before the table is displayed via the filter method)
@@ -82,10 +83,10 @@ class ProcessedTableManager:
     def __init__(self):
         self.processed_tables = {}
 
-    def add_processed_table(self, table):
+    def add_processed_table(self, table: 'ProcessedTable'):
         self.processed_tables[table.id] = table
 
-    def get_processed_table(self, table_id):
+    def get_processed_table(self, table_id: 'str') -> 'ProcessedTable':
         return self.processed_tables.get(table_id)
 
     def reset(self):
@@ -93,20 +94,32 @@ class ProcessedTableManager:
 
 
 class Article(BaseData):
-    def __init__(self, article_json):
-        self.checked = {context: True for context in PageIdentity}
-        self.title = article_json["Title"]
-        self.authors = article_json["Authors"]
-        self.abstract = article_json["Abstract"]
-        self.pmc_id = article_json["PMCID"]
-        self.url = article_json["URL"]
-        self.supp_files = [SuppFile(self, url, meta, uuid4(
-        )) for url, meta in article_json["SupplementaryFiles"].items()]
-        self.processed_tables = []
-        self.pruned_tables = []
-        self.observers = {}
+    def __init__(self, article_json: 'dict'):
+        self.checked: 'dict[PageIdentity, bool]' = {
+            context: True for context in PageIdentity
+        }
+        self.title: 'str' = article_json["Title"]
+        self.authors: 'str' = article_json["Authors"]
+        self.abstract: 'str' = article_json["Abstract"]
+        self.pmc_id: 'str' = article_json["PMCID"]
+        self.url: 'str' = article_json["URL"]
 
-    def cascade_checked_state(self, context, is_checked=None):
+        supp_data: 'dict[str, str]' = article_json["SupplementaryFiles"]
+
+        self.supp_files = [
+            SuppFile(self, url, meta, uuid4())
+            for url, meta in supp_data.items()
+        ]
+
+        self.processed_tables: 'list[ProcessedTable]' = []
+        self.pruned_tables: 'list[ProcessedTable]' = []
+        self.observers: 'dict[PageIdentity, ArticleListItem]' = {}
+
+    def cascade_checked_state(
+            self,
+            context: 'PageIdentity',
+            is_checked: 'bool' = None
+    ):
         if is_checked is None:
             is_checked = self.checked[context]
 
@@ -126,21 +139,12 @@ class Article(BaseData):
         for sub_context in hierarchy[index + 1:]:
             self.cascade_checked_state(sub_context, is_checked)
 
-    def alert_observers(self):
-        return True
-
-    def register_observer(self, observer, context):
-        self.observers[context] = observer
-
-    def notify_observers(self, context):
-        self.observers[context].update(self)
-
-    def update_based_on_elements(self, context):
+    def update_based_on_elements(self, context: 'PageIdentity'):
         has_checked = self.has_checked_elements(context)
         self.checked[context] = has_checked
         self.notify_observers(context)
 
-    def has_checked_elements(self, context):
+    def has_checked_elements(self, context: 'PageIdentity') -> 'bool':
         if context == PageIdentity.SEARCH:
             return any(f.checked for f in self.supp_files)
         elif context == PageIdentity.PARSED:
@@ -148,25 +152,25 @@ class Article(BaseData):
         elif context == PageIdentity.PRUNED:
             return any(t.checked for t in self.pruned_tables)
 
-    def get_file(self, file_id):
+    def get_file(self, file_id: 'UUID') -> 'SuppFile':
         return next((f for f in self.supp_files if f.id == file_id), None)
 
-    def get_table_by_id(self, table_id):
-        return next((t for t in self.processed_tables if t.id == table_id), None)
+    def get_table_by_id(self, table_id: 'str') -> 'ProcessedTable':
 
 
 class Bibliography:
     def __init__(self):
         self.articles = {}
 
-    def add_article(self, article):
+    def add_article(self, article: 'Article'):
         self.articles[article.pmc_id] = article
 
-    def get_article(self, article_id):
+    def get_article(self, article_id: 'str') -> 'Article':
         return self.articles.get(article_id)
 
-    def get_selected_articles(self, context):
+    def get_selected_articles(self, context: 'PageIdentity') -> 'list[Article]':
         selected = []
+        article: 'Article'
         for article in self.articles.values():
             if article.checked[context]:
                 selected.append(article)
