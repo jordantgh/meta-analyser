@@ -87,7 +87,7 @@ class CheckableHeaderView(QHeaderView):
         super().__init__(orientation, parent)
         self.setSectionsClickable(True)
         self._checkedSections = set()
-        self.table_id = None
+        self.table_id = table_id
 
     def paintSection(
         self,
@@ -115,10 +115,34 @@ class CheckableHeaderView(QHeaderView):
 
     def mousePressEvent(self, event: 'QMouseEvent'):
         index = self.logicalIndexAt(event.pos())
+
+        clickable_area = 50
+
+        # Calculate the offsets to center the clickable area
+        x_offset = (self.sectionSize(index) - clickable_area) // 2
+        y_offset = (self.height() - clickable_area) // 2
+        checkbox_rect = QRect(
+            self.sectionViewportPosition(index) + x_offset,
+            y_offset,
+            clickable_area,
+            clickable_area
+        )
+
+        if checkbox_rect.contains(event.pos()):
+            if index in self._checkedSections:
+                self._checkedSections.remove(index)
+            else:
+                self._checkedSections.add(index)
+            self.viewport().update()
+            self.columns_checked.emit(
+                self.table_id, list(self._checkedSections))
+        else:
+            super().mousePressEvent(event)
+
     def set_checked_sections(self, checked_sections: 'list[int]'):
         self._checkedSections = set(checked_sections)
         self.viewport().update()
-    
+
     def set_all_sections_checked(self):
         self._checkedSections = set(range(self.count()))
         self.viewport().update()
