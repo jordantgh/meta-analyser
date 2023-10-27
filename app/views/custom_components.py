@@ -29,6 +29,52 @@ class TabPage(QWidget):
         self.page_identity = page_identity
 
 
+class CustomTable(QTableView):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.shortcut = QShortcut(QKeySequence("Ctrl+F"), self)
+        self.shortcut.activated.connect(self.showFindDialog)
+
+    def showFindDialog(self):
+        findDialog = QDialog(self)
+        findDialog.setWindowTitle("Find")
+        global_position = self.mapToGlobal(self.pos())
+        findDialog.setGeometry(global_position.x() + 50,
+                               global_position.y() + 50, 300, 100)
+
+        layout = QVBoxLayout()
+        findText = QLineEdit()
+        findButton = QPushButton("Find")
+
+        layout.addWidget(findText)
+        layout.addWidget(findButton)
+
+        findDialog.setLayout(layout)
+
+        findButton.clicked.connect(lambda: self.findText(findText.text()))
+
+        # Close on 'Esc' key
+        findDialog.installEventFilter(self)
+        findDialog.exec_()
+
+    def eventFilter(self, obj: 'QDialog', event: 'QEvent') -> 'bool':
+        if event.type() == QEvent.KeyRelease and event.key() == Qt.Key_Escape:
+            obj.close()
+            return True
+        return super().eventFilter(obj, event)
+
+    def findText(self, text: 'str'):
+        text = text.lower()
+        model: 'QStandardItemModel' = self.model()
+        for row in range(model.rowCount()):
+            for col in range(model.columnCount()):
+                item = model.item(row, col)
+                if item and item.text().lower() == text:
+                    self.selectRow(row)
+                    return
+        QMessageBox.information(self, "No Matches", "No matches found.")
+
+
 class CheckableHeaderView(QHeaderView):
     columns_checked = pyqtSignal(object, list)
 
