@@ -42,8 +42,8 @@ class PageElements(QObject):  # QObject needed for signalling
         self.prog_bar.setRange(0, 100)
         self.prog_bar.setValue(0)
         self.prog_bar.hide()
-        self.article_list_view = QListWidget(parent_tab)
-        self.data_list_view = QListWidget(parent_tab)
+        self.article_ui_list = QListWidget(parent_tab)
+        self.data_ui_list = QListWidget(parent_tab)
 
         self.title_abstract_disp = QTextBrowser(parent_tab)
         self.title_abstract_disp.setMinimumHeight(100)
