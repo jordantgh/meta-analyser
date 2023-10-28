@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from views.list import DataListItem
     from PyQt5.QtWidgets import QListWidgetItem
 
+from datetime import datetime
 from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
@@ -59,6 +60,7 @@ class Controller:
     ):
         signals_map = {
             self.view.save_action.triggered: self.save,
+            self.view.save_as_action.triggered: self.save_as,
             self.view.load_action.triggered: self.load,
 
             # Search page
@@ -311,13 +313,13 @@ class Controller:
         self.model.processing_thread.prepare(selected_articles)
         self.model.processing_thread.start()
 
-    def save(self):
+    def save_as(self):
         # check if the app is in a state where it can be saved
         if self.model.state != Mode.BROWSING:
             QMessageBox.warning(
                 self.view,
                 "Cannot Save",
-                "The application can only be saved in the browsing state."
+                "The application cannot be saved during an ongoing operation."
             )
             return
 
@@ -334,6 +336,27 @@ class Controller:
         if filename:
             self.model.save(filename)
 
+    def save(self):
+        # check if the app is in a state where it can be saved
+        if self.model.state != Mode.BROWSING:
+            QMessageBox.warning(
+                self.view,
+                "Cannot Save",
+                "The application cannot be saved during an ongoing operation."
+            )
+            return
+
+        if not self.model.saves_path:
+            QMessageBox.warning(
+                self.view,
+                "Cannot Save",
+                "The application cannot be saved without a save path."
+            )
+            return
+
+        # save with a timestamp
+        self.model.save(f"{self.model.saves_path}/session-{datetime.now()}.pkl")
+    
     def load(self):
         if self.model.state != Mode.BROWSING:
             QMessageBox.warning(
