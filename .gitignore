@@ -16,3 +16,5 @@ old/
 .here
 misc/
 TEST*.py
+data/
+config.toml
