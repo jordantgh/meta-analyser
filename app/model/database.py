@@ -67,7 +67,7 @@ class TableDBManager:
 
         self.processed_db_url = processed_db_url
         self.post_pruning_db_url = post_pruning_db_url
-    
+
     def _get_engine_and_session(self, table_class: 'TableDBEntry') -> 'tuple':
         if table_class == ProcessedTableDBEntry:
             return self.processed_engine, self.ProcessedSession
@@ -176,7 +176,7 @@ class TableDBManager:
 
         processed_src = self.processed_db_url.replace("sqlite:///", "")
         post_pruning_src = self.post_pruning_db_url.replace("sqlite:///", "")
-        
+
         shutil.copyfile(processed_src, processed_copy)
         shutil.copyfile(post_pruning_src, post_pruning_copy)
 
@@ -207,4 +207,9 @@ def processed_df_to_db(
     original_file_id: 'UUID',
     df: 'DataFrame'
 ):
-    db_manager.save_table(ProcessedTableDBEntry, table_id, original_file_id, df)
+    db_manager.save_table(
+        ProcessedTableDBEntry,
+        table_id,
+        original_file_id,
+        df
+    )
