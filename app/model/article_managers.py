@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from views.list import DataListItem, ArticleListItem
+    from views.list import ListItem, DataListItem, ArticleListItem
 
 from utils.constants import PageIdentity
 from uuid import uuid4, UUID
@@ -9,9 +9,12 @@ from uuid import uuid4, UUID
 class BaseData:
     def __init__(self):
         self.checked = True
+        self.observers: 'dict[PageIdentity, ListItem]' = {}
 
     def register_observer(
-        self, observer, context: 'PageIdentity'
+        self,
+        observer: 'ListItem',
+        context: 'PageIdentity'
     ):
         self.observers[context] = observer
 
