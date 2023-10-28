@@ -2,6 +2,9 @@ from PyQt5.QtWidgets import QApplication
 from threading import Thread, Event
 import argparse
 import sys
+import toml
+from datetime import datetime
+import os
 
 from model.model import Model
 from views.view import View
@@ -26,10 +29,20 @@ def main():
     parser = argparse.ArgumentParser(description="Run the PyQt5 app.")
     parser.add_argument('--debug', action='store_true', help='Activate the debug terminal')
     args = parser.parse_args()
+    
+    date = datetime.today().strftime('%Y-%m-%d')
+    config = toml.load('config.toml')
+    
+    path = os.path.expanduser(config['data']['path'])
+    db_path = f"{path}/db/{date}"
+    saves_path = f"{path}/saves/{date}"
+
+    os.makedirs(db_path, exist_ok=True)
+    os.makedirs(saves_path, exist_ok=True)
 
     app = QApplication([])
 
-    model = Model()
+    model = Model(db_path, saves_path)
     view = View()
     controller = Controller(model, view)
 

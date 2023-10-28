@@ -326,7 +326,7 @@ class Controller:
         filename, _ = QFileDialog.getSaveFileName(
             self.view,
             "Save As",
-            "",
+            f"{self.model.saves_path}/",  # Default location
             "All Files (*);;Text Files (*.txt)",
             options=options
         )
@@ -356,7 +356,7 @@ class Controller:
         if not filename:
             return
 
-        self.model.load(filename)
+        self.model.load(filename, self.model.db_path, self.model.saves_path)
 
         # repopulate the GUI
         # clear all pages

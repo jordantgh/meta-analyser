@@ -20,12 +20,14 @@ import scripts.query_parser as qp
 
 
 class Model:
-    def __init__(self):
+    def __init__(self, db_path: 'str' = None, saves_path: 'str' = None):
+        self.db_path = db_path
+        self.saves_path = saves_path
         self._state = Mode.BROWSING
         self.bibliography = Bibliography()
         self.search_thread = SearchThread()
         self.search_preview_thread = FilePreviewThread()
-        self.table_db_manager = TableDBManager()
+        self.table_db_manager = TableDBManager(db_path)
         self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
         self.n_parse_runs = 0
@@ -176,14 +178,15 @@ class Model:
         visited_objects = set()
 
         stash_all_observers(self.bibliography, global_stash, visited_objects)
+
+        proc, prune = self.table_db_manager.copy_dbs()
+
         save_object = {
+            'db_path': self.db_path,
             'state': self.state,
             'bibliography': self.bibliography,
-            # TODO the db urls are tricky because if the user keeps editing
-            # after saving the dbs get changed so that reloads don't work
-            # properly
-            'processed_db_url': self.table_db_manager.processed_db_url,
-            'post_pruning_db_url': self.table_db_manager.post_pruning_db_url,
+            'processed_db_url': proc,
+            'post_pruning_db_url': prune,
             'processed_table_manager': self.processed_table_manager,
             'n_parse_runs': self.n_parse_runs,
             'n_prunes': self.n_prunes
@@ -195,14 +198,17 @@ class Model:
         visited_objects.clear()
         restore_all_observers(self.bibliography, global_stash, visited_objects)
 
-    def load(self, filename: 'str'):
+    def load(self, filename: 'str', new_db_path: 'str', new_saves_path: 'str'):
         with open(filename, 'rb') as f:
             save_object = pickle.load(f)
-
+        self.db_path = new_db_path
+        self.saves_path = new_saves_path
         self.bibliography = save_object['bibliography']
         self.table_db_manager = TableDBManager(
+            save_object['db_path'],
             save_object['processed_db_url'],
-            save_object['post_pruning_db_url'])
+            save_object['post_pruning_db_url']
+        )
         self.processed_table_manager = save_object['processed_table_manager']
         self.search_thread = SearchThread()
         self.search_preview_thread = FilePreviewThread()
