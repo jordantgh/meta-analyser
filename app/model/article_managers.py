@@ -209,6 +209,9 @@ class Bibliography:
         self.articles = {}
 
 
+# Helpers for saving
+# UI elements are not serializable, so need to be stashed before saving
+
 def stash_all_observers(root_object, global_stash, visited_objects):
     object_id = id(root_object)
     if object_id in visited_objects:
