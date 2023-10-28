@@ -72,22 +72,25 @@ class SuppFile(BaseData):
 
 class ProcessedTable(BaseData):
     def __init__(
-        self, article: 'Article',
+        self,
+        article: 'Article',
         id: 'str',
         file_id: 'UUID',
-        num_columns=None
+        num_columns: 'int' = None
     ):
         super().__init__()
-        self.article: 'Article' = article
+        self.article = article
+        self.id = id
+        self.file_id = file_id
+
+        if num_columns is not None:
+            self.checked_columns: 'list[int]' = list(range(num_columns))
+        else:
+            self.checked_columns: 'list[int]' = []
+
         self.article_id: 'str' = article.pmc_id
         self.supp_file: 'SuppFile' = article.get_file(file_id)
-        self.id: 'str' = id
-        self.file_id = file_id
-        self.pruned_columns = []
-        if num_columns is not None:
-            self.checked_columns = list(range(num_columns))
-        else:
-            self.checked_columns = []
+        self.pruned_columns: 'list[int]' = []
         self.observers: 'dict[PageIdentity, DataListItem]' = {}
 
     def checkbox_toggled(self, context: 'PageIdentity'):
@@ -122,10 +125,6 @@ class ProcessedTableManager:
 class Article(BaseData):
     def __init__(self, article_json: 'dict'):
         super().__init__()
-        self.checked: 'dict[PageIdentity, bool]' = {
-            context: True for context in PageIdentity
-        }
-
         self.title: 'str' = article_json["Title"]
         self.authors: 'str' = article_json["Authors"]
         self.abstract: 'str' = article_json["Abstract"]
@@ -138,6 +137,10 @@ class Article(BaseData):
             SuppFile(self, url, meta, uuid4())
             for url, meta in supp_data.items()
         ]
+
+        self.checked: 'dict[PageIdentity, bool]' = {
+            context: True for context in PageIdentity
+        }
 
         self.processed_tables: 'list[ProcessedTable]' = []
         self.pruned_tables: 'list[ProcessedTable]' = []
