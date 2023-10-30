@@ -7,7 +7,15 @@ from PyQt5.QtCore import QCoreApplication
 from model.model import Model
 from views.view import View
 from controller.controller import Controller
+import sys
 
+def get_app_path():
+    if getattr(sys, 'frozen', False):
+        # Running as compiled binary
+        return os.path.dirname(sys.executable)
+    else:
+        # Running as Python script
+        return os.path.dirname(os.path.abspath(__file__))
 
 def main():
     app = QApplication([])
@@ -15,7 +23,7 @@ def main():
     # Define default configuration
     default_config = {
         'data': {
-            'path': QCoreApplication.applicationDirPath()
+            'path': get_app_path()
         }
     }
 
