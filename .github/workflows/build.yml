@@ -6,8 +6,8 @@ on:
 
 env:
   POETRY_VERSION: 1.4.1
-  PACKAGE_NAME: metaanalyser
-  PACKAGE_VERSION: 0.1.1
+  PCKG_NAME: metaanalyser
+  VERSION: 0.1.2
 
 jobs:
   build:
