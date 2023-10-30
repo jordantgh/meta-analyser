@@ -388,8 +388,9 @@ class Controller:
             return
 
         # save with a timestamp
-        self.model.save(f"{self.model.saves_path}/session-{datetime.now()}.pkl")
-    
+        self.model.save(
+            f"{self.model.saves_path}/session-{datetime.now()}.pkl")
+
     def load(self):
         if self.model.state != Mode.BROWSING:
             QMessageBox.warning(
