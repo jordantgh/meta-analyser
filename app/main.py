@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import QApplication
 import toml
 from datetime import datetime
 import os
-from PyQt5.QtCore import QCoreApplication
 
 from model.model import Model
 from views.view import View
