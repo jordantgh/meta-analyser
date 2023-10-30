@@ -30,25 +30,30 @@ jobs:
     # Install system libraries for Linux
     - name: Install Linux system libraries
       if: runner.os == 'Linux'
-      run: sudo apt-get update && sudo apt-get install -y xvfb x11-utils libxkbcommon-x11-0
+      run: |
+        sudo apt-get update && sudo apt-get install -y \
+        xvfb x11-utils libxkbcommon-x11-0
 
     # Install Poetry
     - name: Install Poetry on Linux
       if: runner.os == 'Linux'
       run: |
-        curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+        curl -sSL https://install.python-poetry.org | python3 - \
+        --version ${{ env.POETRY_VERSION }}
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Install Poetry on macOS
       if: runner.os == 'macOS'
       run: |
-        curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+        curl -sSL https://install.python-poetry.org | python3 - \
+        --version ${{ env.POETRY_VERSION }}
         echo "$HOME/Library/Application Support/pypoetry/venv/bin" >> $GITHUB_PATH
 
     - name: Install Poetry on Windows
       if: runner.os == 'Windows'
       run: |
-        (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python3 - --version ${{ env.POETRY_VERSION }}
+        (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python3 - \
+        --version ${{ env.POETRY_VERSION }}
         echo "$env:APPDATA\Python\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Append
 
     # Install dependencies
@@ -92,11 +97,17 @@ jobs:
     # Package the binary
     - name: Package Binary on Mac/Linux
       if: runner.os != 'Windows'
-      run: tar czvf ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_${{ runner.os }}.tar.gz -C dist ${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}
+      run: |
+        tar czvf \
+        ${{ env.PCKG_NAME }}_${{ env.VERSION }}_${{ runner.os }}.tar.gz \
+        -C dist ${{ env.PCKG_NAME }}_${{ env.VERSION }}
 
     - name: Package Binary on Windows
       if: runner.os == 'Windows'
-      run: Compress-Archive -Path .\dist\${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}.exe -DestinationPath .\${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip
+      run: |
+        Compress-Archive -Path \
+        .\dist\${{ env.PCKG_NAME }}_${{ env.VERSION }}.exe \
+        -DestinationPath .\${{ env.PCKG_NAME }}_${{ env.VERSION }}_windows.zip
 
     # Upload the packaged binary as an artifact for Mac/Linux
     - name: Upload Mac/Linux Binary as Artifact
@@ -134,9 +145,9 @@ jobs:
         RESPONSE=$(curl -s -X POST \
         -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
         -d '{
-          "tag_name": "v${{ env.PACKAGE_VERSION }}",
+          "tag_name": "v${{ env.VERSION }}",
           "target_commitish": "main",
-          "name": "Release v${{ env.PACKAGE_VERSION }}",
+          "name": "Release v${{ env.VERSION }}",
           "body": "First public release!",
           "draft": true,
           "prerelease": true
@@ -149,25 +160,25 @@ jobs:
     # Upload assets to the public repo
     - name: Upload Public Release Asset for Linux
       run: |
-        UPLOAD_URL="${UPLOAD_URL/\{?name,label\}/?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz}"
+        UPLOAD_URL="${UPLOAD_URL/\{?name,label\}/?name=${{ env.PCKG_NAME }}_${{ env.VERSION }}_Linux.tar.gz}"
         curl -s -X POST "$UPLOAD_URL" \
         -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
         -H "Content-Type: application/gzip" \
-        --data-binary  "@./artifacts/Linux-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_Linux.tar.gz"
+        --data-binary  "@./artifacts/Linux-binary/${{ env.PCKG_NAME }}_${{ env.VERSION }}_Linux.tar.gz"
 
 
     - name: Upload Public Release Asset for Mac
       run: |
-        UPLOAD_URL="${UPLOAD_URL/\{?name,label\}/?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz}"
+        UPLOAD_URL="${UPLOAD_URL/\{?name,label\}/?name=${{ env.PCKG_NAME }}_${{ env.VERSION }}_macOS.tar.gz}"
         curl -s -X POST "$UPLOAD_URL" \
         -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
         -H "Content-Type: application/gzip" \
-        --data-binary  "@./artifacts/macOS-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_macOS.tar.gz"
+        --data-binary  "@./artifacts/macOS-binary/${{ env.PCKG_NAME }}_${{ env.VERSION }}_macOS.tar.gz"
 
     - name: Upload Public Release Asset for Windows
       run: |
-        UPLOAD_URL="${UPLOAD_URL/\{?name,label\}/?name=${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip}"
+        UPLOAD_URL="${UPLOAD_URL/\{?name,label\}/?name=${{ env.PCKG_NAME }}_${{ env.VERSION }}_windows.zip}"
         curl -s -X POST "$UPLOAD_URL" \
         -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
         -H "Content-Type: application/zip" \
-        --data-binary  "@./artifacts/windows-binary/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}_windows.zip"
+        --data-binary  "@./artifacts/windows-binary/${{ env.PCKG_NAME }}_${{ env.VERSION }}_windows.zip"
