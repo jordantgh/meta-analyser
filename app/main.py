@@ -18,6 +18,8 @@ def get_app_path():
         return os.path.dirname(os.path.abspath(__file__))
 
 def main():
+    os.environ['NLTK_DATA'] = './nltk_data'
+    
     app = QApplication([])
 
     # Define default configuration
