@@ -14,7 +14,8 @@ if TYPE_CHECKING:
     from PyQt5.QtWidgets import QListWidgetItem
 
 from datetime import datetime
-from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop
+from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop, QTimer
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 from utils.constants import PageIdentity, Mode
@@ -59,6 +60,7 @@ class Controller:
             processing_thread: 'FileProcessingThread'
     ):
         signals_map = {
+            self.view.closing: self.close,
             self.view.save_action.triggered: self.save,
             self.view.save_as_action.triggered: self.save_as,
             self.view.load_action.triggered: self.load,
@@ -312,6 +314,37 @@ class Controller:
 
         self.model.processing_thread.prepare(selected_articles)
         self.model.processing_thread.start()
+
+    def close(self, event: 'QCloseEvent'):
+        if self.model.state != Mode.BROWSING:
+            QMessageBox.warning(
+                self.view,
+                "Operations in progress!",
+                "Please stop all operations before closing the application."
+            )
+
+            event.ignore()
+            return
+        else:
+            # warn with timed message box that the app is closing
+            msg_box = QMessageBox(self.view)
+            msg_box.setWindowTitle("Closing Application")
+            msg_box.setText(
+                "Closing the application...\n\n" \
+                "Unsaved changes will be lost!"
+            )
+            msg_box.setStandardButtons(QMessageBox.NoButton)
+            msg_box.show()
+
+            # debug QTimer print msg
+            # QTimer.singleShot(2000, lambda: print("SINGLESHOT..."))
+            QTimer.singleShot(2000, msg_box.close)
+            QTimer.singleShot(2000, self.actual_close)
+            event.ignore()
+
+    def actual_close(self):
+        self.model.table_db_manager.delete_dbs()
+        QCoreApplication.instance().quit()
 
     def save_as(self):
         # check if the app is in a state where it can be saved

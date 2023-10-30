@@ -7,8 +7,8 @@ if TYPE_CHECKING:
     from views.list import ListItem, DataListItem
     from pandas import DataFrame
 
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtCore import Qt, QTimer, QCoreApplication
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QCloseEvent
+from PyQt5.QtCore import Qt, QTimer, QCoreApplication, pyqtSignal
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QLabel, QListWidgetItem, QTabWidget,
     QHeaderView, QSplitter, QAction, QMenu, QAbstractItemView
@@ -20,6 +20,7 @@ from views.custom_components import (
 from views.list import (
     ListItem, ArticleListItem, SuppFileListItem, ProcessedTableListItem
 )
+
 from views.page import SearchPageElements, ProcessedPageElements
 from utils.constants import PageIdentity
 from views.styles import style
@@ -356,3 +357,6 @@ class View(QMainWindow):
                 header.set_all_sections_checked()
 
         return ui_table
+
+    def closeEvent(self, event: 'QCloseEvent'):
+        self.closing.emit(event)

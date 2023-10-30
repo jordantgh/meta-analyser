@@ -10,6 +10,7 @@ from sqlalchemy.orm import sessionmaker
 from uuid import uuid4
 import pandas as pd
 import shutil
+import os
 
 from utils.constants import PageIdentity
 
@@ -200,6 +201,15 @@ class TableDBManager:
                     session.query(table_class).delete()
                 session.commit()
 
+    def delete_dbs(self):
+        processed_src = self.processed_db_url.replace("sqlite:///", "")
+        post_pruning_src = self.post_pruning_db_url.replace("sqlite:///", "")
+        
+        if os.path.exists(processed_src):
+            os.remove(processed_src)
+        
+        if os.path.exists(post_pruning_src):
+            os.remove(post_pruning_src)
 
 def processed_df_to_db(
     db_manager: 'TableDBManager',
