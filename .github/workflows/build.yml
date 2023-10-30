@@ -5,7 +5,7 @@ on:
     branches: [ deploy ]
 
 env:
-  POETRY_VERSION: 1.4.1
+  POETRY_VERSION: 1.6.1
   PCKG_NAME: metaanalyser
   VERSION: 0.1.2
 
