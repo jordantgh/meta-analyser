@@ -21,18 +21,20 @@ from views.list import (
     ListItem, ArticleListItem, SuppFileListItem, ProcessedTableListItem
 )
 from views.page import SearchPageElements, ProcessedPageElements
-
 from utils.constants import PageIdentity
+from views.styles import style
 
 import pandas as pd
 
 
 class View(QMainWindow):
+    closing = pyqtSignal(QCloseEvent)
+
     def __init__(self):
         super().__init__()
         self.resize(1024, 768)
-        with open("app/views/styles.qss", "r") as f:
-            self.setStyleSheet(f.read())
+
+        self.setStyleSheet(style)
 
         self.menu_bar = self.menuBar()
         self.file_menu = QMenu("File", self)
