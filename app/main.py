@@ -3,6 +3,8 @@ import toml
 from datetime import datetime
 import os
 
+os.environ['NLTK_DATA'] = os.path.join(".", "nltk_data")
+
 from model.model import Model
 from views.view import View
 from controller.controller import Controller
@@ -16,9 +18,7 @@ def get_app_path():
         # Running as Python script
         return os.path.dirname(os.path.abspath(__file__))
 
-def main():
-    os.environ['NLTK_DATA'] = './nltk_data'
-    
+def main():    
     app = QApplication([])
 
     # Define default configuration
