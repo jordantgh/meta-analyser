@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from views.list import DataListItem
     from PyQt5.QtWidgets import QListWidgetItem
 
+import os
 from datetime import datetime
 from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop, QTimer
@@ -330,7 +331,7 @@ class Controller:
             msg_box = QMessageBox(self.view)
             msg_box.setWindowTitle("Closing Application")
             msg_box.setText(
-                "Closing the application...\n\n" \
+                "Closing the application...\n\n"
                 "Unsaved changes will be lost!"
             )
             msg_box.setStandardButtons(QMessageBox.NoButton)
@@ -361,7 +362,7 @@ class Controller:
         filename, _ = QFileDialog.getSaveFileName(
             self.view,
             "Save As",
-            f"{self.model.saves_path}/",  # Default location
+            self.model.saves_path,  # Default location
             "All Files (*);;Text Files (*.txt)",
             options=options
         )
@@ -389,7 +390,10 @@ class Controller:
 
         # save with a timestamp
         self.model.save(
-            f"{self.model.saves_path}/session-{datetime.now()}.pkl")
+            os.path.join(
+                self.model.saves_path, f"session-{datetime.now()}.pkl"
+            )
+        )
 
     def load(self):
         if self.model.state != Mode.BROWSING:

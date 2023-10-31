@@ -39,8 +39,9 @@ def main():
 
     date = datetime.today().strftime('%Y-%m-%d')
     path = os.path.expanduser(config['data']['path'])
-    db_path = f"{path}/db/{date}"
-    saves_path = f"{path}/saves/{date}"
+    
+    db_path = os.path.join(path, 'db', date)
+    saves_path = os.path.join(path, 'saves', date)
 
     os.makedirs(db_path, exist_ok=True)
     os.makedirs(saves_path, exist_ok=True)
