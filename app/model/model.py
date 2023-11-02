@@ -214,5 +214,5 @@ class Model:
         self.search_preview_thread = FilePreviewThread()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
 
-        self.n_parse_runs = save_object.get('n_parse_runs', False)
-        self.n_prunes = save_object.get('n_prunes', False)
+        self.n_parse_runs = save_object.get('n_parse_runs', 0)
+        self.n_prunes = save_object.get('n_prunes', 0)
