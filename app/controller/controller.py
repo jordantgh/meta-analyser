@@ -95,12 +95,19 @@ class Controller:
 
         for signal, slot in signals_map.items():
             signal.connect(slot)
+            self.signal_connections.append((signal, slot))
+        
+    def _disconnect_sigs(self):
+        for signal, slot in self.signal_connections:
+            if signal and slot:
+                signal.disconnect(slot)
+        self.signal_connections.clear()
 
     def display_article_in_list(
         self,
-        article: 'Article',
+        article: 'Union[dict, Article]',
         progress: 'int',
-        ids_list: 'list[tuple[str, UUID]]' = None
+        ids_list: 'Optional[list[tuple[str, UUID]]]' = None
     ):
         if self.model.state == Mode.SEARCHING:
             article_data = self.model.create_article_data(article)
@@ -434,16 +441,25 @@ class Controller:
         if not filename:
             return
 
-        self.model.load(filename, self.model.db_path, self.model.saves_path)
 
         # repopulate the GUI
         # clear all pages
-        self.view.reset()
 
         # re-init
-        # TODO this is a bad way to do this, should reset the model properly
-        self.__init__(self.model, self.view)
+        self.model.table_db_manager.delete_dbs()
+        self._disconnect_sigs()
+        
+        self.model.load(filename)
+        self.view.reset()
 
+        self._connect_sigs(
+            self.view.search_elems,
+            self.view.parsed_elems,
+            self.view.pruned_elems,
+            self.model.search_thread,
+            self.model.search_preview_thread,
+            self.model.processing_thread
+        )
         # Populate search page
         self._set_state(Mode.SEARCHING)
         selected_articles = self.model.bibliography.articles.values()
