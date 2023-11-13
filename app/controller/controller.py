@@ -388,18 +388,35 @@ class Controller:
             )
             return
 
-        # save with a timestamp
-        self.model.save(
-            os.path.join(
-                self.model.saves_path, f"session-{datetime.now()}.pkl"
+        if self.model.session_file:
+            # Extracting the index from the filename
+            match = re.search(r'session-(\d+)-', self.model.session_file)
+            if match:
+                idx = match.group(1)
+            else:
+                idx = len(os.listdir(self.model.saves_path)) + 1
+
+            filepath = os.path.join(
+                self.model.saves_path,
+                f"session-{idx}-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pkl"
             )
-        )
+            
+            if os.path.exists(self.model.session_file):
+                os.remove(self.model.session_file)
+        else:
+            idx = len(os.listdir(self.model.saves_path)) +1
+            filepath = os.path.join(
+                self.model.saves_path,
+                f"session-{idx}-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pkl"
+            )
+
+        self.model.save(filepath)
 
     def load(self):
         if self.model.state != Mode.BROWSING:
             QMessageBox.warning(
                 self.view,
-                "Cannot Save",
+                "Cannot Load",
                 "The application can only be saved in the browsing state."
             )
             return
@@ -409,7 +426,7 @@ class Controller:
         filename, _ = QFileDialog.getOpenFileName(
             self.view,
             "Load File",
-            "",
+            f"{self.model.saves_path}",
             "Pickle Files (*.pkl);;All Files (*)",
             options=options
         )
