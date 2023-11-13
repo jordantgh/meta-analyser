@@ -1,18 +1,24 @@
 import pandas as pd
 import requests
 import os
+import xlwings as xw
+import numpy as np
 
 
 def extract_dfs(fname: 'str', should_stop: 'bool') -> 'dict[str, pd.DataFrame]':
+    data = {}
     if should_stop:
         return
 
     if fname.endswith(('.xlsx')):
         if should_stop:
             return
-        data = pd.read_excel(
-            fname, sheet_name=None, header=None, index_col=None
-        )
+        with xw.Book(fname, mode="r") as book:
+            for sheet in book.sheets:
+                data[sheet.name] = sheet.cells.options(
+                    pd.DataFrame, header=False, index=False
+                ).value
+
     elif fname.endswith('.csv'):
         if should_stop:
             return
