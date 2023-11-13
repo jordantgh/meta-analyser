@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, Union, Optional
 if TYPE_CHECKING:
     from uuid import UUID
     from model.model import Model
@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from PyQt5.QtWidgets import QListWidgetItem
 
 import os
+import re
 from datetime import datetime
 from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop, QTimer
@@ -26,6 +27,7 @@ class Controller:
     def __init__(self, model: 'Model', view: 'View'):
         self.model = model
         self.view = view
+        self.signal_connections = []
         self._connect_sigs(
             view.search_elems,
             view.parsed_elems,
