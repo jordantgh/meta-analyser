@@ -161,9 +161,12 @@ class Model:
                     context
                 )
 
-                processed_table.set_checked_state(bool(qp.search(
-                    query,
-                    [(processed_table.id, table_data.to_string())])),
+                processed_table.set_checked_state(
+                    bool(
+                        qp.search(
+                            query, [
+                                (processed_table.id, table_data.to_string())]
+                        )),
                     PageIdentity.PARSED
                 )
 
