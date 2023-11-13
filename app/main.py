@@ -40,13 +40,15 @@ def main():
     date = datetime.today().strftime('%Y-%m-%d')
     path = os.path.expanduser(config['data']['path'])
     
-    db_path = os.path.join(path, 'db', date)
+    db_tpath = os.path.join(path, 'db', 'temp')
+    db_ppath = os.path.join(path, 'db', date)
     saves_path = os.path.join(path, 'saves', date)
 
-    os.makedirs(db_path, exist_ok=True)
+    os.makedirs(db_tpath, exist_ok=True)
+    os.makedirs(db_ppath, exist_ok=True)
     os.makedirs(saves_path, exist_ok=True)
 
-    model = Model(db_path, saves_path)
+    model = Model(db_tpath, db_ppath, saves_path)
     view = View()
     _ = Controller(model, view)
 

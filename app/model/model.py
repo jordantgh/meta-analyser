@@ -20,14 +20,21 @@ import scripts.query_parser as qp
 
 
 class Model:
-    def __init__(self, db_path: 'str' = None, saves_path: 'str' = None):
-        self.db_path = db_path
+    def __init__(
+            self,
+            db_temp_path: 'str' = None,
+            db_perm_path: 'str' = None,
+            saves_path: 'str' = None
+    ):
+        self.session_file = None
+        self.db_temp_path = db_temp_path
+        self.db_perm_path = db_perm_path
         self.saves_path = saves_path
         self._state = Mode.BROWSING
         self.bibliography = Bibliography()
         self.search_thread = SearchThread()
         self.search_preview_thread = FilePreviewThread()
-        self.table_db_manager = TableDBManager(db_path)
+        self.table_db_manager = TableDBManager(db_temp_path, db_perm_path)
         self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
         self.n_parse_runs = 0

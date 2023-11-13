@@ -35,11 +35,14 @@ class PostPruningTableDBEntry(TableDBEntry):
 class TableDBManager:
     def __init__(
         self,
+        db_temp_path: 'str' = ".",
         db_path: 'str' = ".",
-        processed_db_url: 'str' = None,
-        post_pruning_db_url: 'str' = None
+        processed_fname: 'str' = None,
+        pruned_fname: 'str' = None
     ):
-        self.db_path = db_path
+
+        self.db_temp_path = db_temp_path
+        self.db_perm_path = db_path
 
         if processed_db_url and post_pruning_db_url:
             self.processed_db_url = processed_db_url
