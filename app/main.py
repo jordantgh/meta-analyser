@@ -1,10 +1,10 @@
+import os
+os.environ["XLWINGS_LICENSE_KEY"] = "noncommercial"
+os.environ['NLTK_DATA'] = os.path.join(".", "nltk_data")
+
 from PyQt5.QtWidgets import QApplication
 import toml
 from datetime import datetime
-import os
-
-os.environ['NLTK_DATA'] = os.path.join(".", "nltk_data")
-
 from model.model import Model
 from views.view import View
 from controller.controller import Controller
