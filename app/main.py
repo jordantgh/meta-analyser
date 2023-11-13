@@ -1,47 +1,60 @@
 from PyQt5.QtWidgets import QApplication
-from threading import Thread, Event
-import argparse
-import sys
+import toml
+from datetime import datetime
+import os
+
+os.environ['NLTK_DATA'] = os.path.join(".", "nltk_data")
 
 from model.model import Model
 from views.view import View
 from controller.controller import Controller
+import sys
 
-def debug(shutdown_flag, **kwargs):
-    def start_repl(local_vars):
-        from ptpython.repl import embed
+def get_app_path():
+    if getattr(sys, 'frozen', False):
+        # Running as compiled binary
+        return os.path.dirname(sys.executable)
+    else:
+        # Running as Python script
+        return os.path.dirname(os.path.abspath(__file__))
 
-        try:
-            while not shutdown_flag.is_set():
-                embed(globals(), local_vars)
-        except SystemExit:
-            pass
-        finally:
-            sys.exit()
-
-    repl_thread = Thread(target=start_repl, args=(kwargs,))
-    repl_thread.start()
-
-def main():
-    parser = argparse.ArgumentParser(description="Run the PyQt5 app.")
-    parser.add_argument('--debug', action='store_true', help='Activate the debug terminal')
-    args = parser.parse_args()
-
+def main():    
     app = QApplication([])
 
-    model = Model()
+    # Define default configuration
+    default_config = {
+        'data': {
+            'path': get_app_path()
+        }
+    }
+
+    config_path = "config.toml"
+    if not os.path.exists(config_path):
+        # Save the default config to a file
+        with open(config_path, 'w') as f:
+            toml.dump(default_config, f)
+
+    # Load the config file
+    config = toml.load(config_path)
+
+    date = datetime.today().strftime('%Y-%m-%d')
+    path = os.path.expanduser(config['data']['path'])
+    
+    db_tpath = os.path.join(path, 'db', 'temp')
+    db_ppath = os.path.join(path, 'db', date)
+    saves_path = os.path.join(path, 'saves', date)
+
+    os.makedirs(db_tpath, exist_ok=True)
+    os.makedirs(db_ppath, exist_ok=True)
+    os.makedirs(saves_path, exist_ok=True)
+
+    model = Model(db_tpath, db_ppath, saves_path)
     view = View()
-    controller = Controller(model, view)
-
-    shutdown_flag = Event()
-
-    if args.debug:
-        debug(shutdown_flag, model=model, view=view, controller=controller, app=app)
+    _ = Controller(model, view)
 
     view.show()
     app.exec_()
 
-    shutdown_flag.set()
 
 if __name__ == "__main__":
     main()

@@ -20,12 +20,21 @@ import scripts.query_parser as qp
 
 
 class Model:
-    def __init__(self):
+    def __init__(
+            self,
+            db_temp_path: 'str' = None,
+            db_perm_path: 'str' = None,
+            saves_path: 'str' = None
+    ):
+        self.session_file = None
+        self.db_temp_path = db_temp_path
+        self.db_perm_path = db_perm_path
+        self.saves_path = saves_path
         self._state = Mode.BROWSING
         self.bibliography = Bibliography()
         self.search_thread = SearchThread()
         self.search_preview_thread = FilePreviewThread()
-        self.table_db_manager = TableDBManager()
+        self.table_db_manager = TableDBManager(db_temp_path, db_perm_path)
         self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
         self.n_parse_runs = 0
@@ -152,9 +161,12 @@ class Model:
                     context
                 )
 
-                processed_table.set_checked_state(bool(qp.search(
-                    query,
-                    [(processed_table.id, table_data.to_string())])),
+                processed_table.set_checked_state(
+                    bool(
+                        qp.search(
+                            query, [
+                                (processed_table.id, table_data.to_string())]
+                        )),
                     PageIdentity.PARSED
                 )
 
@@ -176,14 +188,15 @@ class Model:
         visited_objects = set()
 
         stash_all_observers(self.bibliography, global_stash, visited_objects)
+
+        proc, prune = self.table_db_manager.save_dbs()
+
         save_object = {
+            'db_path': self.db_perm_path,
             'state': self.state,
             'bibliography': self.bibliography,
-            # TODO the db urls are tricky because if the user keeps editing
-            # after saving the dbs get changed so that reloads don't work
-            # properly
-            'processed_db_url': self.table_db_manager.processed_db_url,
-            'post_pruning_db_url': self.table_db_manager.post_pruning_db_url,
+            'processed_db_fname': proc,
+            'pruned_db_fname': prune,
             'processed_table_manager': self.processed_table_manager,
             'n_parse_runs': self.n_parse_runs,
             'n_prunes': self.n_prunes
@@ -194,19 +207,23 @@ class Model:
 
         visited_objects.clear()
         restore_all_observers(self.bibliography, global_stash, visited_objects)
+        self.session_file = filename
 
-    def load(self, filename: 'str'):
-        with open(filename, 'rb') as f:
+    def load(self, file: 'str'):
+        self.session_file = file
+        with open(file, 'rb') as f:
             save_object = pickle.load(f)
-
         self.bibliography = save_object['bibliography']
         self.table_db_manager = TableDBManager(
-            save_object['processed_db_url'],
-            save_object['post_pruning_db_url'])
+            self.db_temp_path,
+            save_object['db_path'],
+            save_object['processed_db_fname'],
+            save_object['pruned_db_fname']
+        )
         self.processed_table_manager = save_object['processed_table_manager']
         self.search_thread = SearchThread()
         self.search_preview_thread = FilePreviewThread()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
-
-        self.n_parse_runs = save_object.get('n_parse_runs', False)
-        self.n_prunes = save_object.get('n_prunes', False)
+        self.session_saved_flag = False
+        self.n_parse_runs = save_object.get('n_parse_runs', 0)
+        self.n_prunes = save_object.get('n_prunes', 0)

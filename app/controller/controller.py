@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, Union, Optional
 if TYPE_CHECKING:
     from uuid import UUID
     from model.model import Model
@@ -13,7 +13,11 @@ if TYPE_CHECKING:
     from views.list import DataListItem
     from PyQt5.QtWidgets import QListWidgetItem
 
-from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop
+import os
+import re
+from datetime import datetime
+from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtCore import Qt, QCoreApplication, QEventLoop, QTimer
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 from utils.constants import PageIdentity, Mode
@@ -23,6 +27,7 @@ class Controller:
     def __init__(self, model: 'Model', view: 'View'):
         self.model = model
         self.view = view
+        self.signal_connections = []
         self._connect_sigs(
             view.search_elems,
             view.parsed_elems,
@@ -58,7 +63,9 @@ class Controller:
             processing_thread: 'FileProcessingThread'
     ):
         signals_map = {
+            self.view.closing: self.close,
             self.view.save_action.triggered: self.save,
+            self.view.save_as_action.triggered: self.save_as,
             self.view.load_action.triggered: self.load,
 
             # Search page
@@ -90,12 +97,19 @@ class Controller:
 
         for signal, slot in signals_map.items():
             signal.connect(slot)
+            self.signal_connections.append((signal, slot))
+        
+    def _disconnect_sigs(self):
+        for signal, slot in self.signal_connections:
+            if signal and slot:
+                signal.disconnect(slot)
+        self.signal_connections.clear()
 
     def display_article_in_list(
         self,
-        article: 'Article',
+        article: 'Union[dict, Article]',
         progress: 'int',
-        ids_list: 'list[tuple[str, UUID]]' = None
+        ids_list: 'Optional[list[tuple[str, UUID]]]' = None
     ):
         if self.model.state == Mode.SEARCHING:
             article_data = self.model.create_article_data(article)
@@ -311,13 +325,44 @@ class Controller:
         self.model.processing_thread.prepare(selected_articles)
         self.model.processing_thread.start()
 
-    def save(self):
+    def close(self, event: 'QCloseEvent'):
+        if self.model.state != Mode.BROWSING:
+            QMessageBox.warning(
+                self.view,
+                "Operations in progress!",
+                "Please stop all operations before closing the application."
+            )
+
+            event.ignore()
+            return
+        else:
+            # warn with timed message box that the app is closing
+            msg_box = QMessageBox(self.view)
+            msg_box.setWindowTitle("Closing Application")
+            msg_box.setText(
+                "Closing the application...\n\n"
+                "Unsaved changes will be lost!"
+            )
+            msg_box.setStandardButtons(QMessageBox.NoButton)
+            msg_box.show()
+
+            # debug QTimer print msg
+            # QTimer.singleShot(2000, lambda: print("SINGLESHOT..."))
+            QTimer.singleShot(2000, msg_box.close)
+            QTimer.singleShot(2000, self.actual_close)
+            event.ignore()
+
+    def actual_close(self):
+        self.model.table_db_manager.delete_dbs()
+        QCoreApplication.instance().quit()
+
+    def save_as(self):
         # check if the app is in a state where it can be saved
         if self.model.state != Mode.BROWSING:
             QMessageBox.warning(
                 self.view,
                 "Cannot Save",
-                "The application can only be saved in the browsing state."
+                "The application cannot be saved during an ongoing operation."
             )
             return
 
@@ -326,7 +371,7 @@ class Controller:
         filename, _ = QFileDialog.getSaveFileName(
             self.view,
             "Save As",
-            "",
+            self.model.saves_path,  # Default location
             "All Files (*);;Text Files (*.txt)",
             options=options
         )
@@ -334,11 +379,53 @@ class Controller:
         if filename:
             self.model.save(filename)
 
-    def load(self):
+    def save(self):
+        # check if the app is in a state where it can be saved
         if self.model.state != Mode.BROWSING:
             QMessageBox.warning(
                 self.view,
                 "Cannot Save",
+                "The application cannot be saved during an ongoing operation."
+            )
+            return
+
+        if not self.model.saves_path:
+            QMessageBox.warning(
+                self.view,
+                "Cannot Save",
+                "The application cannot be saved without a save path."
+            )
+            return
+
+        if self.model.session_file:
+            # Extracting the index from the filename
+            match = re.search(r'session-(\d+)-', self.model.session_file)
+            if match:
+                idx = match.group(1)
+            else:
+                idx = len(os.listdir(self.model.saves_path)) + 1
+
+            filepath = os.path.join(
+                self.model.saves_path,
+                f"session-{idx}-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pkl"
+            )
+            
+            if os.path.exists(self.model.session_file):
+                os.remove(self.model.session_file)
+        else:
+            idx = len(os.listdir(self.model.saves_path)) +1
+            filepath = os.path.join(
+                self.model.saves_path,
+                f"session-{idx}-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pkl"
+            )
+
+        self.model.save(filepath)
+
+    def load(self):
+        if self.model.state != Mode.BROWSING:
+            QMessageBox.warning(
+                self.view,
+                "Cannot Load",
                 "The application can only be saved in the browsing state."
             )
             return
@@ -348,7 +435,7 @@ class Controller:
         filename, _ = QFileDialog.getOpenFileName(
             self.view,
             "Load File",
-            "",
+            f"{self.model.saves_path}",
             "Pickle Files (*.pkl);;All Files (*)",
             options=options
         )
@@ -356,16 +443,25 @@ class Controller:
         if not filename:
             return
 
-        self.model.load(filename)
 
         # repopulate the GUI
         # clear all pages
-        self.view.reset()
 
         # re-init
-        # TODO this is a bad way to do this, should reset the model properly
-        self.__init__(self.model, self.view)
+        self.model.table_db_manager.delete_dbs()
+        self._disconnect_sigs()
+        
+        self.model.load(filename)
+        self.view.reset()
 
+        self._connect_sigs(
+            self.view.search_elems,
+            self.view.parsed_elems,
+            self.view.pruned_elems,
+            self.model.search_thread,
+            self.model.search_preview_thread,
+            self.model.processing_thread
+        )
         # Populate search page
         self._set_state(Mode.SEARCHING)
         selected_articles = self.model.bibliography.articles.values()

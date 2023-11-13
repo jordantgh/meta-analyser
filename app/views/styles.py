@@ -1,3 +1,5 @@
+# Using a python file rather than qss for convenience during build
+style="""
 /* General Styles */
 QWidget {
     font-family: "Segoe UI", "Ubuntu", "Helvetica Neue", "Lucida Grande", "Arial", sans-serif;
@@ -17,3 +19,4 @@ QLineEdit:focus {
 QListWidget:focus {
     border: 2px solid blue;
 }
+"""

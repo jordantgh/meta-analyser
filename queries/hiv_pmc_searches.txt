@@ -87,22 +87,10 @@
     )
     AND 
     (
-        "SARS"[Abstract] OR 
-        "SARS2"[Abstract] OR
-        "SARS1"[Abstract] OR
-        "SARS-CoV"[Abstract] OR
-        "SARS-CoV-2"[Abstract] OR
-        "SARS-CoV2"[Abstract] OR
-        "SARS-CoV 2"[Abstract] OR
-        "MERS"[Abstract] OR
-        "MERS-CoV"[Abstract] OR
-        "coronavirus"[Abstract] OR
-        "coronaviruses"[Abstract] OR
-        "229E"[Abstract] OR
-        "NL63"[Abstract] OR
-        "HCoV"[Abstract] OR
-        "OC43"[Abstract]
-
+        "HIV"[Abstract] OR 
+        "HIV-1"[Abstract] OR
+        "Human Immunodeficiency Virus"[Abstract] OR
+        "AIDS"[Abstract]
     )
     AND 
     (

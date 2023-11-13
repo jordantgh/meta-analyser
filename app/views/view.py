@@ -7,8 +7,8 @@ if TYPE_CHECKING:
     from views.list import ListItem, DataListItem
     from pandas import DataFrame
 
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtCore import Qt, QTimer, QCoreApplication
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QCloseEvent
+from PyQt5.QtCore import Qt, QTimer, QCoreApplication, pyqtSignal
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QLabel, QListWidgetItem, QTabWidget,
     QHeaderView, QSplitter, QAction, QMenu, QAbstractItemView
@@ -20,26 +20,34 @@ from views.custom_components import (
 from views.list import (
     ListItem, ArticleListItem, SuppFileListItem, ProcessedTableListItem
 )
-from views.page import SearchPageElements, ProcessedPageElements
 
+from views.page import SearchPageElements, ProcessedPageElements
 from utils.constants import PageIdentity
+from views.styles import style
 
 import pandas as pd
 
 
 class View(QMainWindow):
+    closing = pyqtSignal(QCloseEvent)
+
     def __init__(self):
         super().__init__()
         self.resize(1024, 768)
-        with open("app/views/styles.qss", "r") as f:
-            self.setStyleSheet(f.read())
+
+        self.setStyleSheet(style)
 
         self.menu_bar = self.menuBar()
         self.file_menu = QMenu("File", self)
         self.save_action = QAction("Save", self)
+        self.save_as_action = QAction("Save as...", self)
         self.load_action = QAction("Load", self)
         self.file_menu.addAction(self.save_action)
+        self.file_menu.addAction(self.save_as_action)
         self.file_menu.addAction(self.load_action)
+        self.save_action.setShortcut("Ctrl+S")
+        self.save_as_action.setShortcut("Ctrl+Shift+S")
+        self.load_action.setShortcut("Ctrl+O")
         self.menu_bar.addMenu(self.file_menu)
 
         self.tab_widget = QTabWidget(self)
@@ -349,3 +357,6 @@ class View(QMainWindow):
                 header.set_all_sections_checked()
 
         return ui_table
+
+    def closeEvent(self, event: 'QCloseEvent'):
+        self.closing.emit(event)
