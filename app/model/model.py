@@ -189,14 +189,14 @@ class Model:
 
         stash_all_observers(self.bibliography, global_stash, visited_objects)
 
-        proc, prune = self.table_db_manager.copy_dbs()
+        proc, prune = self.table_db_manager.save_dbs()
 
         save_object = {
-            'db_path': self.db_path,
+            'db_path': self.db_perm_path,
             'state': self.state,
             'bibliography': self.bibliography,
-            'processed_db_url': proc,
-            'post_pruning_db_url': prune,
+            'processed_db_fname': proc,
+            'pruned_db_fname': prune,
             'processed_table_manager': self.processed_table_manager,
             'n_parse_runs': self.n_parse_runs,
             'n_prunes': self.n_prunes
@@ -207,22 +207,23 @@ class Model:
 
         visited_objects.clear()
         restore_all_observers(self.bibliography, global_stash, visited_objects)
+        self.session_file = filename
 
-    def load(self, filename: 'str', new_db_path: 'str', new_saves_path: 'str'):
-        with open(filename, 'rb') as f:
+    def load(self, file: 'str'):
+        self.session_file = file
+        with open(file, 'rb') as f:
             save_object = pickle.load(f)
-        self.db_path = new_db_path
-        self.saves_path = new_saves_path
         self.bibliography = save_object['bibliography']
         self.table_db_manager = TableDBManager(
+            self.db_temp_path,
             save_object['db_path'],
-            save_object['processed_db_url'],
-            save_object['post_pruning_db_url']
+            save_object['processed_db_fname'],
+            save_object['pruned_db_fname']
         )
         self.processed_table_manager = save_object['processed_table_manager']
         self.search_thread = SearchThread()
         self.search_preview_thread = FilePreviewThread()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
-
+        self.session_saved_flag = False
         self.n_parse_runs = save_object.get('n_parse_runs', 0)
         self.n_prunes = save_object.get('n_prunes', 0)
