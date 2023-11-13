@@ -44,33 +44,26 @@ class TableDBManager:
         self.db_temp_path = db_temp_path
         self.db_perm_path = db_path
 
-        if processed_db_url and post_pruning_db_url:
-            self.processed_db_url = processed_db_url
-            self.post_pruning_db_url = post_pruning_db_url
+        if processed_fname and pruned_fname:
+            self._loaded = True
+            self.old_fnames = [processed_fname, pruned_fname]
+            self._create_temp_dbs(db_temp_path)
         else:
-            self._create_db_urls(db_path)
+            self._loaded = False
+            self._create_temp_dbs(db_temp_path)
 
-        self.processed_engine = create_engine(self.processed_db_url)
-        self.post_pruning_engine = create_engine(self.post_pruning_db_url)
+        self._establish_connections()
 
         Base.metadata.create_all(self.processed_engine)
         Base.metadata.create_all(self.post_pruning_engine)
 
-        self.ProcessedSession = sessionmaker(bind=self.processed_engine)
-        self.PostPruningSession = sessionmaker(bind=self.post_pruning_engine)
-
-    def _create_db_urls(self, db_path: 'str'):
+    def _create_temp_dbs(self, db_path: 'str'):
         id = str(uuid4())
-        processed_db_url = (
-            f"sqlite:///{db_path}/processed_tables-{id}.db"
-        )
-
-        post_pruning_db_url = (
-            f"sqlite:///{db_path}/post_pruning_tables-{id}.db"
-        )
-
-        self.processed_db_url = processed_db_url
-        self.post_pruning_db_url = post_pruning_db_url
+        self.processed_db_path = os.path.join(db_path, f"processed_db-{id}.db")
+        self.pruned_db_path = os.path.join(db_path, f"pruned_db-{id}.db")
+        if self._loaded:
+            shutil.copyfile(self.old_fnames[0], self.processed_db_path)
+            shutil.copyfile(self.old_fnames[1], self.pruned_db_path)
 
     def _get_engine_and_session(self, table_class: 'TableDBEntry') -> 'tuple':
         if table_class == ProcessedTableDBEntry:
@@ -79,6 +72,18 @@ class TableDBManager:
             return self.post_pruning_engine, self.PostPruningSession
         else:
             raise ValueError("Invalid table_class")
+
+    def _establish_connections(self):
+        self.processed_engine = create_engine(
+            f"sqlite:///{self.processed_db_path}")
+        self.post_pruning_engine = create_engine(
+            f"sqlite:///{self.pruned_db_path}")
+        self.ProcessedSession = sessionmaker(bind=self.processed_engine)
+        self.PostPruningSession = sessionmaker(bind=self.post_pruning_engine)
+
+    def _dispose_connections(self):
+        self.processed_engine.dispose()
+        self.post_pruning_engine.dispose()
 
     def save_table(
         self,
@@ -172,19 +177,38 @@ class TableDBManager:
                 session.delete(table_entry)
                 session.commit()
 
-    def copy_dbs(self) -> 'list[str]':
-        new_id = str(uuid4())
+    def save_dbs(self) -> 'list[str]':
 
-        processed_copy = f"{self.db_path}/processed_tables-{new_id}.db"
-        post_pruning_copy = f"{self.db_path}/post_pruning_tables-{new_id}.db"
+        if self._loaded:
 
-        processed_src = self.processed_db_url.replace("sqlite:///", "")
-        post_pruning_src = self.post_pruning_db_url.replace("sqlite:///", "")
+            processed_target_path = self.old_fnames[0]
+            pruned_target_path = self.old_fnames[1]
+            
+            # Delete old versions of the databases
+            if os.path.exists(processed_target_path):
+                os.remove(processed_target_path)
 
-        shutil.copyfile(processed_src, processed_copy)
-        shutil.copyfile(post_pruning_src, post_pruning_copy)
+            if os.path.exists(pruned_target_path):
+                os.remove(pruned_target_path)
 
-        return [f"sqlite:///{p}" for p in [processed_copy, post_pruning_copy]]
+        else:
+            processed_target_path = os.path.join(
+                f"{self.db_perm_path}",
+                f"{os.path.basename(self.processed_db_path)}"
+            )
+            pruned_target_path = os.path.join(
+                f"{self.db_perm_path}",
+                f"{os.path.basename(self.pruned_db_path)}"
+            )
+
+        self._dispose_connections()
+
+        shutil.copyfile(self.processed_db_path, processed_target_path)
+        shutil.copyfile(self.pruned_db_path, pruned_target_path)
+
+        self._establish_connections()
+
+        return [p for p in [processed_target_path, pruned_target_path]]
 
     def reset(self):
         for engine, Session in [
@@ -205,14 +229,17 @@ class TableDBManager:
                 session.commit()
 
     def delete_dbs(self):
-        processed_src = self.processed_db_url.replace("sqlite:///", "")
-        post_pruning_src = self.post_pruning_db_url.replace("sqlite:///", "")
-        
-        if os.path.exists(processed_src):
-            os.remove(processed_src)
-        
-        if os.path.exists(post_pruning_src):
-            os.remove(post_pruning_src)
+        # Close all connections
+        self.processed_engine.dispose()
+        self.post_pruning_engine.dispose()
+
+        # Delete databases
+        if os.path.exists(self.processed_db_path):
+            os.remove(self.processed_db_path)
+
+        if os.path.exists(self.pruned_db_path):
+            os.remove(self.pruned_db_path)
+
 
 def processed_df_to_db(
     db_manager: 'TableDBManager',
