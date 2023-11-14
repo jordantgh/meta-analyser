@@ -10,13 +10,14 @@ from views.view import View
 from controller.controller import Controller
 import sys
 
-def get_app_path():
+def get_app_data_path():
     if getattr(sys, 'frozen', False):
         # Running as compiled binary
-        return os.path.dirname(sys.executable)
+        root = os.path.dirname(sys.executable)
     else:
         # Running as Python script
-        return os.path.dirname(os.path.abspath(__file__))
+        root = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(root, 'data')
 
 def main():    
     app = QApplication([])
@@ -24,7 +25,7 @@ def main():
     # Define default configuration
     default_config = {
         'data': {
-            'path': get_app_path()
+            'path': get_app_data_path()
         }
     }
 
