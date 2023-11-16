@@ -94,10 +94,23 @@ class Model:
     # May need a thread for this, hangs up on large queries
     def prune_tables_and_columns(self, context: 'PageIdentity'):
 
+        # TODO unspaghettify this
         article: 'Article'
         for article in self.bibliography.get_selected_articles(context):
 
-            # TODO unspaghettify this
+            unchecked_tables = [
+                table for table in article.processed_tables if not table.checked
+            ]
+
+            for table in unchecked_tables:
+                existing_table = self.table_db_manager.get_table_object(
+                    PostPruningTableDBEntry, table.id
+                )
+                if existing_table:
+                    self.table_db_manager.delete_table(
+                        PostPruningTableDBEntry, table.id
+                    )
+
             selected_tables = [
                 table for table in article.processed_tables if table.checked
             ]
