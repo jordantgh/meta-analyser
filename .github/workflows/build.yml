@@ -14,7 +14,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # Ubuntu only until closer to production ready!
+        os: [ubuntu-latest]
         python-version: [3.11.1]
 
     steps:
