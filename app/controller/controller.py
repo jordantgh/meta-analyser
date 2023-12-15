@@ -79,11 +79,15 @@ class Controller:
             parsed.article_ui_list.itemClicked: self.on_article_clicked,
             parsed.filter_sig: self.filter_tables,
             parsed.prune_sig: self.prune_tables_and_columns,
+            parsed.tags_entry_widget.tagAdded: self.add_tag,
+            parsed.tags_display_widget.tagRemoved: self.remove_tag,
 
             # Pruned page
             pruned.article_ui_list.itemClicked: self.on_article_clicked,
             pruned.filter_sig: self.filter_tables,
             pruned.prune_sig: self.prune_tables_and_columns,
+            pruned.tags_entry_widget.tagAdded: self.add_tag,
+            pruned.tags_display_widget.tagRemoved: self.remove_tag,
 
             # Search threads
             search_thread.article_sig: self.display_article_in_list,
@@ -98,6 +102,22 @@ class Controller:
         for signal, slot in signals_map.items():
             signal.connect(slot)
             self.signal_connections.append((signal, slot))
+
+    def add_tag(self, tag: 'str'):
+        self.model.last_selected_table.add_tag(tag)
+
+        self.curr_elems.tags_display_widget.clear()        
+        for tag in self.model.last_selected_table.get_tags():
+            self.curr_elems.tags_display_widget.addTag(tag)
+            # self.curr_elems.tags_display_widget.update()
+
+    def remove_tag(self, tag: 'str'):
+        self.model.last_selected_table.remove_tag(tag)
+
+        # Refresh the tag display
+        self.curr_elems.tags_display_widget.clear()
+        for tag in self.model.last_selected_table.get_tags():
+            self.curr_elems.tags_display_widget.addTag(tag)
         
     def _disconnect_sigs(self):
         for signal, slot in self.signal_connections:
@@ -121,14 +141,15 @@ class Controller:
     def search_articles(self):
         self._set_state(Mode.SEARCHING)
         self.model.reset_for_searching()
-        self.view.tab_widget.setCurrentIndex(0)
+        self.view.tabbed_pageholder.setCurrentIndex(0)
 
         if self.model.search_thread.isRunning():
             QMessageBox.warning(
                 self.view,
                 "Search in Progress",
                 "A search is already in progress. "
-                "Please wait or stop the current search.")
+                "Please wait or stop the current search."
+            )
             return
 
         query = self.output_page.query_field.text()
@@ -243,6 +264,11 @@ class Controller:
     def preview_processed_table(
         self, table: 'ProcessedTable', context: 'PageIdentity'
     ):
+        self.model.last_selected_table = table # hacky to do this here
+        self.curr_elems.tags_display_widget.clear()
+        for tag in table.get_tags():
+            self.curr_elems.tags_display_widget.addTag(tag)
+        
         table_data = {
             "sheet": self.model.table_db_manager.get_processed_table_data(
                 table.id, context
