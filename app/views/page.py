@@ -58,10 +58,7 @@ class PageElements(QObject):  # QObject needed for signalling
 
         self.title_abstract_disp.setFocusPolicy(Qt.NoFocus)
 
-        self.outer_tab_widget = QTabWidget(parent_tab)
-        self.previews = QTabWidget()
-
-        self.outer_tab_widget.addTab(self.previews, "Previews")
+        self.data_previews = QTabWidget()
 
         self.metadata_view = QTextBrowser()
         self.metadata_view.setOpenExternalLinks(True)

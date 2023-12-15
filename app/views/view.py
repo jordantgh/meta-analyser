@@ -50,17 +50,17 @@ class View(QMainWindow):
         self.load_action.setShortcut("Ctrl+O")
         self.menu_bar.addMenu(self.file_menu)
 
-        self.tab_widget = QTabWidget(self)
-        self.tab_widget.setTabBar(CustomTabBar())
-        self.setCentralWidget(self.tab_widget)
+        self.tabbed_pageholder = QTabWidget(self)
+        self.tabbed_pageholder.setTabBar(CustomTabBar())
+        self.setCentralWidget(self.tabbed_pageholder)
 
         self.search_tab = TabPage(self, PageIdentity.SEARCH)
         self.parsed_tab = TabPage(self, PageIdentity.PARSED)
         self.pruned_tab = TabPage(self, PageIdentity.PRUNED)
 
-        self.tab_widget.addTab(self.search_tab, "Search")
-        self.tab_widget.addTab(self.parsed_tab, "Parsing Results")
-        self.tab_widget.addTab(self.pruned_tab, "Pruned Results")
+        self.tabbed_pageholder.addTab(self.search_tab, "Search")
+        self.tabbed_pageholder.addTab(self.parsed_tab, "Parsing Results")
+        self.tabbed_pageholder.addTab(self.pruned_tab, "Pruned Results")
 
         self.search_elems = SearchPageElements(self.search_tab)
         self.parsed_elems = ProcessedPageElements(self.parsed_tab)
@@ -80,7 +80,7 @@ class View(QMainWindow):
     # Getters for active page
     @property
     def active_tab(self) -> 'TabPage':
-        return self.tab_widget.currentWidget()
+        return self.tabbed_pageholder.currentWidget()
 
     @property
     def active_elements(self) -> 'PageElements':
@@ -93,11 +93,11 @@ class View(QMainWindow):
     # Set active page
     def set_active_tab(self, page_identity: 'PageIdentity'):
         if page_identity == PageIdentity.SEARCH:
-            self.tab_widget.setCurrentWidget(self.search_tab)
+            self.tabbed_pageholder.setCurrentWidget(self.search_tab)
         elif page_identity == PageIdentity.PARSED:
-            self.tab_widget.setCurrentWidget(self.parsed_tab)
+            self.tabbed_pageholder.setCurrentWidget(self.parsed_tab)
         elif page_identity == PageIdentity.PRUNED:
-            self.tab_widget.setCurrentWidget(self.pruned_tab)
+            self.tabbed_pageholder.setCurrentWidget(self.pruned_tab)
 
     def _init_search_layouts(self, elements: 'SearchPageElements'):
         left_pane = QVBoxLayout()
@@ -156,13 +156,13 @@ class View(QMainWindow):
         mid_widget.setLayout(mid_pane)
 
         # Container for previews
-        preview_pane = QVBoxLayout()
-        preview_pane.addWidget(elements.outer_tab_widget)
-        preview_pane.addWidget(elements.loading_label)
-        preview_pane.setStretchFactor(elements.outer_tab_widget, 1)
-        preview_pane.setStretchFactor(elements.loading_label, 0)
+        data_info_pane = QVBoxLayout()
+        data_info_pane.addWidget(elements.info_tabs_widget)
+        data_info_pane.addWidget(elements.loading_label)
+        data_info_pane.setStretchFactor(elements.info_tabs_widget, 1)
+        data_info_pane.setStretchFactor(elements.loading_label, 0)
         preview_widget = QWidget()
-        preview_widget.setLayout(preview_pane)
+        preview_widget.setLayout(data_info_pane)
 
         # QSplitter for the title/abstract and previews
         mid_splitter = QSplitter(Qt.Vertical)
@@ -275,7 +275,7 @@ class View(QMainWindow):
         for elems in [self.search_elems, self.parsed_elems, self.pruned_elems]:
             self.clear_page_lists(elems)
             elems.title_abstract_disp.clear()
-            elems.previews.clear()
+            elems.data_previews.clear()
 
     def _list_item_factory(
         self, file_data: 'BaseData', context: 'PageIdentity'
@@ -293,7 +293,7 @@ class View(QMainWindow):
         callback: 'Callable' = None,
         checked_columns: 'list[int]' = None
     ):
-        tab_widget = self.active_elements.previews
+        tab_widget = self.active_elements.data_previews
         tab_widget.clear()
 
         for sheet, df in df_dict.items():

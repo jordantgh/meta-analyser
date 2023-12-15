@@ -179,13 +179,18 @@ class Controller:
         self.view.update_article_display(article, elements, data_set)
 
         for i in range(elements.data_ui_list.count()):
-            list_item = elements.data_ui_list.item(i)
-            widget: 'DataListItem' = elements.data_ui_list.itemWidget(
-                list_item)
+            data_list_item: 'DataListItem' = elements.data_ui_list.itemWidget(
+                elements.data_ui_list.item(i)
+            )
+
             if elements.page_identity == PageIdentity.SEARCH:
-                widget.preview_requested.connect(self.request_suppfile_preview)
+                data_list_item.preview_requested.connect(
+                    self.request_suppfile_preview
+                )
             else:
-                widget.preview_requested.connect(self.preview_processed_table)
+                data_list_item.preview_requested.connect(
+                    self.preview_processed_table
+                )
 
     def load_preview(
         self,
@@ -409,11 +414,11 @@ class Controller:
                 self.model.saves_path,
                 f"session-{idx}-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pkl"
             )
-            
+
             if os.path.exists(self.model.session_file):
                 os.remove(self.model.session_file)
         else:
-            idx = len(os.listdir(self.model.saves_path)) +1
+            idx = len(os.listdir(self.model.saves_path)) + 1
             filepath = os.path.join(
                 self.model.saves_path,
                 f"session-{idx}-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pkl"
@@ -443,14 +448,13 @@ class Controller:
         if not filename:
             return
 
-
         # repopulate the GUI
         # clear all pages
 
         # re-init
         self.model.table_db_manager.delete_dbs()
         self._disconnect_sigs()
-        
+
         self.model.load(filename)
         self.view.reset()
 
