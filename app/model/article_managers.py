@@ -92,6 +92,7 @@ class ProcessedTable(BaseData):
         self.supp_file: 'SuppFile' = article.get_file(file_id)
         self.pruned_columns: 'list[int]' = []
         self.observers: 'dict[PageIdentity, DataListItem]' = {}
+        self.tags = []
 
     def checkbox_toggled(self, context: 'PageIdentity'):
         self.notify_observers(context)
@@ -107,6 +108,17 @@ class ProcessedTable(BaseData):
             if context in self.observers:
                 self.notify_observers(context)
 
+    def add_tag(self, tag: 'str'):
+        if tag not in self.tags:
+            self.tags.append(tag)
+            # self.notify_observers(PageIdentity.PRUNED)
+    
+    def remove_tag(self, tag: 'str'):
+        if tag in self.tags:
+            self.tags.remove(tag)
+            
+    def get_tags(self):
+        return self.tags
 
 class ProcessedTableManager:
     def __init__(self):

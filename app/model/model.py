@@ -37,6 +37,7 @@ class Model:
         self.table_db_manager = TableDBManager(db_temp_path, db_perm_path)
         self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
+        self.last_selected_table: 'ProcessedTable' = None
         self.n_parse_runs = 0
         self.n_prunes = 0
 
