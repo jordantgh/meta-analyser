@@ -109,12 +109,10 @@ class Controller:
         self.curr_elems.tags_display_widget.clear()        
         for tag in self.model.last_selected_table.get_tags():
             self.curr_elems.tags_display_widget.addTag(tag)
-            # self.curr_elems.tags_display_widget.update()
 
     def remove_tag(self, tag: 'str'):
         self.model.last_selected_table.remove_tag(tag)
 
-        # Refresh the tag display
         self.curr_elems.tags_display_widget.clear()
         for tag in self.model.last_selected_table.get_tags():
             self.curr_elems.tags_display_widget.addTag(tag)
@@ -243,7 +241,7 @@ class Controller:
         self.view.stop_load_animation()
 
     # The original signal emits two arguments, but this slot only takes one
-    # - why does this work? Granted, we don't need the context argument, but
+    # - why does this work? Granted, we don't *need* the context argument, but
     # still, it doesn't make sense why this doesn't throw an error.
     # TODO debug later
     def request_suppfile_preview(self, file_data: 'SuppFile'):
@@ -264,7 +262,8 @@ class Controller:
     def preview_processed_table(
         self, table: 'ProcessedTable', context: 'PageIdentity'
     ):
-        self.model.last_selected_table = table # hacky to do this here
+        # hacky to do this here, should have own method
+        self.model.last_selected_table = table
         self.curr_elems.tags_display_widget.clear()
         for tag in table.get_tags():
             self.curr_elems.tags_display_widget.addTag(tag)
