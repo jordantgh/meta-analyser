@@ -96,8 +96,7 @@ class TableDBManager:
     ):
         engine, Session = self._get_engine_and_session(table_class)
         with Session() as session:
-            sql_table_name = f"{table_class.__tablename__}_{table_id}"
-            df.to_sql(sql_table_name, engine, index=False)
+            df.to_sql(table_id, engine, index=False)
             new_table = table_class(
                 table_id=table_id,
                 original_file_id=str(original_file_id),
@@ -120,7 +119,7 @@ class TableDBManager:
 
             if existing_table:
                 df.to_sql(
-                    existing_table.sql_table_name,
+                    existing_table.table_id,
                     engine,
                     if_exists='replace',
                     index=False
@@ -148,7 +147,7 @@ class TableDBManager:
                 table_id=table_id
             ).first()
             if table_entry:
-                df = pd.read_sql_table(table_entry.sql_table_name, engine)
+                df = pd.read_sql_table(table_entry.table_id, engine)
                 return df.reset_index(drop=True)
             return None
 
@@ -175,7 +174,7 @@ class TableDBManager:
             if table_entry:
                 with engine.connect() as conn:
                     conn.execute(
-                        text(f"DROP TABLE IF EXISTS \"{table_entry.sql_table_name}\""))
+                        text(f"DROP TABLE IF EXISTS \"{table_entry.table_id}\""))
                 session.delete(table_entry)
                 session.commit()
 
@@ -185,7 +184,7 @@ class TableDBManager:
 
             processed_target_path = self.old_fnames[0]
             pruned_target_path = self.old_fnames[1]
-            
+
             # Delete old versions of the databases
             if os.path.exists(processed_target_path):
                 os.remove(processed_target_path)
@@ -226,7 +225,7 @@ class TableDBManager:
                     for entry in table_entries:
                         with engine.connect() as conn:
                             conn.execute(
-                                text(f"DROP TABLE IF EXISTS \"{entry.sql_table_name}\""))
+                                text(f"DROP TABLE IF EXISTS \"{entry.table_id}\""))
                     session.query(table_class).delete()
                 session.commit()
 
