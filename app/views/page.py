@@ -128,22 +128,9 @@ class PageElements(QObject):  # QObject needed for signalling
         self.metadata_view = QTextBrowser()
         self.metadata_view.setOpenExternalLinks(True)
 
-        self.tags_entry_widget = TagEntryWidget(parent_tab)
-        self.tags_display_widget = TagsDisplayWidget(parent_tab)
-        self.tags_layout = QHBoxLayout()
-        self.tags_layout.addWidget(self.tags_entry_widget)
-        self.tags_display_layout = QVBoxLayout()
-        self.tags_display_layout.addWidget(self.tags_display_widget)
-
-        self.tags_widget = QWidget()
-        self.tags_full_layout = QVBoxLayout(self.tags_widget)
-        self.tags_full_layout.addLayout(self.tags_layout)
-        self.tags_full_layout.addLayout(self.tags_display_layout)
-
         self.info_tabs_widget = QTabWidget(parent_tab)
         self.info_tabs_widget.addTab(self.data_previews, "Previews")
         self.info_tabs_widget.addTab(self.metadata_view, "Metadata")
-        self.info_tabs_widget.addTab(self.tags_widget, "Tags")
 
         self.loading_label = QLabel(parent_tab)
         self.loading_label.setAlignment(Qt.AlignCenter)
@@ -175,6 +162,20 @@ class ProcessedPageElements(PageElements):
 
         self.prune_btn = QPushButton("Prune Tables and Columns", parent_tab)
         self.prune_btn.clicked.connect(self.emit_prune_identity)
+
+        self.tags_entry_widget = TagEntryWidget(parent_tab)
+        self.tags_display_widget = TagsDisplayWidget(parent_tab)
+        self.tags_layout = QHBoxLayout()
+        self.tags_layout.addWidget(self.tags_entry_widget)
+        self.tags_display_layout = QVBoxLayout()
+        self.tags_display_layout.addWidget(self.tags_display_widget)
+
+        self.tags_widget = QWidget()
+        self.tags_full_layout = QVBoxLayout(self.tags_widget)
+        self.tags_full_layout.addLayout(self.tags_layout)
+        self.tags_full_layout.addLayout(self.tags_display_layout)
+
+        self.info_tabs_widget.addTab(self.tags_widget, "Tags")
 
     def emit_filter_identity(self):
         self.filter_sig.emit(self.page_identity)
