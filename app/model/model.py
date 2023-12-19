@@ -149,7 +149,8 @@ class Model:
                             PostPruningTableDBEntry,
                             table.id,
                             table.file_id,
-                            pruned_df
+                            pruned_df,
+                            table.tags
                         )
 
             article.pruned_tables = selected_tables

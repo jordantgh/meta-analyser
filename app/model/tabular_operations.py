@@ -83,7 +83,7 @@ def parse_tables(
                         )
 
                         processed_df_to_db(
-                            db_manager, unique_id, file.id, data
+                            db_manager, unique_id, file.id, data, []
                         )
 
                         processed_table_ids.append((unique_id, file.id))

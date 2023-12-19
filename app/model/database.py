@@ -6,6 +6,7 @@ if TYPE_CHECKING:
 
 from sqlalchemy import create_engine, Column, String, text
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.dialects.sqlite import JSON
 from sqlalchemy.orm import sessionmaker
 from uuid import uuid4
 import pandas as pd
@@ -21,7 +22,7 @@ class TableDBEntry(Base):
     __abstract__ = True
     table_id = Column(String, primary_key=True)
     original_file_id = Column(String)
-    sql_table_name = Column(String)
+    tags = Column(JSON)
 
 
 class ProcessedTableDBEntry(TableDBEntry):
@@ -90,7 +91,8 @@ class TableDBManager:
         table_class: 'TableDBEntry',
         table_id: 'str',
         original_file_id: 'UUID',
-        df: 'DataFrame'
+        df: 'DataFrame',
+        tags: 'list[str]' = []
     ):
         engine, Session = self._get_engine_and_session(table_class)
         with Session() as session:
@@ -99,7 +101,7 @@ class TableDBManager:
             new_table = table_class(
                 table_id=table_id,
                 original_file_id=str(original_file_id),
-                sql_table_name=sql_table_name
+                tags=tags
             )
             session.add(new_table)
             session.commit()
@@ -245,11 +247,13 @@ def processed_df_to_db(
     db_manager: 'TableDBManager',
     table_id: 'str',
     original_file_id: 'UUID',
-    df: 'DataFrame'
+    df: 'DataFrame',
+    tags: 'list[str]'
 ):
     db_manager.save_table(
         ProcessedTableDBEntry,
         table_id,
         original_file_id,
-        df
+        df,
+        tags
     )
