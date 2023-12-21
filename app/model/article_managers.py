@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from views.list import ListItem, DataListItem, ArticleListItem
+    from model.database import TableDBManager
 
 from utils.constants import PageIdentity
 from uuid import uuid4, UUID
@@ -108,14 +109,15 @@ class ProcessedTable(BaseData):
             if context in self.observers:
                 self.notify_observers(context)
 
-    def add_tag(self, tag: 'str'):
+    def add_tag(self, tag: 'str', db_manager: 'TableDBManager'):
         if tag not in self.tags:
             self.tags.append(tag)
-            # self.notify_observers(PageIdentity.PRUNED)
+            db_manager.update_table_tags(self.id, self.tags)
     
-    def remove_tag(self, tag: 'str'):
+    def remove_tag(self, tag: 'str', db_manager: 'TableDBManager'):
         if tag in self.tags:
             self.tags.remove(tag)
+            db_manager.update_table_tags(self.id, self.tags)
             
     def get_tags(self):
         return self.tags

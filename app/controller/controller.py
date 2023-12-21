@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from model.threading import SearchThread, FilePreviewThread, FileProcessingThread
     from views.list import DataListItem
     from PyQt5.QtWidgets import QListWidgetItem
+    from model.database import TableDBManager
 
 import os
 import re
@@ -104,19 +105,22 @@ class Controller:
             self.signal_connections.append((signal, slot))
 
     def add_tag(self, tag: 'str'):
-        self.model.last_selected_table.add_tag(tag)
-
-        self.curr_elems.tags_display_widget.clear()        
-        for tag in self.model.last_selected_table.get_tags():
-            self.curr_elems.tags_display_widget.addTag(tag)
-
-    def remove_tag(self, tag: 'str'):
-        self.model.last_selected_table.remove_tag(tag)
+        self.model.last_selected_table.add_tag(
+            tag, self.model.table_db_manager)
 
         self.curr_elems.tags_display_widget.clear()
         for tag in self.model.last_selected_table.get_tags():
             self.curr_elems.tags_display_widget.addTag(tag)
-        
+
+    def remove_tag(self, tag: 'str'):
+        self.model.last_selected_table.remove_tag(
+            tag, self.model.table_db_manager
+        )
+
+        self.curr_elems.tags_display_widget.clear()
+        for tag in self.model.last_selected_table.get_tags():
+            self.curr_elems.tags_display_widget.addTag(tag)
+
     def _disconnect_sigs(self):
         for signal, slot in self.signal_connections:
             if signal and slot:
@@ -267,7 +271,7 @@ class Controller:
         self.curr_elems.tags_display_widget.clear()
         for tag in table.get_tags():
             self.curr_elems.tags_display_widget.addTag(tag)
-        
+
         table_data = {
             "sheet": self.model.table_db_manager.get_processed_table_data(
                 table.id, context
