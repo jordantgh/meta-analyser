@@ -126,6 +126,23 @@ class TableDBManager:
                 )
                 session.commit()
 
+    def update_table_tags(self, table_id: 'str', tags: 'list[str]'):
+        self._update_table_tags(ProcessedTableDBEntry, table_id, tags)
+        self._update_table_tags(PostPruningTableDBEntry, table_id, tags)
+
+    def _update_table_tags(
+        self,
+        table_class: 'TableDBEntry',
+        table_id: 'str',
+        tags: 'list[str]'
+    ):
+        _, Session = self._get_engine_and_session(table_class)
+        with Session() as session:
+            table_entry: 'TableDBEntry' = session.query(table_class).filter_by(table_id=table_id).first()
+            if table_entry:
+                table_entry.tags = tags
+                session.commit()
+
     def get_processed_table_data(
         self,
         table_id: 'str',
