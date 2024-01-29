@@ -20,8 +20,11 @@ Base = declarative_base()
 
 class TableDBEntry(Base):
     __abstract__ = True
+    pmc_id = Column(String)
+    paper_title = Column(String)
+    paper_url = Column(String)
+    supp_url = Column(String)
     table_id = Column(String, primary_key=True)
-    original_file_id = Column(String)
     tags = Column(JSON)
 
 
@@ -89,17 +92,23 @@ class TableDBManager:
     def save_table(
         self,
         table_class: 'TableDBEntry',
-        table_id: 'str',
-        original_file_id: 'UUID',
+        pmc_id: 'str',
+        paper_title: 'str',
+        paper_url: 'str',
+        supp_url: 'str',
         df: 'DataFrame',
+        table_id: 'str',
         tags: 'list[str]' = []
     ):
         engine, Session = self._get_engine_and_session(table_class)
         with Session() as session:
             df.to_sql(table_id, engine, index=False)
             new_table = table_class(
+                pmc_id=pmc_id,
+                paper_title=paper_title,
+                paper_url=paper_url,
+                supp_url=supp_url,
                 table_id=table_id,
-                original_file_id=str(original_file_id),
                 tags=tags
             )
             session.add(new_table)
@@ -261,15 +270,21 @@ class TableDBManager:
 
 def processed_df_to_db(
     db_manager: 'TableDBManager',
-    table_id: 'str',
-    original_file_id: 'UUID',
+    pmc_id: 'str',
+    paper_title: 'str',
+    paper_url: 'str',
+    supp_url: 'str',
     df: 'DataFrame',
+    table_id: 'str',
     tags: 'list[str]'
 ):
     db_manager.save_table(
         ProcessedTableDBEntry,
-        table_id,
-        original_file_id,
+        pmc_id,
+        paper_title,
+        paper_url,
+        supp_url,
         df,
+        table_id,
         tags
     )

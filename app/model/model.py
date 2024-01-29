@@ -147,9 +147,12 @@ class Model:
                     else:
                         self.table_db_manager.save_table(
                             PostPruningTableDBEntry,
-                            table.id,
-                            table.file_id,
+                            article.pmc_id,
+                            article.title,
+                            article.url,
+                            table.supp_file.url,
                             pruned_df,
+                            table.id,
                             table.tags
                         )
 
