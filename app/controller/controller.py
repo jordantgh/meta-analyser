@@ -388,10 +388,15 @@ class Controller:
 
     def actual_close(self):
         self.model.table_db_manager.delete_dbs()
+        if not os.listdir(self.model.db_perm_path_root):
+            os.rmdir(self.model.db_perm_path_root)
+        
+        if not os.listdir(self.model.saves_path):
+            os.rmdir(self.model.saves_path)
+
         QCoreApplication.instance().quit()
 
     def save_as(self):
-        # check if the app is in a state where it can be saved
         if self.model.state != Mode.BROWSING:
             QMessageBox.warning(
                 self.view,
@@ -414,7 +419,6 @@ class Controller:
             self.model.save(filename)
 
     def save(self):
-        # check if the app is in a state where it can be saved
         if self.model.state != Mode.BROWSING:
             QMessageBox.warning(
                 self.view,

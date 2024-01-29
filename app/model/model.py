@@ -22,19 +22,19 @@ import scripts.query_parser as qp
 class Model:
     def __init__(
             self,
-            db_temp_path: 'str' = None,
-            db_perm_path: 'str' = None,
+            db_temp_path_root: 'str' = None,
+            db_perm_path_root: 'str' = None,
             saves_path: 'str' = None
     ):
         self.session_file = None
-        self.db_temp_path = db_temp_path
-        self.db_perm_path = db_perm_path
+        self.db_temp_path_root = db_temp_path_root
+        self.db_perm_path_root = db_perm_path_root
         self.saves_path = saves_path
         self._state = Mode.BROWSING
         self.bibliography = Bibliography()
         self.search_thread = SearchThread()
         self.search_preview_thread = FilePreviewThread()
-        self.table_db_manager = TableDBManager(db_temp_path, db_perm_path)
+        self.table_db_manager = TableDBManager(db_temp_path_root, db_perm_path_root)
         self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
         self.last_selected_table: 'ProcessedTable' = None
@@ -147,9 +147,12 @@ class Model:
                     else:
                         self.table_db_manager.save_table(
                             PostPruningTableDBEntry,
-                            table.id,
-                            table.file_id,
+                            article.pmc_id,
+                            article.title,
+                            article.url,
+                            table.supp_file.url,
                             pruned_df,
+                            table.id,
                             table.tags
                         )
 
@@ -204,14 +207,14 @@ class Model:
 
         stash_all_observers(self.bibliography, global_stash, visited_objects)
 
-        proc, prune = self.table_db_manager.save_dbs()
+        proc, prune = self.table_db_manager.save_dbs(filename)
 
         save_object = {
-            'db_path': self.db_perm_path,
+            'db_perm_path_root': self.db_perm_path_root,
             'state': self.state,
             'bibliography': self.bibliography,
-            'processed_db_fname': proc,
-            'pruned_db_fname': prune,
+            'processed_db_path': proc,
+            'pruned_db_path': prune,
             'processed_table_manager': self.processed_table_manager,
             'n_parse_runs': self.n_parse_runs,
             'n_prunes': self.n_prunes
@@ -230,10 +233,10 @@ class Model:
             save_object = pickle.load(f)
         self.bibliography = save_object['bibliography']
         self.table_db_manager = TableDBManager(
-            self.db_temp_path,
-            save_object['db_path'],
-            save_object['processed_db_fname'],
-            save_object['pruned_db_fname']
+            self.db_temp_path_root,
+            save_object['db_perm_path_root'],
+            save_object['processed_db_path'],
+            save_object['pruned_db_path']
         )
         self.processed_table_manager = save_object['processed_table_manager']
         self.search_thread = SearchThread()
