@@ -39,22 +39,22 @@ class PostPruningTableDBEntry(TableDBEntry):
 class TableDBManager:
     def __init__(
         self,
-        db_temp_path: 'str' = ".",
-        db_path: 'str' = ".",
-        processed_fname: 'str' = None,
-        pruned_fname: 'str' = None
+        db_temp_path_root: 'str' = ".",
+        db_perm_path_root: 'str' = ".",
+        old_processed_path: 'str' = None,
+        old_pruned_path: 'str' = None
     ):
 
-        self.db_temp_path = db_temp_path
-        self.db_perm_path = db_path
+        self.db_temp_path_root = db_temp_path_root
+        self.db_perm_path_root = db_perm_path_root
 
-        if processed_fname and pruned_fname:
+        if old_processed_path and old_pruned_path:
             self._loaded = True
-            self.old_fnames = [processed_fname, pruned_fname]
-            self._create_temp_dbs(db_temp_path)
+            self.old_paths = [old_processed_path, old_pruned_path]
+            self._create_temp_dbs(db_temp_path_root)
         else:
             self._loaded = False
-            self._create_temp_dbs(db_temp_path)
+            self._create_temp_dbs(db_temp_path_root)
 
         self._establish_connections()
 
@@ -63,11 +63,13 @@ class TableDBManager:
 
     def _create_temp_dbs(self, db_path: 'str'):
         id = str(uuid4())
-        self.processed_db_path = os.path.join(db_path, f"processed_db-{id}.db")
-        self.pruned_db_path = os.path.join(db_path, f"pruned_db-{id}.db")
+        self.processed_db_temp_path = os.path.join(
+            db_path, f"processed_db-{id}.db"
+        )
+        self.pruned_db_temp_path = os.path.join(db_path, f"pruned_db-{id}.db")
         if self._loaded:
-            shutil.copyfile(self.old_fnames[0], self.processed_db_path)
-            shutil.copyfile(self.old_fnames[1], self.pruned_db_path)
+            shutil.copyfile(self.old_paths[0], self.processed_db_temp_path)
+            shutil.copyfile(self.old_paths[1], self.pruned_db_temp_path)
 
     def _get_engine_and_session(self, table_class: 'TableDBEntry') -> 'tuple':
         if table_class == ProcessedTableDBEntry:
@@ -79,9 +81,9 @@ class TableDBManager:
 
     def _establish_connections(self):
         self.processed_engine = create_engine(
-            f"sqlite:///{self.processed_db_path}")
+            f"sqlite:///{self.processed_db_temp_path}")
         self.post_pruning_engine = create_engine(
-            f"sqlite:///{self.pruned_db_path}")
+            f"sqlite:///{self.pruned_db_temp_path}")
         self.ProcessedSession = sessionmaker(bind=self.processed_engine)
         self.PostPruningSession = sessionmaker(bind=self.post_pruning_engine)
 
@@ -147,7 +149,8 @@ class TableDBManager:
     ):
         _, Session = self._get_engine_and_session(table_class)
         with Session() as session:
-            table_entry: 'TableDBEntry' = session.query(table_class).filter_by(table_id=table_id).first()
+            table_entry: 'TableDBEntry' = session.query(
+                table_class).filter_by(table_id=table_id).first()
             if table_entry:
                 table_entry.tags = tags
                 session.commit()
@@ -204,12 +207,15 @@ class TableDBManager:
                 session.delete(table_entry)
                 session.commit()
 
-    def save_dbs(self) -> 'list[str]':
+    def save_dbs(self, filename: 'str') -> 'list[str]':
+        
+        basename = os.path.basename(filename)
+        basename_no_ext = os.path.splitext(basename)[0]
 
         if self._loaded:
 
-            processed_target_path = self.old_fnames[0]
-            pruned_target_path = self.old_fnames[1]
+            processed_target_path = self.old_paths[0]
+            pruned_target_path = self.old_paths[1]
 
             # Delete old versions of the databases
             if os.path.exists(processed_target_path):
@@ -220,22 +226,22 @@ class TableDBManager:
 
         else:
             processed_target_path = os.path.join(
-                f"{self.db_perm_path}",
-                f"{os.path.basename(self.processed_db_path)}"
+                self.db_perm_path_root,
+                f"{basename_no_ext}-processed.db"
             )
             pruned_target_path = os.path.join(
-                f"{self.db_perm_path}",
-                f"{os.path.basename(self.pruned_db_path)}"
+                self.db_perm_path_root,
+                f"{basename_no_ext}-pruned.db"
             )
 
         self._dispose_connections()
 
-        shutil.copyfile(self.processed_db_path, processed_target_path)
-        shutil.copyfile(self.pruned_db_path, pruned_target_path)
+        shutil.copyfile(self.processed_db_temp_path, processed_target_path)
+        shutil.copyfile(self.pruned_db_temp_path, pruned_target_path)
 
         self._establish_connections()
 
-        return [p for p in [processed_target_path, pruned_target_path]]
+        return [processed_target_path, pruned_target_path]
 
     def reset(self):
         for engine, Session in [
@@ -261,11 +267,11 @@ class TableDBManager:
         self.post_pruning_engine.dispose()
 
         # Delete databases
-        if os.path.exists(self.processed_db_path):
-            os.remove(self.processed_db_path)
+        if os.path.exists(self.processed_db_temp_path):
+            os.remove(self.processed_db_temp_path)
 
-        if os.path.exists(self.pruned_db_path):
-            os.remove(self.pruned_db_path)
+        if os.path.exists(self.pruned_db_temp_path):
+            os.remove(self.pruned_db_temp_path)
 
 
 def processed_df_to_db(
