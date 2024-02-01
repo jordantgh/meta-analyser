@@ -96,8 +96,8 @@ class Model:
     def prune_tables_and_columns(self, context: 'PageIdentity'):
 
         # TODO unspaghettify this
-        article: 'Article'
-        for article in self.bibliography.get_selected_articles(context):
+        article: 'Article'       
+        for article in self.bibliography.articles.values():
 
             unchecked_tables = [
                 table for table in article.processed_tables if not table.checked
