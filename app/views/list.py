@@ -66,6 +66,7 @@ class ArticleListItem(ListItem):
 
     def checkbox_toggled(self):
         self.data.checked[self.context] = self.checkbox.isChecked()
+        self.data.checkbox_toggled(self.context)
         self.data.notify_observers(self.context)
 
     def update(self, article: 'Article'):
