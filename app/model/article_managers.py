@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from views.list import ListItem, DataListItem, ArticleListItem
     from model.database import TableDBManager
@@ -113,14 +113,15 @@ class ProcessedTable(BaseData):
         if tag not in self.tags:
             self.tags.append(tag)
             db_manager.update_table_tags(self.id, self.tags)
-    
+
     def remove_tag(self, tag: 'str', db_manager: 'TableDBManager'):
         if tag in self.tags:
             self.tags.remove(tag)
             db_manager.update_table_tags(self.id, self.tags)
-            
+
     def get_tags(self):
         return self.tags
+
 
 class ProcessedTableManager:
     def __init__(self):
@@ -160,6 +161,24 @@ class Article(BaseData):
         self.pruned_tables: 'list[ProcessedTable]' = []
         self.observers: 'dict[PageIdentity, ArticleListItem]' = {}
 
+    def checkbox_toggled(self, context: 'Optional[PageIdentity]' = None):
+        if context is not None:
+            # cascade state change down to the tables
+            new_checked_state = self.checked[context]
+            tables = self._get_tables_by_context(context)
+            for table in tables:
+                table.set_checked_state(new_checked_state, context)
+
+    def _get_tables_by_context(
+        self, context: 'PageIdentity'
+    ) -> 'list[ProcessedTable]':
+        # Helper method to get tables by context
+        if context == PageIdentity.PARSED:
+            return self.processed_tables
+        if context == PageIdentity.PRUNED:
+            return self.pruned_tables
+        return []
+
     def cascade_checked_state(
             self,
             context: 'PageIdentity',
@@ -180,8 +199,12 @@ class Article(BaseData):
 
     def update_based_on_elements(self, context: 'PageIdentity'):
         has_checked = self.has_checked_elements(context)
-        self.checked[context] = has_checked
-        self.notify_observers(context)
+        for con in (PageIdentity.PARSED, PageIdentity.PRUNED):
+            # check the context exists in the observers dict first
+            # this is mainly for when there hasnt yet been any pruning
+            if con in self.observers:
+                self.checked[con] = has_checked
+                self.notify_observers(con)
 
     def has_checked_elements(self, context: 'PageIdentity') -> 'bool':
         if context == PageIdentity.SEARCH:
