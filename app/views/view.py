@@ -36,6 +36,8 @@ class View(QMainWindow):
         self.resize(1024, 768)
 
         self.setStyleSheet(style)
+        self.font_size = 14
+        self._update_font_size()
 
         self.menu_bar = self.menuBar()
         self.file_menu = QMenu("File", self)
@@ -48,7 +50,7 @@ class View(QMainWindow):
         self.save_action.setShortcut("Ctrl+S")
         self.save_as_action.setShortcut("Ctrl+Shift+S")
         self.load_action.setShortcut("Ctrl+O")
-        self.menu_bar.addMenu(self.file_menu)
+        self.menu_bar.addMenu(self.file_menu)        
 
         self.tabbed_pageholder = QTabWidget(self)
         self.tabbed_pageholder.setTabBar(CustomTabBar())
@@ -73,8 +75,19 @@ class View(QMainWindow):
         self.search_elems.query_field.setFocus()
         self._init_load_animation()
 
+    def _update_font_size(self):
+        self.setStyleSheet(f"QWidget {{ font-size: {self.font_size}pt; }}")
+
+
     def keyPressEvent(self, event: 'QKeyEvent'):
-        if event.key() == Qt.Key_Escape:
+        if event.modifiers() & Qt.ControlModifier:
+            if event.key() == Qt.Key_Equal:
+                self.font_size += 2 
+                self._update_font_size()
+            elif event.key() == Qt.Key_Minus:
+                self.font_size -= 2
+                self._update_font_size()
+        elif event.key() == Qt.Key_Escape:
             self.focusWidget().clearFocus()
 
     # Getters for active page
