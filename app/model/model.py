@@ -4,7 +4,7 @@ if TYPE_CHECKING:
     from pandas import DataFrame
 
 import pickle
-
+import os
 from model.article_managers import (
     Bibliography, Article, ProcessedTable,
     ProcessedTableManager, stash_all_observers, restore_all_observers
@@ -29,12 +29,15 @@ class Model:
         self.session_file = None
         self.db_temp_path_root = db_temp_path_root
         self.db_perm_path_root = db_perm_path_root
+        self.db_session_files = None
         self.saves_path = saves_path
         self._state = Mode.BROWSING
         self.bibliography = Bibliography()
         self.search_thread = SearchThread()
         self.search_preview_thread = FilePreviewThread()
-        self.table_db_manager = TableDBManager(db_temp_path_root, db_perm_path_root)
+        self.table_db_manager = TableDBManager(
+            db_temp_path_root, db_perm_path_root
+        )
         self.processed_table_manager = ProcessedTableManager()
         self.processing_thread = FileProcessingThread(self.table_db_manager)
         self.last_selected_table: 'ProcessedTable' = None
@@ -96,7 +99,7 @@ class Model:
     def prune_tables_and_columns(self, context: 'PageIdentity'):
 
         # TODO unspaghettify this
-        article: 'Article'       
+        article: 'Article'
         for article in self.bibliography.articles.values():
 
             unchecked_tables = [
@@ -207,7 +210,12 @@ class Model:
 
         stash_all_observers(self.bibliography, global_stash, visited_objects)
 
-        proc, prune = self.table_db_manager.save_dbs(filename)
+        if self.db_session_files:
+            proc, prune = self.table_db_manager.save_dbs(
+                filename, self.db_session_files
+            )
+        else:
+            proc, prune = self.table_db_manager.save_dbs(filename)
 
         save_object = {
             'db_perm_path_root': self.db_perm_path_root,
@@ -226,17 +234,22 @@ class Model:
         visited_objects.clear()
         restore_all_observers(self.bibliography, global_stash, visited_objects)
         self.session_file = filename
+        self.db_session_files = [proc, prune]
 
     def load(self, file: 'str'):
         self.session_file = file
+        self.saves_path = os.path.dirname(file)
         with open(file, 'rb') as f:
             save_object = pickle.load(f)
         self.bibliography = save_object['bibliography']
+        self.db_session_files = [
+            save_object['processed_db_path'],
+            save_object['pruned_db_path']
+        ]
         self.table_db_manager = TableDBManager(
             self.db_temp_path_root,
             save_object['db_perm_path_root'],
-            save_object['processed_db_path'],
-            save_object['pruned_db_path']
+            self.db_session_files
         )
         self.processed_table_manager = save_object['processed_table_manager']
         self.search_thread = SearchThread()

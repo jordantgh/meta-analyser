@@ -161,8 +161,10 @@ class Article(BaseData):
         self.pruned_tables: 'list[ProcessedTable]' = []
         self.observers: 'dict[PageIdentity, ArticleListItem]' = {}
 
-    def checkbox_toggled(self, context: 'Optional[PageIdentity]' = None):
-        if context is not None:
+    def checkbox_toggled(self, context: 'PageIdentity'):
+        # ensure this only works if the checked state would be set to False
+        # (to prevent all tables being selected when the article is selected)
+        if self.checked[context] != True:
             # cascade state change down to the tables
             new_checked_state = self.checked[context]
             tables = self._get_tables_by_context(context)
@@ -202,6 +204,11 @@ class Article(BaseData):
         for con in (PageIdentity.PARSED, PageIdentity.PRUNED):
             # check the context exists in the observers dict first
             # this is mainly for when there hasnt yet been any pruning
+            
+            # Note that iterating through article contexts like this is a
+            # hack until I figure out whether I need page specific checked
+            # states at all. (TODO)
+            
             if con in self.observers:
                 self.checked[con] = has_checked
                 self.notify_observers(con)
