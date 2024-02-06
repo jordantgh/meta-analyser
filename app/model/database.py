@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from uuid import UUID
     from pandas import DataFrame
@@ -41,19 +41,15 @@ class TableDBManager:
         self,
         db_temp_path_root: 'str' = ".",
         db_perm_path_root: 'str' = ".",
-        old_processed_path: 'str' = None,
-        old_pruned_path: 'str' = None
+        db_session_files: 'Optional[list[str]]' = None
     ):
 
         self.db_temp_path_root = db_temp_path_root
         self.db_perm_path_root = db_perm_path_root
 
-        if old_processed_path and old_pruned_path:
-            self._loaded = True
-            self.old_paths = [old_processed_path, old_pruned_path]
-            self._create_temp_dbs(db_temp_path_root)
+        if db_session_files:
+            self._create_temp_dbs(db_temp_path_root, db_session_files)
         else:
-            self._loaded = False
             self._create_temp_dbs(db_temp_path_root)
 
         self._establish_connections()
@@ -61,15 +57,18 @@ class TableDBManager:
         Base.metadata.create_all(self.processed_engine)
         Base.metadata.create_all(self.post_pruning_engine)
 
-    def _create_temp_dbs(self, db_path: 'str'):
+    def _create_temp_dbs(
+        self, db_path: 'str',
+        db_session_files: 'Optional[list[str]]' = None
+    ):
         id = str(uuid4())
         self.processed_db_temp_path = os.path.join(
             db_path, f"processed_db-{id}.db"
         )
         self.pruned_db_temp_path = os.path.join(db_path, f"pruned_db-{id}.db")
-        if self._loaded:
-            shutil.copyfile(self.old_paths[0], self.processed_db_temp_path)
-            shutil.copyfile(self.old_paths[1], self.pruned_db_temp_path)
+        if db_session_files:
+            shutil.copyfile(db_session_files[0], self.processed_db_temp_path)
+            shutil.copyfile(db_session_files[1], self.pruned_db_temp_path)
 
     def _get_engine_and_session(self, table_class: 'TableDBEntry') -> 'tuple':
         if table_class == ProcessedTableDBEntry:
@@ -207,32 +206,28 @@ class TableDBManager:
                 session.delete(table_entry)
                 session.commit()
 
-    def save_dbs(self, filename: 'str') -> 'list[str]':
-        
+    def save_dbs(
+        self,
+        filename: 'str',
+        db_session_files: 'Optional[list[str]]' = None
+    ) -> 'list[str]':
+
+        if db_session_files:
+            os.remove(db_session_files[0])
+            os.remove(db_session_files[1])
+
         basename = os.path.basename(filename)
         basename_no_ext = os.path.splitext(basename)[0]
 
-        if self._loaded:
+        processed_target_path = os.path.join(
+            self.db_perm_path_root,
+            f"{basename_no_ext}-processed.db"
+        )
 
-            processed_target_path = self.old_paths[0]
-            pruned_target_path = self.old_paths[1]
-
-            # Delete old versions of the databases
-            if os.path.exists(processed_target_path):
-                os.remove(processed_target_path)
-
-            if os.path.exists(pruned_target_path):
-                os.remove(pruned_target_path)
-
-        else:
-            processed_target_path = os.path.join(
-                self.db_perm_path_root,
-                f"{basename_no_ext}-processed.db"
-            )
-            pruned_target_path = os.path.join(
-                self.db_perm_path_root,
-                f"{basename_no_ext}-pruned.db"
-            )
+        pruned_target_path = os.path.join(
+            self.db_perm_path_root,
+            f"{basename_no_ext}-pruned.db"
+        )
 
         self._dispose_connections()
 
