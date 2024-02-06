@@ -10,6 +10,8 @@ from views.view import View
 from controller.controller import Controller
 import sys
 
+import qdarkstyle
+
 def get_app_data_path():
     if getattr(sys, 'frozen', False):
         # Running as compiled binary
@@ -52,6 +54,8 @@ def main():
     model = Model(db_tpath, db_ppath, saves_path)
     view = View()
     _ = Controller(model, view)
+
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
     view.show()
     app.exec_()
