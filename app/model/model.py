@@ -10,13 +10,14 @@ from model.article_managers import (
     ProcessedTableManager, stash_all_observers, restore_all_observers
 )
 
-from model.database import TableDBManager, PostPruningTableDBEntry
+from model.database import TableDBManager, PostPruningTableDBEntry, SortedListTableDBEntry
 from model.threading import (
     SearchThread, FilePreviewThread, FileProcessingThread
 )
 
 from utils.constants import PageIdentity, Mode
 import scripts.query_parser as qp
+from model.tabular_operations import cols_to_sorted_lists
 
 
 class Model:
@@ -191,6 +192,36 @@ class Model:
                     PageIdentity.PARSED
                 )
 
+    def generate_sorted_lists(self):
+        article: 'Article'
+        for article in self.bibliography.get_selected_articles(
+            PageIdentity.PRUNED
+        ):
+            for processed_table in article.processed_tables:
+                if processed_table.mappings:
+                    table_data = self.table_db_manager.get_processed_table_data(
+                        processed_table.id,
+                        PageIdentity.PRUNED
+                    )
+
+                    if table_data is not None:
+                        sorted_lists = cols_to_sorted_lists(
+                            processed_table, table_data
+                        )
+                    else:
+                        continue
+
+                    self.table_db_manager.save_table(
+                        SortedListTableDBEntry,
+                        article.pmc_id,
+                        article.title,
+                        article.url,
+                        processed_table.supp_file.url,
+                        sorted_lists,
+                        processed_table.id,
+                        processed_table.tags
+                    )
+
     def reset_for_searching(self):
         self.bibliography.reset()
 
@@ -211,11 +242,11 @@ class Model:
         stash_all_observers(self.bibliography, global_stash, visited_objects)
 
         if self.db_session_files:
-            proc, prune = self.table_db_manager.save_dbs(
+            proc, prune, sorted_list = self.table_db_manager.save_dbs(
                 filename, self.db_session_files
             )
         else:
-            proc, prune = self.table_db_manager.save_dbs(filename)
+            proc, prune, sorted_list = self.table_db_manager.save_dbs(filename)
 
         save_object = {
             'db_perm_path_root': self.db_perm_path_root,
@@ -223,6 +254,7 @@ class Model:
             'bibliography': self.bibliography,
             'processed_db_path': proc,
             'pruned_db_path': prune,
+            'sorted_list_db_path': sorted_list,
             'processed_table_manager': self.processed_table_manager,
             'n_parse_runs': self.n_parse_runs,
             'n_prunes': self.n_prunes
@@ -234,7 +266,7 @@ class Model:
         visited_objects.clear()
         restore_all_observers(self.bibliography, global_stash, visited_objects)
         self.session_file = filename
-        self.db_session_files = [proc, prune]
+        self.db_session_files = [proc, prune, sorted_list]
 
     def load(self, file: 'str'):
         self.session_file = file
@@ -244,7 +276,8 @@ class Model:
         self.bibliography = save_object['bibliography']
         self.db_session_files = [
             save_object['processed_db_path'],
-            save_object['pruned_db_path']
+            save_object['pruned_db_path'],
+            save_object['sorted_list_db_path']
         ]
         self.table_db_manager = TableDBManager(
             self.db_temp_path_root,

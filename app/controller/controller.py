@@ -7,12 +7,14 @@ if TYPE_CHECKING:
         BaseData, Article, SuppFile, ProcessedTable
     )
     from views.page import (
-        PageElements, SearchPageElements, ProcessedPageElements
+        PageElements,
+        SearchPageElements,
+        ProcessedPageElements,
+        PrunedPageElements
     )
     from model.threading import SearchThread, FilePreviewThread, FileProcessingThread
     from views.list import DataListItem
     from PyQt5.QtWidgets import QListWidgetItem
-    from model.database import TableDBManager
 
 import os
 import re
@@ -58,7 +60,7 @@ class Controller:
             self,
             search: 'SearchPageElements',
             parsed: 'ProcessedPageElements',
-            pruned: 'ProcessedPageElements',
+            pruned: 'PrunedPageElements',
             search_thread: 'SearchThread',
             search_preview_thread: 'FilePreviewThread',
             processing_thread: 'FileProcessingThread'
@@ -89,6 +91,7 @@ class Controller:
             pruned.prune_sig: self.prune_tables_and_columns,
             pruned.tags_entry_widget.tagAdded: self.add_tag,
             pruned.tags_display_widget.tagRemoved: self.remove_tag,
+            pruned.generate_lists_btn.clicked: self.generate_sorted_lists,
 
             # Search threads
             search_thread.article_sig: self.display_article_in_list,
@@ -103,6 +106,37 @@ class Controller:
         for signal, slot in signals_map.items():
             signal.connect(slot)
             self.signal_connections.append((signal, slot))
+
+    def highlight_column_from_cell(self, table_id, row, column):
+        table = self.model.processed_table_manager.get_processed_table(
+            table_id)
+
+        if table and table.highlighting_enabled:
+            mapping = table.mappings[-1]
+
+            for r, col in mapping.ids:
+                if r <= row and column == col:
+                    print(f"Range already highlighted: ({r}, {col})")
+                    return
+            for r, col in mapping.values:
+                if r <= row and column == col:
+                    print(f"Range already highlighted: ({r}, {col})")
+                    return
+
+            if self.curr_elems.get_id_value_selection() == "ID":
+                mapping.add_id_col((row, column))
+            else:
+                mapping.add_value_col((row, column))
+
+            mapping.set_order(self.curr_elems.is_ascending())
+
+            # Update the view
+            self.preview_processed_table(
+                table, self.curr_elems.page_identity
+            )
+
+    def generate_sorted_lists(self):
+        self.model.generate_sorted_lists()
 
     def add_tag(self, tag: 'str'):
         self.model.last_selected_table.add_tag(
@@ -186,6 +220,37 @@ class Controller:
         self.output_page.prog_bar.hide()
         self._set_state(Mode.BROWSING)
 
+    def toggle_highlighting(
+        self,
+        elements: 'PrunedPageElements',
+        table: 'ProcessedTable'
+    ):
+        elements.highlighting_enabled = not elements.highlighting_enabled
+        enable = elements.highlighting_enabled
+        elements.highlight_button.setText(
+            "Done" if enable else "Add New ID:Value Mapping (for ranking)"
+        )
+
+        # Enable/disable highlighting
+        if elements.page_identity == PageIdentity.PRUNED:
+            table.highlighting_enabled = enable
+
+        if table.highlighting_enabled:
+            palette = [
+                '#cb794d', '#22e97a', '#2544e9', '#3931a2', '#ab1fe0', '#423ff3'
+            ]
+
+            existing_colours = table.get_existing_mapping_colours()
+
+            unused_colours = [
+                color for color in palette if color not in existing_colours
+            ]
+
+            colour = unused_colours[0] if unused_colours else palette[0]
+            table.add_mapping(colour)
+
+        elements.toggle_sorting_options()
+
     def on_article_clicked(self, item: 'QListWidgetItem'):
         article_id = item.data(Qt.UserRole)
         article: 'Article' = self.model.bibliography.get_article(article_id)
@@ -219,7 +284,8 @@ class Controller:
         self,
         data: 'BaseData',
         table_id=None,
-        callback: 'Callable' = None
+        callback: 'Callable' = None,
+        mappings=None
     ):
 
         # TODO idea: partially run the parser on the previewed file to get the
@@ -239,7 +305,14 @@ class Controller:
             cols = table.pruned_columns if table else None
 
         self.view.display_multisheet_table(
-            data, use_checkable_header, table_id, callback, cols
+            data,
+            use_checkable_header,
+            table_id,
+            callback,
+            cols,
+            self.highlight_column_from_cell,
+            mappings,
+            context
         )
 
         self.view.stop_load_animation()
@@ -266,11 +339,26 @@ class Controller:
     def preview_processed_table(
         self, table: 'ProcessedTable', context: 'PageIdentity'
     ):
+        elements = self.curr_elems
+
+        if context == PageIdentity.PRUNED:
+            # Disconnect the previous connection if it exists
+            try:
+                elements.highlight_button.clicked.disconnect()
+            except TypeError:
+                pass
+
+            elements.highlight_button.clicked.connect(
+                lambda: self.toggle_highlighting(elements, table)
+            )
+        else:
+            elements.highlight_button.hide()
+
         # hacky to do this here, should have own method
         self.model.last_selected_table = table
-        self.curr_elems.tags_display_widget.clear()
+        elements.tags_display_widget.clear()
         for tag in table.get_tags():
-            self.curr_elems.tags_display_widget.addTag(tag)
+            elements.tags_display_widget.addTag(tag)
 
         table_data = {
             "sheet": self.model.table_db_manager.get_processed_table_data(
@@ -279,10 +367,12 @@ class Controller:
         }
 
         # Load the metadata; hack until I completely refactor the data model
-        self.curr_elems.metadata_view.setHtml(table.supp_file.metadata)
+        elements.metadata_view.setHtml(table.supp_file.metadata)
 
         self.view.start_load_animation()
-        self.load_preview(table_data, table.id, self._update_checked_columns)
+        self.load_preview(
+            table_data, table.id, self._update_checked_columns, table.mappings
+        )
 
     def _update_checked_columns(self, table_id, checked_columns):
         table: 'ProcessedTable' = self.model.processed_table_manager. \
@@ -390,7 +480,7 @@ class Controller:
         self.model.table_db_manager.delete_dbs()
         if not os.listdir(self.model.db_perm_path_root):
             os.rmdir(self.model.db_perm_path_root)
-        
+
         if not os.listdir(self.model.saves_path):
             os.rmdir(self.model.saves_path)
 

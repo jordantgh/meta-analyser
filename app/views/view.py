@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Callable, cast
+from typing import TYPE_CHECKING, Callable, cast, Union
 if TYPE_CHECKING:
     from views.page import PageElements
     from PyQt5.QtGui import QKeyEvent
@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from views.list import ListItem, DataListItem
     from pandas import DataFrame
 
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QCloseEvent
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QCloseEvent, QColor
 from PyQt5.QtCore import Qt, QTimer, QCoreApplication, pyqtSignal
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QLabel, QListWidgetItem, QTabWidget,
@@ -21,7 +21,7 @@ from views.list import (
     ListItem, ArticleListItem, SuppFileListItem, ProcessedTableListItem
 )
 
-from views.page import SearchPageElements, ProcessedPageElements
+from views.page import SearchPageElements, ProcessedPageElements, PrunedPageElements
 from utils.constants import PageIdentity
 from views.styles import style
 
@@ -50,7 +50,7 @@ class View(QMainWindow):
         self.save_action.setShortcut("Ctrl+S")
         self.save_as_action.setShortcut("Ctrl+Shift+S")
         self.load_action.setShortcut("Ctrl+O")
-        self.menu_bar.addMenu(self.file_menu)        
+        self.menu_bar.addMenu(self.file_menu)
 
         self.tabbed_pageholder = QTabWidget(self)
         self.tabbed_pageholder.setTabBar(CustomTabBar())
@@ -66,7 +66,7 @@ class View(QMainWindow):
 
         self.search_elems = SearchPageElements(self.search_tab)
         self.parsed_elems = ProcessedPageElements(self.parsed_tab)
-        self.pruned_elems = ProcessedPageElements(self.pruned_tab)
+        self.pruned_elems = PrunedPageElements(self.pruned_tab)
 
         self._init_search_layouts(self.search_elems)
         self._init_processed_page_layouts(self.parsed_tab, self.parsed_elems)
@@ -78,11 +78,10 @@ class View(QMainWindow):
     def _update_font_size(self):
         self.setStyleSheet(f"QWidget {{ font-size: {self.font_size}pt; }}")
 
-
     def keyPressEvent(self, event: 'QKeyEvent'):
         if event.modifiers() & Qt.ControlModifier:
             if event.key() == Qt.Key_Equal:
-                self.font_size += 2 
+                self.font_size += 2
                 self._update_font_size()
             elif event.key() == Qt.Key_Minus:
                 self.font_size -= 2
@@ -133,7 +132,7 @@ class View(QMainWindow):
     def _init_processed_page_layouts(
             self,
             page: 'TabPage',
-            elements: 'ProcessedPageElements'
+            elements: 'Union[ProcessedPageElements, PrunedPageElements]'
     ):
         left_pane = QVBoxLayout()
         left_pane.addWidget(elements.prog_bar)
@@ -144,6 +143,9 @@ class View(QMainWindow):
         left_pane.addWidget(elements.query_filter_field)
         left_pane.addWidget(elements.filter_btn)
         left_pane.addWidget(elements.prune_btn)
+
+        if isinstance(elements, PrunedPageElements):
+            left_pane.addWidget(elements.generate_lists_btn)
 
         left_pane.setStretchFactor(elements.article_ui_list, 3)
         left_pane.setStretchFactor(elements.data_ui_list, 1)
@@ -304,7 +306,10 @@ class View(QMainWindow):
         use_checkable_header: 'bool',
         table_id: 'str' = None,
         callback: 'Callable' = None,
-        checked_columns: 'list[int]' = None
+        checked_columns: 'list[int]' = None,
+        cell_clicked_slot: 'Callable' = None,
+        mappings = None,
+        context: 'PageIdentity' = None
     ):
         tab_widget = self.active_elements.data_previews
         tab_widget.clear()
@@ -315,7 +320,10 @@ class View(QMainWindow):
                 use_checkable_header,
                 table_id,
                 callback,
-                checked_columns
+                checked_columns,
+                cell_clicked_slot,
+                mappings,
+                context
             )
             tab_widget.addTab(table, sheet)
 
@@ -325,14 +333,24 @@ class View(QMainWindow):
         use_checkable_header: 'bool',
         table_id: 'str' = None,
         callback: 'Callable' = None,
-        checked_columns: 'list[int]' = None
+        checked_columns: 'list[int]' = None,
+        cell_clicked_slot: 'Callable' = None,
+        mappings = None,
+        context: 'PageIdentity' = None
     ) -> 'CustomTable':
 
         model = QStandardItemModel()
         model.setHorizontalHeaderLabels(data.columns.astype(str))
 
-        # Disable GUI updates
         ui_table = CustomTable()
+
+        ui_table.clicked.connect(
+            lambda index, table_id=table_id: cell_clicked_slot(
+                table_id, index.row(), index.column()
+            )
+        )
+
+        # Disable GUI updates
         ui_table.setUpdatesEnabled(False)
 
         # Populate the table in chunks
@@ -368,6 +386,17 @@ class View(QMainWindow):
                 header.set_checked_sections(checked_columns)
             else:
                 header.set_all_sections_checked()
+
+        if mappings and context == PageIdentity.PRUNED:
+            for mapping in mappings:
+                for range_start, col in mapping.ids:
+                    for row in range(range_start, model.rowCount()):
+                        index = model.index(row, col)
+                        model.setData(index, QColor(mapping.colour), Qt.BackgroundRole)
+                for range_start, col in mapping.values:
+                    for row in range(range_start, model.rowCount()):
+                        index = model.index(row, col)
+                        model.setData(index, QColor(mapping.colour), Qt.BackgroundRole)
 
         return ui_table
 

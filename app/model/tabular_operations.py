@@ -11,11 +11,58 @@ import logging
 import numpy as np
 import os
 from skimage.measure import label, regionprops
+import pandas as pd
 
 from model.file_io import download_supp, extract_dfs
 from model.database import processed_df_to_db
+from model.article_managers import ProcessedTable
 
 # TODO heavily overdue a readability pass
+
+def cols_to_sorted_lists(table: 'ProcessedTable', df: 'DataFrame'):
+    rows = []
+
+    for mapping in table.mappings:
+        id_ranges = {}
+        for range_start, col in mapping.ids:
+            if col not in id_ranges:
+                id_ranges[col] = range_start
+            else:
+                id_ranges[col] = min(id_ranges[col], range_start)
+
+        num_ranges = {}
+        for range_start, col in mapping.values:
+            if col not in num_ranges:
+                num_ranges[col] = range_start + 1  # Adjusting for header skip
+            else:
+                num_ranges[col] = min(num_ranges[col], range_start + 1)
+
+        for num_col, range_start in num_ranges.items():
+            column_name = df.columns[num_col]
+
+            temp_df = df.iloc[range_start:].copy()
+
+            try:
+                temp_df[column_name] = pd.to_numeric(temp_df[column_name], errors='coerce')
+            except Exception as e:
+                logging.error(f"Error in cols_to_sorted_lists: {e}")
+                pass
+            
+            sorted_df = temp_df.sort_values(by=column_name, ascending=mapping.ascending)
+
+            for id_col, id_range_start in id_ranges.items():
+                table_id = table.id.replace(' ', '_')
+                id_col_name = str(df.iat[id_range_start, id_col]).replace(' ', '_')
+                value_col_name = str(df.iat[range_start - 1, num_col]).replace(' ', '_')
+
+                list_label = f"{table_id}__{id_col_name}__{value_col_name}"
+                sorted_list = sorted_df.iloc[:, id_col].tolist()
+                list_str = ','.join(map(str, sorted_list))
+
+                rows.append([list_label, list_str])
+
+    result_df = pd.DataFrame(rows, columns=['list_label', 'ranked_list'])
+    return result_df
 
 
 def parse_tables(
