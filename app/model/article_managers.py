@@ -71,6 +71,24 @@ class SuppFile(BaseData):
         self.article.update_based_on_elements(PageIdentity.SEARCH)
 
 
+class ColMapping:
+    def __init__(self, table: 'ProcessedTable', colour: 'Optional[str]' = None):
+        self.colour = colour
+        self.table = table
+        self.ascending = True
+        self.ids: 'list[tuple]' = []
+        self.values: 'list[tuple]' = []
+
+    def add_id_col(self, id_col: 'tuple'):
+        self.ids.append(id_col)
+
+    def add_value_col(self, value_col: 'tuple'):
+        self.values.append(value_col)
+
+    def set_order(self, ascending: 'bool'):
+        self.ascending = ascending
+
+
 class ProcessedTable(BaseData):
     def __init__(
         self,
@@ -83,6 +101,8 @@ class ProcessedTable(BaseData):
         self.article = article
         self.id = id
         self.file_id = file_id
+        self.highlighting_enabled = False
+        self.mappings: 'list[ColMapping]' = []
 
         if num_columns is not None:
             self.checked_columns: 'list[int]' = list(range(num_columns))
@@ -94,6 +114,16 @@ class ProcessedTable(BaseData):
         self.pruned_columns: 'list[int]' = []
         self.observers: 'dict[PageIdentity, DataListItem]' = {}
         self.tags = []
+
+    def add_mapping(self, colour: 'Optional[str]' = None):
+        mapping = ColMapping(self, colour)
+        self.mappings.append(mapping)
+
+    def get_existing_mapping_colours(self):
+        return [mapping.colour for mapping in self.mappings]
+
+    def clear_mappings(self):
+        self.mappings.clear()
 
     def checkbox_toggled(self, context: 'PageIdentity'):
         self.notify_observers(context)
@@ -204,11 +234,11 @@ class Article(BaseData):
         for con in (PageIdentity.PARSED, PageIdentity.PRUNED):
             # check the context exists in the observers dict first
             # this is mainly for when there hasnt yet been any pruning
-            
+
             # Note that iterating through article contexts like this is a
             # hack until I figure out whether I need page specific checked
             # states at all. (TODO)
-            
+
             if con in self.observers:
                 self.checked[con] = has_checked
                 self.notify_observers(con)

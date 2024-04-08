@@ -36,6 +36,10 @@ class PostPruningTableDBEntry(TableDBEntry):
     __tablename__ = 'post_pruning_tables'
 
 
+class SortedListTableDBEntry(TableDBEntry):
+    __tablename__ = 'sorted_list_tables'
+
+
 class TableDBManager:
     def __init__(
         self,
@@ -56,6 +60,7 @@ class TableDBManager:
 
         Base.metadata.create_all(self.processed_engine)
         Base.metadata.create_all(self.post_pruning_engine)
+        Base.metadata.create_all(self.sorted_list_engine)
 
     def _create_temp_dbs(
         self, db_path: 'str',
@@ -66,15 +71,20 @@ class TableDBManager:
             db_path, f"processed_db-{id}.db"
         )
         self.pruned_db_temp_path = os.path.join(db_path, f"pruned_db-{id}.db")
+        self.sorted_list_db_temp_path = os.path.join(
+            db_path, f"sorted_list_db-{id}.db")
         if db_session_files:
             shutil.copyfile(db_session_files[0], self.processed_db_temp_path)
             shutil.copyfile(db_session_files[1], self.pruned_db_temp_path)
+            shutil.copyfile(db_session_files[2], self.sorted_list_db_temp_path)
 
     def _get_engine_and_session(self, table_class: 'TableDBEntry') -> 'tuple':
         if table_class == ProcessedTableDBEntry:
             return self.processed_engine, self.ProcessedSession
         elif table_class == PostPruningTableDBEntry:
             return self.post_pruning_engine, self.PostPruningSession
+        elif table_class == SortedListTableDBEntry:
+            return self.sorted_list_engine, self.SortedListSession
         else:
             raise ValueError("Invalid table_class")
 
@@ -83,12 +93,16 @@ class TableDBManager:
             f"sqlite:///{self.processed_db_temp_path}")
         self.post_pruning_engine = create_engine(
             f"sqlite:///{self.pruned_db_temp_path}")
+        self.sorted_list_engine = create_engine(
+            f"sqlite:///{self.sorted_list_db_temp_path}")
         self.ProcessedSession = sessionmaker(bind=self.processed_engine)
         self.PostPruningSession = sessionmaker(bind=self.post_pruning_engine)
+        self.SortedListSession = sessionmaker(bind=self.sorted_list_engine)
 
     def _dispose_connections(self):
         self.processed_engine.dispose()
         self.post_pruning_engine.dispose()
+        self.sorted_list_engine.dispose()
 
     def save_table(
         self,
@@ -139,6 +153,7 @@ class TableDBManager:
     def update_table_tags(self, table_id: 'str', tags: 'list[str]'):
         self._update_table_tags(ProcessedTableDBEntry, table_id, tags)
         self._update_table_tags(PostPruningTableDBEntry, table_id, tags)
+        self._update_table_tags(SortedListTableDBEntry, table_id, tags)
 
     def _update_table_tags(
         self,
@@ -215,6 +230,7 @@ class TableDBManager:
         if db_session_files:
             os.remove(db_session_files[0])
             os.remove(db_session_files[1])
+            os.remove(db_session_files[2])
 
         basename = os.path.basename(filename)
         basename_no_ext = os.path.splitext(basename)[0]
@@ -229,22 +245,32 @@ class TableDBManager:
             f"{basename_no_ext}-pruned.db"
         )
 
+        sorted_list_target_path = os.path.join(
+            self.db_perm_path_root,
+            f"{basename_no_ext}-sorted-list.db"
+        )
+
         self._dispose_connections()
 
         shutil.copyfile(self.processed_db_temp_path, processed_target_path)
         shutil.copyfile(self.pruned_db_temp_path, pruned_target_path)
+        shutil.copyfile(self.sorted_list_db_temp_path, sorted_list_target_path)
 
         self._establish_connections()
 
-        return [processed_target_path, pruned_target_path]
+        return [processed_target_path, pruned_target_path, sorted_list_target_path]
 
     def reset(self):
         for engine, Session in [
             (self.processed_engine, self.ProcessedSession),
-                (self.post_pruning_engine, self.PostPruningSession)]:
+            (self.post_pruning_engine, self.PostPruningSession),
+            (self.sorted_list_engine, self.SortedListSession)
+        ]:
             with Session() as session:
                 for table_class in [
-                    ProcessedTableDBEntry, PostPruningTableDBEntry
+                    ProcessedTableDBEntry,
+                    PostPruningTableDBEntry,
+                    SortedListTableDBEntry
                 ]:
                     table_entries: 'list[TableDBEntry]' = session.query(
                         table_class
@@ -260,6 +286,7 @@ class TableDBManager:
         # Close all connections
         self.processed_engine.dispose()
         self.post_pruning_engine.dispose()
+        self.sorted_list_engine.dispose()
 
         # Delete databases
         if os.path.exists(self.processed_db_temp_path):
@@ -267,6 +294,9 @@ class TableDBManager:
 
         if os.path.exists(self.pruned_db_temp_path):
             os.remove(self.pruned_db_temp_path)
+
+        if os.path.exists(self.sorted_list_db_temp_path):
+            os.remove(self.sorted_list_db_temp_path)
 
 
 def processed_df_to_db(

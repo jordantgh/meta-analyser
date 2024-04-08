@@ -4,7 +4,7 @@ if TYPE_CHECKING:
     from PyQt5.QtGui import QKeyEvent
 
 from PyQt5.QtCore import Qt, QTimer, QObject, pyqtSignal
-from PyQt5.QtWidgets import QLabel, QProgressBar, QPushButton, QListWidget, QTabWidget, QTextBrowser, QLineEdit, QSizePolicy, QHBoxLayout, QVBoxLayout, QWidget, QListWidgetItem
+from PyQt5.QtWidgets import QLabel, QProgressBar, QPushButton, QListWidget, QTabWidget, QTextBrowser, QLineEdit, QSizePolicy, QHBoxLayout, QVBoxLayout, QWidget, QListWidgetItem, QRadioButton, QButtonGroup
 
 
 class QPushButton(QPushButton):
@@ -74,6 +74,7 @@ class TagWidget(QWidget):
     def emitRemoveSignal(self):
         self.removeTag.emit(self.tag)
 
+
 class TagsDisplayWidget(QListWidget):
     tagRemoved = pyqtSignal(str)
 
@@ -98,6 +99,7 @@ class TagsDisplayWidget(QListWidget):
                 self.takeItem(index)
                 break
         self.tagRemoved.emit(tag)
+
 
 class PageElements(QObject):  # QObject needed for signalling
     def __init__(self, parent_tab: 'TabPage'):
@@ -124,6 +126,44 @@ class PageElements(QObject):  # QObject needed for signalling
         self.title_abstract_disp.setFocusPolicy(Qt.NoFocus)
 
         self.data_previews = QTabWidget()
+        self.highlight_button = QPushButton(
+            "Add New ID:Value Mapping (for ranking)")
+
+        self.col_type_label = QLabel("Column Type:")
+        self.id_radio = QRadioButton("ID")
+        self.value_radio = QRadioButton("Value")
+        self.col_type_group = QButtonGroup()
+        self.col_type_group.addButton(self.id_radio, 1)
+        self.col_type_group.addButton(self.value_radio, 2)
+        self.id_radio.setChecked(True)
+
+        self.order_label = QLabel("Order:")
+        self.ascending_radio = QRadioButton("Ascending")
+        self.descending_radio = QRadioButton("Descending")
+        self.order_group = QButtonGroup()
+        self.order_group.addButton(self.ascending_radio, 1)
+        self.order_group.addButton(self.descending_radio, 2)
+        self.ascending_radio.setChecked(True)
+
+        self.corner_widget = QWidget(parent_tab)
+        self.corner_layout = QHBoxLayout(self.corner_widget)
+        self.corner_layout.addWidget(self.col_type_label)
+        self.corner_layout.addWidget(self.id_radio)
+        self.corner_layout.addWidget(self.value_radio)
+        self.corner_layout.addWidget(self.order_label)
+        self.corner_layout.addWidget(self.ascending_radio)
+        self.corner_layout.addWidget(self.descending_radio)
+        self.corner_layout.addWidget(self.highlight_button)
+        self.corner_layout.setContentsMargins(0, 0, 0, 0)
+        self.corner_widget.setLayout(self.corner_layout)
+
+        self.hide_sorting_options()
+
+        self.data_previews.setCornerWidget(
+            self.corner_widget, Qt.TopRightCorner
+        )
+
+        self.highlighting_enabled = False
 
         self.metadata_view = QTextBrowser()
         self.metadata_view.setOpenExternalLinks(True)
@@ -134,6 +174,44 @@ class PageElements(QObject):  # QObject needed for signalling
 
         self.loading_label = QLabel(parent_tab)
         self.loading_label.setAlignment(Qt.AlignCenter)
+
+    def hide_sorting_options(self):
+        self.col_type_label.hide()
+        self.id_radio.hide()
+        self.value_radio.hide()
+        self.order_label.hide()
+        self.ascending_radio.hide()
+        self.descending_radio.hide()
+
+    def show_sorting_options(self):
+        self.col_type_label.show()
+        self.id_radio.show()
+        self.value_radio.show()
+        self.order_label.show()
+        self.ascending_radio.show()
+        self.descending_radio.show()
+
+    def toggle_sorting_options(self):
+        if self.id_radio.isVisible():
+            self.hide_sorting_options()
+        else:
+            self.show_sorting_options()
+
+    def get_id_value_selection(self):
+        if self.id_radio.isChecked():
+            return "ID"
+        elif self.value_radio.isChecked():
+            return "Value"
+        else:
+            return None  # No selection made
+
+    def is_ascending(self):
+        if self.ascending_radio.isChecked():
+            return True
+        elif self.descending_radio.isChecked():
+            return False
+        else:
+            return None
 
 
 class SearchPageElements(PageElements):
@@ -182,3 +260,8 @@ class ProcessedPageElements(PageElements):
 
     def emit_prune_identity(self):
         self.prune_sig.emit(self.page_identity)
+
+class PrunedPageElements(ProcessedPageElements):
+    def __init__(self, parent_tab: 'TabPage'):
+        super().__init__(parent_tab)
+        self.generate_lists_btn = QPushButton("Generate Ranked Lists", parent_tab)
