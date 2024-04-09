@@ -29,6 +29,8 @@ def cols_to_sorted_lists(table: 'ProcessedTable', df: 'DataFrame'):
                 id_ranges[col] = range_start
             else:
                 id_ranges[col] = min(id_ranges[col], range_start)
+                
+        order = "Ascending" if mapping.ascending else "Descending"
 
         num_ranges = {}
         for range_start, col in mapping.values:
@@ -55,7 +57,7 @@ def cols_to_sorted_lists(table: 'ProcessedTable', df: 'DataFrame'):
                 id_col_name = str(df.iat[id_range_start, id_col]).replace(' ', '_')
                 value_col_name = str(df.iat[range_start - 1, num_col]).replace(' ', '_')
 
-                list_label = f"{table_id}__{id_col_name}__{value_col_name}"
+                list_label = f"[[{table_id}]]__[[{id_col_name}]]__[[{value_col_name}]]__[[{order}]]"
                 sorted_list = sorted_df.iloc[:, id_col].tolist()
                 list_str = ','.join(map(str, sorted_list))
 
