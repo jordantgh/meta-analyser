@@ -117,16 +117,28 @@ class TableDBManager:
     ):
         engine, Session = self._get_engine_and_session(table_class)
         with Session() as session:
+            existing_table: 'TableDBEntry' = session.query(
+                table_class
+            ).filter_by(table_id=table_id).first()
+
+            if existing_table:
+                existing_table.pmc_id = pmc_id
+                existing_table.paper_title = paper_title
+                existing_table.paper_url = paper_url
+                existing_table.supp_url = supp_url
+                existing_table.tags = tags
+            else:
+                new_table = table_class(
+                    pmc_id=pmc_id,
+                    paper_title=paper_title,
+                    paper_url=paper_url,
+                    supp_url=supp_url,
+                    table_id=table_id,
+                    tags=tags
+                )
+                session.add(new_table)
+
             df.to_sql(table_id, engine, index=False, if_exists='replace')
-            new_table = table_class(
-                pmc_id=pmc_id,
-                paper_title=paper_title,
-                paper_url=paper_url,
-                supp_url=supp_url,
-                table_id=table_id,
-                tags=tags
-            )
-            session.add(new_table)
             session.commit()
 
     def update_table(
