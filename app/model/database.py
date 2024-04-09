@@ -117,7 +117,7 @@ class TableDBManager:
     ):
         engine, Session = self._get_engine_and_session(table_class)
         with Session() as session:
-            df.to_sql(table_id, engine, index=False)
+            df.to_sql(table_id, engine, index=False, if_exists='replace')
             new_table = table_class(
                 pmc_id=pmc_id,
                 paper_title=paper_title,
